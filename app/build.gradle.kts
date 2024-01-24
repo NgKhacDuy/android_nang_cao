@@ -99,6 +99,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+//    NAVIGATION
+    implementation("androidx.navigation:navigation-compose:2.7.6")
 
 }
 
