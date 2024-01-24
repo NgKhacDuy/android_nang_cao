@@ -1,6 +1,7 @@
 package com.example.android_advance.ui.product
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,19 +16,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.example.android_advance.domain.entity.ProductEntity
 
 @Composable
-fun ProductScreen(viewModel: ProductViewModel = hiltViewModel()) {
+fun ProductScreen(
+    username: String,
+    password: String,
+    navController: NavController,
+    viewModel: ProductViewModel = hiltViewModel()
+) {
     val state = viewModel.state.value
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn {
-            items(state.listProduct) { product: ProductEntity ->
-                ProductCard(product = product)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = "Tên của bạn là $username")
+            Text(text = "Mật khẩu của bạn là $password")
+            LazyColumn {
+                items(state.listProduct) { product: ProductEntity ->
+                    ProductCard(product = product)
+                }
             }
         }
         if (state.isLoading) {
