@@ -1,4 +1,4 @@
-package com.example.android_advance.repo
+package com.example.android_advance.domain.repo
 
 import com.example.android_advance.data.remote.model.ProductModel
 
