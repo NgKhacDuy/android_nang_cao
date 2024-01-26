@@ -2,7 +2,7 @@ package com.example.android_advance.domain.usecases
 
 import com.example.android_advance.domain.entity.ProductEntity
 import com.example.android_advance.domain.entity.toProductEntity
-import com.example.android_advance.repo.ProductRepository
+import com.example.android_advance.domain.repo.ProductRepository
 import com.example.android_advance.utils.common.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

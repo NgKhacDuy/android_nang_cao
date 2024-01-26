@@ -2,7 +2,7 @@ package com.example.android_advance.di
 
 import com.example.android_advance.data.remote.Api
 import com.example.android_advance.data.remote.repository.ProductRepositoryImpl
-import com.example.android_advance.repo.ProductRepository
+import com.example.android_advance.domain.repo.ProductRepository
 import com.example.android_advance.utils.common.Constant
 import com.google.gson.GsonBuilder
 import dagger.Module
