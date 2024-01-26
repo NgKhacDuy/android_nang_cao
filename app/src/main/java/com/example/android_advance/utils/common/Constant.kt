@@ -9,5 +9,6 @@ class Constant {
         //        Screen
         const val loginScreen = "login_screen"
         const val productScreen = "product_screen"
+        const val welcomeScreen = "welcome_screen"
     }
 }

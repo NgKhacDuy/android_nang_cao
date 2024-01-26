@@ -8,13 +8,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.product.ProductScreen
+import com.example.android_advance.ui.welcome.WelcomeScreen
 
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Route.LoginScreen.route) {
+    NavHost(navController = navController, startDestination = Route.WelcomeScreen.route) {
         composable(route = Route.LoginScreen.route) {
             LoginScreen(navController)
+        }
+        composable(route = Route.WelcomeScreen.route) {
+            WelcomeScreen()
         }
         composable(
             route = Route.ProductScreen.route + "/{username}/{password}", arguments = listOf(
@@ -24,7 +28,7 @@ fun Navigation() {
                     nullable = false
                 },
                 navArgument("password") {
-                    type = androidx.navigation.NavType.StringType
+                    type = NavType.StringType
                     defaultValue = ""
                     nullable = false
                 }
