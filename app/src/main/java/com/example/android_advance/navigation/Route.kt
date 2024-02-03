@@ -6,6 +6,7 @@ sealed class Route(val route: String) {
     object LoginScreen : Route(Constant.loginScreen)
     object ProductScreen : Route(Constant.productScreen)
     object WelcomeScreen : Route(Constant.welcomeScreen)
+    object HomeNavigation : Route(Constant.homeNavigation)
 
     fun withArgs(vararg args: String): String {
         return buildString {

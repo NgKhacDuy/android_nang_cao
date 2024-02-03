@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.android_advance.ui.BottomNavigation.HomeNavigation
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.product.ProductScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
@@ -13,12 +14,15 @@ import com.example.android_advance.ui.welcome.WelcomeScreen
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Route.WelcomeScreen.route) {
+    NavHost(navController = navController, startDestination = Route.HomeNavigation.route) {
         composable(route = Route.LoginScreen.route) {
             LoginScreen(navController)
         }
         composable(route = Route.WelcomeScreen.route) {
             WelcomeScreen()
+        }
+        composable(route = Route.HomeNavigation.route) {
+            HomeNavigation()
         }
         composable(
             route = Route.ProductScreen.route + "/{username}/{password}", arguments = listOf(
