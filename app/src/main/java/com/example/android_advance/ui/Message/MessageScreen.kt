@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -90,7 +92,9 @@ fun MessageScreen() {
                     )
                 }
                 Row(
-                    modifier = Modifier.offset(x=100.dp).width(100.dp),
+                    modifier = Modifier
+                        .offset(x = 100.dp)
+                        .width(100.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
                     Image(painter = painterResource(
@@ -121,41 +125,124 @@ fun MessageScreen() {
 
             }
 
-            // Second Row with size 6/10
+            // Second Row with size 8/10
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.8f)
-                    .background(Color.Blue) ,// Replace with your desired background color
+                    .weight(0.8f),
+//                    .background(Color.Blue) ,// Replace with your desired background color
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = "center",
-                    color = Color.Black,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(16.dp)
-                )
+                MessageRow(message = "hiiiii", isSentByMe =false)
+//                Text(
+//                    text = "center",
+//                    color = Color.Black,
+//                    fontSize = 24.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    modifier = Modifier
+//                        .padding(16.dp)
+//                )
             }
 
             // Third Row with size 2/10
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.1f)
-                    .background(Color.Green) ,// Replace with your desired background color
+                    .weight(0.1f),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.attach_file),
+                    contentDescription =null,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(CircleShape)
+                        .padding(8.dp)
+                    ,
+                    contentScale = ContentScale.Crop
+
+                )
+                OutlinedTextField(
+                    value = "", // Pass your state variable here
+                    onValueChange = { /* handle value change */ },
+                    placeholder = { Text("Type what you like") },
+                    modifier = Modifier
+                        .weight(1f) // Takes the remaining available space
+                        .padding(start = 16.dp)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.camera),
+                    contentDescription =null,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(CircleShape)
+                        .padding(8.dp)
+                    ,
+                    contentScale = ContentScale.Crop
+
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.icons8_mic_96),
+                    contentDescription =null,
+                    modifier = Modifier
+                        .size(45.dp)
+                        .clip(CircleShape)
+                        .padding(8.dp)
+                    ,
+                    contentScale = ContentScale.Crop
+
+                )
+
+            }
+        }
+    }
+}
+
+@Composable
+fun MessageRow(message: String, isSentByMe: Boolean) {
+    val widthPercentage = 0.6f // Adjust the percentage as needed
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+//            .padding(8.dp)
+    ) {
+        if (isSentByMe) {
+            // If the message is sent by me, display on the right
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(widthPercentage)
+                    .background(Color.Blue) // Replace with your desired background color
+                    .padding(8.dp),
+                contentAlignment = Alignment.CenterEnd
             ) {
                 Text(
-                    text = "bottom",
-                    color = Color.Black,
+                    text = message,
+                    color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .padding(16.dp)
+//                        .padding(16.dp)
+                )
+            }
+        } else {
+            // If the message is received, display on the left
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(widthPercentage)
+                    .background(Color.Gray) // Replace with your desired background color
+                    .padding(8.dp),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = message,
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+//                        .padding(16.dp)
                 )
             }
         }
