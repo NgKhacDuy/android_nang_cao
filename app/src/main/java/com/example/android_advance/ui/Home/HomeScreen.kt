@@ -29,6 +29,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_advance.R
+import com.google.firebase.annotations.concurrent.Background
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
@@ -48,15 +50,9 @@ data class User(
     val messageCount : Int
 )
 @OptIn(ExperimentalComposeUiApi::class)
+@Preview
 @Composable
-fun HomeScreenContent(navController: NavController) {
-
-//    var personName by remember { mutableStateOf("Alex Lindersion") }
-//    var personLastMessage by remember { mutableStateOf("How are you right now ?") }
-//    var lastActive by remember { mutableStateOf("2 min") }
-//    var personAvt = (R.drawable.person_avt)
-
-
+fun HomeScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -78,17 +74,62 @@ fun HomeScreenContent(navController: NavController) {
                     contentScale = ContentScale.Crop
 
                 )
-
-                Text(
-                    text = "Your Text Here",
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
+                Row(
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .offset(y = 40.dp)
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.TopCenter),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // First image
+                    Image(
+                        painter = painterResource(R.drawable.search),
+                        contentDescription = null,
+                        colorFilter = ColorFilter.tint(Color.White)
+                        ,
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape)
+                            .padding(8.dp)
+                        ,
+                        contentScale = ContentScale.Crop
+                    )
 
-                )
+                    // Text overlay on top of the image
+                    Text(
+                        text = "Home",
+                        color = Color.White,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+//                        modifier = Modifier
+//                            .align(Alignment.TopCenter)
+//                            .offset(y = 40.dp)
+                    )
+
+                    // Second image
+                    Box(
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape)
+                            .background(Color.White) // Set the background color
+                            .padding(8.dp)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.person_avt),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(), // Make the image fill the Box
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+
+
+                }
+
+
+
+
+
             }
 
             // Spacer with a specific height to create a separation between the first and second box
@@ -99,7 +140,7 @@ fun HomeScreenContent(navController: NavController) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.65f) // Adjust the height of the second box
+                .fillMaxHeight(0.75f) // Adjust the height of the second box
                 .align(Alignment.BottomStart)
                 .background(Color.White)
                 .clip(RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
@@ -118,8 +159,6 @@ fun HomeScreenContent(navController: NavController) {
                     User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
                     User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
                     User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-
-
 
                 )
                 for (user in userList) {
@@ -257,10 +296,10 @@ fun UserRow(user: User) {
 }
 
 //@OptIn(ExperimentalComposeUiApi::class)
-
-@Preview
-@Composable
-fun HomeScreen(navController: NavHostController) {
-    val navController = rememberNavController()
-    HomeScreenContent(navController = navController)
-}
+//@Preview
+//@Composable
+//fun HomeScreen(navController: NavHostController) {
+//    val navController = rememberNavController()
+//    HomeScreenContent()
+//}
+//
