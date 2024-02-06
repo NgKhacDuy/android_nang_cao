@@ -138,7 +138,12 @@ fun MessageScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                MessageRow(message = "hiiiii", isSentByMe =false)
+                Column {
+                    MessageRow(message = "hiiiii", isSentByMe = true)
+                    MessageRow(message = "hiiiii", isSentByMe = false)
+                }
+
+
 //                Text(
 //                    text = "center",
 //                    color = Color.Black,
@@ -206,49 +211,31 @@ fun MessageScreen() {
 
 @Composable
 fun MessageRow(message: String, isSentByMe: Boolean) {
-    val widthPercentage = 0.6f // Adjust the percentage as needed
+    val widthPercentage = 1f // Adjust the percentage as needed
+    val alignment = if (isSentByMe) Alignment.CenterEnd else Alignment.CenterStart
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
 //            .padding(8.dp)
     ) {
-        if (isSentByMe) {
-            // If the message is sent by me, display on the right
-            Box(
+        // Use alignment variable to determine the alignment of the inner Box
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(widthPercentage)
+                .background(if (isSentByMe) Color.Blue else Color.Gray) // Use different background colors based on isSentByMe
+                .padding(8.dp),
+            contentAlignment = alignment
+        ) {
+            Text(
+                text = message,
+                color = Color.White,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .fillMaxWidth(widthPercentage)
-                    .background(Color.Blue) // Replace with your desired background color
-                    .padding(8.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                Text(
-                    text = message,
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
 //                        .padding(16.dp)
-                )
-            }
-        } else {
-            // If the message is received, display on the left
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(widthPercentage)
-                    .background(Color.Gray) // Replace with your desired background color
-                    .padding(8.dp),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = message,
-                    color = Color.White,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-//                        .padding(16.dp)
-                )
-            }
+            )
         }
     }
 }
