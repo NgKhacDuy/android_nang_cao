@@ -125,6 +125,10 @@ fun MessageScreen() {
 
             }
 
+
+
+
+
             // Second Row with size 8/10
             Row(
                 modifier = Modifier
