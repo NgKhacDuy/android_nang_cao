@@ -167,70 +167,70 @@ fun HomeScreen() {
             }
 
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.15f) // Adjust the height of the second box
-                .align(Alignment.BottomStart)
-                .background(Color.White)
-                .clip(RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
-                .border(
-                    border = BorderStroke(
-                        width = 1.dp,
-                        color = Color.Black
-                    )
-                ),
-
-        ){
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Column(){
-                    Image(painter = painterResource(
-                        id = R.drawable.message),
-                        contentDescription =null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.CenterHorizontally)
-                        )
-                    Text(text = "Message", fontSize = 16.sp, fontWeight = FontWeight.Normal)
-
-                }
-                Column(){
-                    Image(painter = painterResource(
-                        id = R.drawable.icons8_call_96),
-                        contentDescription =null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Text(text = "Call", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
-                Column(){
-                    Image(painter = painterResource(
-                        id = R.drawable.user_nav),
-                        contentDescription =null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Text(text = "Contacts", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
-                Column(){
-                    Image(painter = painterResource(
-                        id = R.drawable.setting),
-                        contentDescription =null,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                    Text(text = "setting", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
-            }
-
-
-        }
+//        Box(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .fillMaxHeight(0.15f) // Adjust the height of the second box
+//                .align(Alignment.BottomStart)
+//                .background(Color.White)
+//                .clip(RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
+//                .border(
+//                    border = BorderStroke(
+//                        width = 1.dp,
+//                        color = Color.Black
+//                    )
+//                ),
+//
+//        ){
+////            Row(
+////                modifier = Modifier
+////                    .fillMaxWidth()
+////                    .padding(16.dp),
+////                horizontalArrangement = Arrangement.SpaceEvenly,
+////                verticalAlignment = Alignment.CenterVertically
+////            ){
+////                Column(){
+////                    Image(painter = painterResource(
+////                        id = R.drawable.message),
+////                        contentDescription =null,
+////                        modifier = Modifier
+////                            .size(20.dp)
+////                            .align(Alignment.CenterHorizontally)
+////                        )
+////                    Text(text = "Message", fontSize = 16.sp, fontWeight = FontWeight.Normal)
+////
+////                }
+////                Column(){
+////                    Image(painter = painterResource(
+////                        id = R.drawable.icons8_call_96),
+////                        contentDescription =null,
+////                        modifier = Modifier
+////                            .size(20.dp)
+////                            .align(Alignment.CenterHorizontally)
+////                    )
+////                    Text(text = "Call", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
+////                Column(){
+////                    Image(painter = painterResource(
+////                        id = R.drawable.user_nav),
+////                        contentDescription =null,
+////                        modifier = Modifier
+////                            .size(20.dp)
+////                            .align(Alignment.CenterHorizontally)
+////                    )
+////                    Text(text = "Contacts", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
+////                Column(){
+////                    Image(painter = painterResource(
+////                        id = R.drawable.setting),
+////                        contentDescription =null,
+////                        modifier = Modifier
+////                            .size(20.dp)
+////                            .align(Alignment.CenterHorizontally)
+////                    )
+////                    Text(text = "setting", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
+////            }
+//
+//
+//        }
     }
 }
 
