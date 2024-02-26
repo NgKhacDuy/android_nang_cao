@@ -106,6 +106,13 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+//
+    implementation("com.google.accompanist:accompanist-insets:0.22.0-rc")
+//
+    implementation("com.github.benjamin-luescher:compose-form:0.2.8")
+    implementation("com.github.jkuatdsc:form-builder:1.0.7")
+
+
 }
 
 kapt {

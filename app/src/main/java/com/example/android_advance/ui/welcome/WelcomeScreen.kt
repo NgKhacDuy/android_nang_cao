@@ -25,46 +25,48 @@ import com.example.android_advance.ui.welcome.component.ButtonSignUp
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
-    fun onButtonClick() {}
+    fun onButtonClick() {
+        navController.navigate(route = Route.SignUpScreen.route)
+    }
     Box(
-            modifier = Modifier
-                    .fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
     ) {
         Image(
-                painter = painterResource(id = R.drawable.welcome),
-                contentDescription = "Image Background",
-                contentScale = ContentScale.FillBounds,
-                modifier = Modifier.matchParentSize()
+            painter = painterResource(id = R.drawable.welcome),
+            contentDescription = "Image Background",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
         )
 
     }
 
     Column(
-            modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 85.dp, start = 26.dp, end = 26.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment =
-            Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 85.dp, start = 26.dp, end = 26.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment =
+        Alignment.CenterHorizontally
     ) {
         Text(text = "Connect friends easily & quickly", color = Color.White, fontSize = 68.sp)
         Text(
-                modifier = Modifier.padding(top = 40.dp, bottom = 80.dp),
-                text = "Our app is perfect way to stay connected with friends and family.",
-                color = Color(0xFF8d91a2),
-                fontSize = 16.sp
+            modifier = Modifier.padding(top = 40.dp, bottom = 80.dp),
+            text = "Our app is perfect way to stay connected with friends and family.",
+            color = Color(0xFF8d91a2),
+            fontSize = 16.sp
         )
         ButtonSignUp(text = "Sign up with phone number", onClick = { onButtonClick() })
         Row(modifier = Modifier.padding(top = 46.dp)) {
             Text(text = "Existing account?", color = Color.White, fontSize = 16.sp)
             Text(
-                    text = " Log in",
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.clickable(enabled = true) {
-                        navController.navigate(route = Route.LoginScreen.route)
-                    }
+                text = " Log in",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp,
+                modifier = Modifier.clickable(enabled = true) {
+                    navController.navigate(route = Route.LoginScreen.route)
+                }
             )
         }
     }
