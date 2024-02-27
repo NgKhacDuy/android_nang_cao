@@ -8,6 +8,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,11 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -57,12 +55,6 @@ import com.example.android_advance.ui.SignUp.components.GradientButtonNoRipple
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SignUpScreen(navController: NavController) {
-    var phoneNumber by remember { mutableStateOf("") }
-    var fullName by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    var passwordConfirm by remember { mutableStateOf("") }
-    var isError by rememberSaveable { mutableStateOf(false) }
     val keybroadController = LocalSoftwareKeyboardController.current
     val interactionSource = remember {
         MutableInteractionSource()
@@ -80,7 +72,9 @@ fun SignUpScreen(navController: NavController) {
 
 
     fun validation() {
-        formState.validate()
+        if (formState.validate()) {
+            viewModel.signUp(nameState.value, sdtState.value, passwordState.value)
+        }
     }
     Box(
         modifier = Modifier
@@ -89,10 +83,12 @@ fun SignUpScreen(navController: NavController) {
             .imePadding(),
         contentAlignment = Alignment.TopCenter,
     ) {
+
         Column(
             modifier = Modifier
                 .background(Color.White)
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(top = 24.dp)
                 .padding(horizontal = 20.dp)
                 .wrapContentHeight()
@@ -101,7 +97,6 @@ fun SignUpScreen(navController: NavController) {
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-
             IconButton(onClick = {
                 navController.popBackStack()
             }) {
@@ -276,4 +271,5 @@ fun SignUpScreen(navController: NavController) {
 
         }
     }
+
 }

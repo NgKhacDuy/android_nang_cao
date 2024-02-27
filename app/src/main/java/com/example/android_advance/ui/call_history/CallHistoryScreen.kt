@@ -19,25 +19,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
@@ -47,20 +37,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.android_advance.R
-import com.example.android_advance.domain.entity.ProductEntity
-import com.example.android_advance.ui.product.ProductViewModel
 
 
 @Composable
-fun CallHistoryFavCard()
-{
+fun CallHistoryFavCard() {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     Card(
         shape = RoundedCornerShape(5.dp),
@@ -68,95 +52,116 @@ fun CallHistoryFavCard()
             .background(color = Color.Transparent)
 
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.background(color=Color.White)) {
-            Image(painter=painterResource(id = R.drawable.user_solid),
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.background(color = Color.White)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.user_solid),
                 contentDescription = null,
                 modifier = Modifier.size(
                     65.dp
-                ))
-            Text(text="name", fontFamily = poppinsFamily)
+                )
+            )
+            Text(text = "name", fontFamily = poppinsFamily)
         }
     }
 }
 
 @Composable
-fun CallHistoryCard(avatar: Int,name: String,time:String,type:Int){
+fun CallHistoryCard(avatar: Int, name: String, time: String, type: Int) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     Card(
-        modifier= Modifier
+        modifier = Modifier
             .size(width = screenWidth.dp, height = 55.dp)
             .background(color = Color.Transparent)
-    ){
-        Row(modifier = Modifier
-            .background(color = Color.White)
-            .fillMaxSize(),
+    ) {
+        Row(
+            modifier = Modifier
+                .background(color = Color.White)
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start=5.dp)){
-                Image(painter=painterResource(id = avatar),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 5.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = avatar),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(
-                        50.dp
-                    )
-                        .clip(CircleShape))
-                Column(verticalArrangement = Arrangement.SpaceBetween,
-                    modifier= Modifier
+                    modifier = Modifier
+                        .size(
+                            50.dp
+                        )
+                        .clip(CircleShape)
+                )
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
                         .fillMaxHeight()
-                        .padding(start = 10.dp)) {
-                    Text(text=name,fontSize = 20.sp, fontFamily = poppinsFamily )
-                    Row{
-                        Image(painter=painterResource(id = type),
+                        .padding(start = 10.dp)
+                ) {
+                    Text(text = name, fontSize = 20.sp, fontFamily = poppinsFamily)
+                    Row {
+                        Image(
+                            painter = painterResource(id = type),
                             contentDescription = null,
                             modifier = Modifier.size(
                                 25.dp
-                            ))
-                        Text(text=time, fontFamily = poppinsFamily, color = Color.Gray)
+                            )
+                        )
+                        Text(text = time, fontFamily = poppinsFamily, color = Color.Gray)
                     }
                 }
             }
-            Box{
-            Row()
-            {
-                Image(painter = painterResource(id = R.drawable.phone), contentDescription = null,
-                    modifier = Modifier
-                        .height(IntrinsicSize.Max)
-                        .size(25.dp)
-                        .clickable {
-                            println("Button Clicked!")
-                        })
-                Spacer(modifier = Modifier.width(20.dp))
-                Image(painter = painterResource(id = R.drawable.video_call), contentDescription = null,
-                    modifier = Modifier
-                        .height(IntrinsicSize.Max)
-                        .size(27.dp)
-                        .clickable {
-                            println("Button Clicked!")
-                        })
-            }}
+            Box {
+                Row()
+                {
+                    Image(painter = painterResource(id = R.drawable.phone),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(IntrinsicSize.Max)
+                            .size(25.dp)
+                            .clickable {
+                                println("Button Clicked!")
+                            })
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Image(painter = painterResource(id = R.drawable.video_call),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .height(IntrinsicSize.Max)
+                            .size(27.dp)
+                            .clickable {
+                                println("Button Clicked!")
+                            })
+                }
+            }
         }
     }
 }
 
 @Composable
-fun NavBarCard(name:String,image: Int)
-{
+fun NavBarCard(name: String, image: Int) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     Card(
         modifier = Modifier
             .background(color = Color.Transparent)
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.background(color=Color.White)) {
-            Image(painter=painterResource(id = image),
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.background(color = Color.White)
+        ) {
+            Image(
+                painter = painterResource(id = image),
                 contentDescription = null,
                 modifier = Modifier.size(
                     60.dp
-                ))
-            Text(text=name,fontSize = 15.sp, fontFamily = poppinsFamily )
+                )
+            )
+            Text(text = name, fontSize = 15.sp, fontFamily = poppinsFamily)
         }
     }
 }
@@ -173,8 +178,8 @@ fun CallHistoryScreenPP() {
                 painterResource(id = R.drawable.welcome),
                 contentScale = ContentScale.FillBounds
             ),
-                contentAlignment = Alignment.TopStart,
-        ) {
+        contentAlignment = Alignment.TopStart,
+    ) {
         Column(
             modifier = Modifier
                 .background(Color.Transparent)
@@ -189,24 +194,34 @@ fun CallHistoryScreenPP() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box() {
-                    Image(painter = painterResource(id = R.drawable.search_icon), contentDescription = null,
+                    Image(painter = painterResource(id = R.drawable.search_icon),
+                        contentDescription = null,
                         modifier = Modifier
                             .size(40.dp)
                             .clickable {
                                 println("Button Clicked!")
                             })
                 }
-                Text(text = "Calls",fontSize = 22.sp, color = Color.White, fontFamily = poppinsFamily)
+                Text(
+                    text = "Calls",
+                    fontSize = 22.sp,
+                    color = Color.White,
+                    fontFamily = poppinsFamily
+                )
                 Box(contentAlignment = Alignment.Center) {
-                    Image(painter = painterResource(id = R.drawable.phone_plus), contentDescription = null,
+                    Image(painter = painterResource(id = R.drawable.phone_plus),
+                        contentDescription = null,
                         modifier = Modifier
                             .size(27.dp)
                             .clickable {
                                 println("Button Clicked!")
                             })
-                    Image(painter = painterResource(id = R.drawable.gray_circle), contentDescription = null,
+                    Image(
+                        painter = painterResource(id = R.drawable.gray_circle),
+                        contentDescription = null,
                         modifier = Modifier
-                            .size(40.dp))
+                            .size(40.dp)
+                    )
                 }
             }
             /*OutlinedTextField(
@@ -232,21 +247,25 @@ fun CallHistoryScreenPP() {
                         BorderStroke(1.dp, color = Color.Black),
                         shape = RoundedCornerShape(15.dp)
                     )
-            ){
+            ) {
                 Column(
-                    modifier = Modifier.padding(start = 10.dp,top=5.dp, bottom = 5.dp)
+                    modifier = Modifier.padding(start = 10.dp, top = 5.dp, bottom = 5.dp)
                 ) {
                     Text(text = "Favorite", fontFamily = poppinsFamily)
-                    Row{
-                    Row(horizontalArrangement = Arrangement.spacedBy(15.dp),
-                        modifier = Modifier.horizontalScroll(rememberScrollState())
-                            .weight(weight = 1f,fill = true))
+                    Row {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(15.dp),
+                            modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .weight(weight = 1f, fill = true)
+                        )
                         {
                             CallHistoryFavCard()
                             CallHistoryFavCard()
                             CallHistoryFavCard()
                             CallHistoryFavCard()
-                    }}
+                        }
+                    }
                 }
             }
             Column(
@@ -260,66 +279,129 @@ fun CallHistoryScreenPP() {
                         BorderStroke(1.dp, color = Color.Black),
                         shape = RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp)
                     )
-            ){
+            ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Image(painter = painterResource(id = R.drawable.gray_rectangle), contentDescription = null,
+                    Image(
+                        painter = painterResource(id = R.drawable.gray_rectangle),
+                        contentDescription = null,
                         modifier = Modifier
-                            .size(30.dp))
-                    Box(modifier= Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp)) {
-                        Text(text="Recent", fontFamily = poppinsFamily, fontSize = 15.sp)
+                            .size(30.dp)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp)
+                    ) {
+                        Text(text = "Recent", fontFamily = poppinsFamily, fontSize = 15.sp)
                     }
                 }
-                Column(modifier=Modifier.fillMaxSize(),
+                Column(
+                    modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween) {
-                        Column(
-                            modifier = Modifier
-                                .verticalScroll(rememberScrollState())
-                                .weight(weight = 1f, fill = false)
-                                .padding(start = 10.dp, top = 5.dp, bottom = 5.dp, end = 20.dp)
-                                .background(color = Color.Transparent),
-                            verticalArrangement = Arrangement.spacedBy(10.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CallHistoryCard(R.drawable.user_solid,"name","Today, 09:30 AM",R.drawable.phone_arrow_down_left)
-                            Divider(color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                            .weight(weight = 1f, fill = false)
+                            .padding(start = 10.dp, top = 5.dp, bottom = 5.dp, end = 20.dp)
+                            .background(color = Color.Transparent),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Today, 09:30 AM",
+                            R.drawable.phone_arrow_down_left
+                        )
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                 .width((screenWidth / 4).dp)
-                                .align(Alignment.End))
-                            CallHistoryCard(R.drawable.user_solid,"name","Today, 09:00 AM",R.drawable.phone_arrow_down_left)
-                            Divider(color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .align(Alignment.End)
+                        )
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Today, 09:00 AM",
+                            R.drawable.phone_arrow_down_left
+                        )
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                 .width((screenWidth / 4).dp)
-                                .align(Alignment.End))
-                            CallHistoryCard(R.drawable.user_solid,"name","Yesterday, 07:35 PM",R.drawable.phone_arrow_down_left)
-                            Divider(color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .align(Alignment.End)
+                        )
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Yesterday, 07:35 PM",
+                            R.drawable.phone_arrow_down_left
+                        )
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                 .width((screenWidth / 4).dp)
-                                .align(Alignment.End))
-                            CallHistoryCard(R.drawable.user_solid,"name","Today, 09:00 AM",R.drawable.phone_arrow_down_left)
-                            Divider(color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .align(Alignment.End)
+                        )
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Today, 09:00 AM",
+                            R.drawable.phone_arrow_down_left
+                        )
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                 .width((screenWidth / 4).dp)
-                                .align(Alignment.End))
-                            CallHistoryCard(R.drawable.user_solid,"name","Yesterday, 07:35 PM",R.drawable.phone_arrow_down_left)
-                            Divider(color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .align(Alignment.End)
+                        )
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Yesterday, 07:35 PM",
+                            R.drawable.phone_arrow_down_left
+                        )
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                 .width((screenWidth / 4).dp)
-                                .align(Alignment.End))
-                            CallHistoryCard(R.drawable.user_solid,"name","Yesterday, 07:35 PM",R.drawable.phone_arrow_down_left)
-                            Divider(color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .align(Alignment.End)
+                        )
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Yesterday, 07:35 PM",
+                            R.drawable.phone_arrow_down_left
+                        )
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                 .width((screenWidth / 4).dp)
-                                .align(Alignment.End))
-                            CallHistoryCard(R.drawable.user_solid,"name","Yesterday, 07:35 PM",R.drawable.phone_arrow_down_left)
-                            Divider(color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .align(Alignment.End)
+                        )
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Yesterday, 07:35 PM",
+                            R.drawable.phone_arrow_down_left
+                        )
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                 .width((screenWidth / 4).dp)
-                                .align(Alignment.End))
-                            CallHistoryCard(R.drawable.user_solid,"name","Yesterday, 07:35 PM",R.drawable.phone_arrow_down_left)
+                                .align(Alignment.End)
+                        )
+                        CallHistoryCard(
+                            R.drawable.user_solid,
+                            "name",
+                            "Yesterday, 07:35 PM",
+                            R.drawable.phone_arrow_down_left
+                        )
                     }
-                    Box(modifier=Modifier.fillMaxWidth())
+                    Box(modifier = Modifier.fillMaxWidth())
                     {
-                        Row(modifier=Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly) {
-                            NavBarCard("Messages",R.drawable.message_icon)
-                            NavBarCard("Calls",R.drawable.phone_call_icon)
-                            NavBarCard("Setting",R.drawable.gear_icon)
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            NavBarCard("Messages", R.drawable.message_icon)
+                            NavBarCard("Calls", R.drawable.phone_call_icon)
+                            NavBarCard("Setting", R.drawable.gear_icon)
                         }
                     }
                 }
@@ -330,7 +412,6 @@ fun CallHistoryScreenPP() {
 
 @Preview
 @Composable
-fun CallHistoryPreview()
-{
+fun CallHistoryPreview() {
     CallHistoryScreenPP()
 }

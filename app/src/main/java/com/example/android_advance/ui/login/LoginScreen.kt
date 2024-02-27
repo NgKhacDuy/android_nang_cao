@@ -9,10 +9,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,11 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -42,28 +43,25 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.dsc.form_builder.TextFieldState
 import com.example.android_advance.ui.login.components.GradientButtonNoRipple
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isError by rememberSaveable { mutableStateOf(false) }
     val keybroadController = LocalSoftwareKeyboardController.current
     val interactionSource = remember {
         MutableInteractionSource()
     }
     val gradientColor = listOf(Color(0xFF020204), Color(0xFF4156a6))
-    fun validation() {
-        if (username.isEmpty() || password.isEmpty()) {
-            isError = true
-        } else {
-            isError = false
-
-        }
+    val viewModel = hiltViewModel<loginViewModel>()
+    val formState = remember {
+        viewModel.formState
     }
+    val sdtState: TextFieldState = formState.getState("sdt")
+    val passwordState: TextFieldState = formState.getState("password")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -75,7 +73,13 @@ fun LoginScreen(navController: NavController) {
                 .background(Color.White)
                 .fillMaxWidth()
                 .padding(top = 24.dp)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp)
+                .wrapContentHeight()
+                .navigationBarsPadding()
+                .imePadding()
+                .verticalScroll(
+                    rememberScrollState()
+                ),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             IconButton(onClick = {
@@ -109,8 +113,8 @@ fun LoginScreen(navController: NavController) {
                     modifier = Modifier
                         .width((screenWidth * 0.4f).dp)
                         .padding(top = 76.dp),
-                    value = username,
-                    onValueChange = { username = it },
+                    value = sdtState.value,
+                    onValueChange = { sdtState.change(it) },
                     label = { Text("Your Phone Number", color = Color(0xFF3D4A7A)) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
@@ -119,15 +123,26 @@ fun LoginScreen(navController: NavController) {
                         focusedLabelColor = Color(0xFF3D4A7A),
                         unfocusedLabelColor = Color(0xFF3D4A7A),
                         focusedIndicatorColor = Color(0xFFCDD1D0),
-                    )
+                    ),
+                    supportingText = {
+                        if (sdtState.hasError) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = "Vui lòng nhập số điện thoại",
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End
+
+                            )
+                        }
+                    }
                 )
                 TextField(
                     modifier = Modifier
                         .width((screenWidth * 0.4f).dp)
                         .padding(top = 24.dp)
                         .background(color = Color.White),
-                    value = password,
-                    onValueChange = { password = it },
+                    value = passwordState.value,
+                    onValueChange = { passwordState.change(it) },
                     label = { Text("Password", color = Color(0xFF3D4A7A)) },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -137,17 +152,20 @@ fun LoginScreen(navController: NavController) {
                         focusedLabelColor = Color(0xFF3D4A7A),
                         unfocusedLabelColor = Color(0xFF3D4A7A),
                         focusedIndicatorColor = Color(0xFFCDD1D0)
-                    )
+                    ),
+                    supportingText = {
+                        if (passwordState.hasError) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = "Vui lòng nhập mật khẩu",
+                                color = MaterialTheme.colorScheme.error,
+                                textAlign = TextAlign.End
+
+                            )
+                        }
+                    }
                 )
-                if (isError) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp),
-                        text = "Nhập đủ tài khoản và mật khẩu",
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
+
 
                 GradientButtonNoRipple(
                     text = "Login",
@@ -163,7 +181,7 @@ fun LoginScreen(navController: NavController) {
                             indication = null, // Assign null to disable the ripple effect
                             interactionSource = interactionSource
                         ) {
-                            validation()
+                            formState.validate()
                             keybroadController?.hide()
                         },
                 )

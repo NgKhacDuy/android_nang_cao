@@ -1,26 +1,18 @@
 package com.example.android_advance.ui.call_history
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,12 +22,10 @@ import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,62 +35,63 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.android_advance.R
-import com.example.android_advance.domain.entity.ProductEntity
-import com.example.android_advance.ui.product.ProductViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
-
 @Composable
-fun SearchCard(avatar: Int,name: String,latestMessage:String){
+fun SearchCard(avatar: Int, name: String, latestMessage: String) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     Card(
-        modifier= Modifier
+        modifier = Modifier
             .size(width = screenWidth.dp, height = 55.dp)
             .background(color = Color.Transparent)
-    ){
-        Row(modifier = Modifier
-            .background(color = Color.White)
-            .fillMaxSize(),
+    ) {
+        Row(
+            modifier = Modifier
+                .background(color = Color.White)
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start=5.dp)){
-                Image(painter=painterResource(id = avatar),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(start = 5.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = avatar),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.size(
-                        50.dp
-                    )
-                        .clip(CircleShape))
-                Column(verticalArrangement = Arrangement.SpaceBetween,
-                    modifier= Modifier
+                    modifier = Modifier
+                        .size(
+                            50.dp
+                        )
+                        .clip(CircleShape)
+                )
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
                         .fillMaxHeight()
-                        .padding(start = 10.dp)) {
-                    Text(text=name,fontSize = 20.sp, fontFamily = poppinsFamily )
-                    Text(text=latestMessage, fontFamily = poppinsFamily, color = Color.Gray)
+                        .padding(start = 10.dp)
+                ) {
+                    Text(text = name, fontSize = 20.sp, fontFamily = poppinsFamily)
+                    Text(text = latestMessage, fontFamily = poppinsFamily, color = Color.Gray)
                 }
             }
 
         }
     }
 }
+
 @Composable
 fun SearchScreenPP() {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
@@ -144,7 +135,10 @@ fun SearchScreenPP() {
                         .padding(horizontal = 10.dp),
                     shape = RoundedCornerShape(8.dp),
                     leadingIcon = {
-                        Icon(painter = painterResource(id = R.drawable.search_icon_without_circle), null)
+                        Icon(
+                            painter = painterResource(id = R.drawable.search_icon_without_circle),
+                            null
+                        )
                     },
                     trailingIcon = if (searchValue.isNotBlank()) trailingIconView else null,
                     colors = OutlinedTextFieldDefaults.colors(
@@ -182,100 +176,103 @@ fun SearchScreenPP() {
                         color = Color.White,
                     ),
                 verticalArrangement = Arrangement.SpaceBetween
-            ){
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(rememberScrollState())
-                            .weight(weight = 1f, fill = false)
-                            .padding(start = 10.dp, top = 5.dp, bottom = 5.dp, end = 20.dp)
-                            .background(color = Color.Transparent),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp),) {
-                            Text(
-                                text = "People",
-                                fontFamily = poppinsFamily,
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(start = 20.dp)
-                                    .align(Alignment.Start)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Today")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Keep working")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Be yourself")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Tomorrow")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                        }
-                        Column(verticalArrangement = Arrangement.spacedBy(10.dp),) {
-                            Text(
-                                text = "Group",
-                                fontFamily = poppinsFamily,
-                                fontSize = 18.sp,
-                                modifier = Modifier.padding(start = 20.dp)
-                                    .align(Alignment.Start)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                            SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                        }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(weight = 1f, fill = false)
+                        .padding(start = 10.dp, top = 5.dp, bottom = 5.dp, end = 20.dp)
+                        .background(color = Color.Transparent),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = "People",
+                            fontFamily = poppinsFamily,
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(start = 20.dp)
+                                .align(Alignment.Start)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Today")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Keep working")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Be yourself")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Tomorrow")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
                     }
-                    Box(modifier=Modifier.fillMaxWidth())
-                    {
-                        Row(modifier=Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly) {
-                            NavBarCard("Messages",R.drawable.message_icon)
-                            NavBarCard("Calls",R.drawable.phone_call_icon)
-                            NavBarCard("Setting",R.drawable.gear_icon)
-                        }
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text(
+                            text = "Group",
+                            fontFamily = poppinsFamily,
+                            fontSize = 18.sp,
+                            modifier = Modifier
+                                .padding(start = 20.dp)
+                                .align(Alignment.Start)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
+                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+                        Divider(
+                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                .width((screenWidth / 4).dp)
+                                .align(Alignment.End)
+                        )
                     }
                 }
+                Box(modifier = Modifier.fillMaxWidth())
+                {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        NavBarCard("Messages", R.drawable.message_icon)
+                        NavBarCard("Calls", R.drawable.phone_call_icon)
+                        NavBarCard("Setting", R.drawable.gear_icon)
+                    }
+                }
+            }
         }
     }
 }
 
 @Preview
 @Composable
-fun SearchPreview()
-{
+fun SearchPreview() {
     SearchScreenPP()
 }
