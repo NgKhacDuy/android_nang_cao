@@ -1,11 +1,15 @@
 package com.example.android_advance.ui.Message
 
+import android.util.LayoutDirection
+import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,7 +17,20 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.AttachFile
+import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.CameraAlt
+import androidx.compose.material.icons.rounded.CameraEnhance
+import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.VideoCall
+import androidx.compose.material.icons.rounded.Videocam
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,11 +57,10 @@ fun MessageScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color.White),
+
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
-
 
         ) {
             // First Row with size 2/10
@@ -51,71 +69,77 @@ fun MessageScreen() {
                     .fillMaxWidth()
                     .weight(0.1f),
                 verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+
             ) {
-                Image(painter = painterResource(
-                    id = R.drawable.back),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape)
-                        .padding(8.dp)
-                    ,
-                    contentScale = ContentScale.Crop)
+                Row(
 
-                Image(painter = painterResource(
-                    id = R.drawable.person_avt),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape)
+                    verticalAlignment = Alignment.CenterVertically,
 
-                    ,
-                    contentScale = ContentScale.Crop)
-                Column(
-                    modifier = Modifier.offset(x=25.dp)
+                ){
+                    IconButton(onClick = {
+//                navController.popBackStack()
+                    }) {
+                        Icon(Icons.Rounded.ArrowBack, contentDescription = null,modifier = Modifier.size(40.dp))
+                    }
+
+                    Image(painter = painterResource(
+                        id = R.drawable.person_avt),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape)
+
+                        ,
+                        contentScale = ContentScale.Crop)
+                    Column(
+                        modifier = Modifier.offset(x=25.dp)
 
 
-                ) {
-                    Text(
-                        text = "top",
-                        color = Color.Black,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
+                    ) {
+                        Text(
+                            text = "top",
+                            color = Color.Black,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
 
-                    )
-                    Text(
-                        text = "Active now",
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Light,
+                            )
+                        Text(
+                            text = "Active now",
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Light,
 
-                    )
+                            )
+                    }
                 }
+
+
                 Row(
                     modifier = Modifier
-                        .offset(x = 100.dp)
+                        .offset(x=-(16.dp))
                         .width(100.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ){
-                    Image(painter = painterResource(
-                        id = R.drawable.icons8_call_96),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(35.dp)
-                            .clip(CircleShape)
+                    IconButton(onClick = {
+//                navController.popBackStack()
+                    }) {
+                        Icon(
+                            Icons.Rounded.Call,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp))
+                    }
+                    IconButton(onClick = {
+//                navController.popBackStack()
+                    }) {
+                        Icon(
+                            Icons.Rounded.Videocam,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp))
+                    }
 
-                        ,
-                        contentScale = ContentScale.Crop)
 
-                    Image(painter = painterResource(
-                        id = R.drawable.icons8_video_call_96),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
 
-                        ,
-                        contentScale = ContentScale.Crop)
                 }
 
 
@@ -133,14 +157,19 @@ fun MessageScreen() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.8f),
-//                    .background(Color.Blue) ,// Replace with your desired background color
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                    .weight(0.8f)
+                    .padding(top = 8.dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center
             ) {
-                Column {
+                Column (
+                ){
                     MessageRow(message = "hiiiii", isSentByMe = true)
-                    MessageRow(message = "hiiiii", isSentByMe = false)
+                    MessageRow(message = "hello", isSentByMe = false)
+                    MessageRow(message = "how are you ?", isSentByMe = false)
+                    MessageRow(message = "good !", isSentByMe = true)
+
+
                 }
 
 
@@ -162,17 +191,12 @@ fun MessageScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.attach_file),
-                    contentDescription =null,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape)
-                        .padding(8.dp)
-                    ,
-                    contentScale = ContentScale.Crop
+                IconButton(onClick = {
+//                navController.popBackStack()
+                }) {
+                    Icon(Icons.Rounded.AttachFile, contentDescription = null,modifier = Modifier.size(40.dp))
+                }
 
-                )
                 OutlinedTextField(
                     value = "", // Pass your state variable here
                     onValueChange = { /* handle value change */ },
@@ -181,28 +205,17 @@ fun MessageScreen() {
                         .weight(1f) // Takes the remaining available space
                         .padding(start = 16.dp)
                 )
-                Image(
-                    painter = painterResource(id = R.drawable.camera),
-                    contentDescription =null,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape)
-                        .padding(8.dp)
-                    ,
-                    contentScale = ContentScale.Crop
+                IconButton(onClick = {
+//                navController.popBackStack()
+                }) {
+                    Icon(Icons.Rounded.CameraAlt, contentDescription = null,modifier = Modifier.size(40.dp))
+                }
+                IconButton(onClick = {
+//                navController.popBackStack()
+                }) {
+                    Icon(Icons.Rounded.Mic, contentDescription = null,modifier = Modifier.size(40.dp))
+                }
 
-                )
-                Image(
-                    painter = painterResource(id = R.drawable.icons8_mic_96),
-                    contentDescription =null,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape)
-                        .padding(8.dp)
-                    ,
-                    contentScale = ContentScale.Crop
-
-                )
 
             }
         }
@@ -211,34 +224,63 @@ fun MessageScreen() {
 
 @Composable
 fun MessageRow(message: String, isSentByMe: Boolean) {
-    val widthPercentage = 1f // Adjust the percentage as needed
-    val alignment = if (isSentByMe) Alignment.CenterEnd else Alignment.CenterStart
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
-//            .padding(8.dp)
+            .padding(12.dp),
+        contentAlignment = if (isSentByMe) Alignment.CenterEnd else Alignment.CenterStart
     ) {
-        // Use alignment variable to determine the alignment of the inner Box
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(widthPercentage)
-                .background(if (isSentByMe) Color.Blue else Color.Gray) // Use different background colors based on isSentByMe
-                .padding(8.dp),
-            contentAlignment = alignment
-        ) {
-            Text(
-                text = message,
-                color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
+        Row {
+            val messageBoxAlignment = if (isSentByMe) Alignment.CenterEnd else Alignment.CenterStart
+            val imageAlignment = if (isSentByMe) Alignment.Start else Alignment.End
+
+            if (!isSentByMe) {
+                Image(
+                    painter = painterResource(id = R.drawable.person_avt),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .padding(8.dp),
+                    contentScale = ContentScale.Crop,
+                )
+            }
+
+            Box(
                 modifier = Modifier
-//                        .padding(16.dp)
-            )
+                    .width((LocalConfiguration.current.screenWidthDp * 0.6).dp)
+                    .background(
+                        if (isSentByMe) Color.Blue else Color.Gray,
+                        shape = RoundedCornerShape(24.dp)
+                    )
+                    .padding(8.dp)
+                    .padding(start = 8.dp, end = 8.dp),
+                contentAlignment = messageBoxAlignment
+            ) {
+                Text(
+                    text = message,
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            if (isSentByMe) {
+                Image(
+                    painter = painterResource(id = R.drawable.person_avt),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .padding(8.dp),
+                    contentScale = ContentScale.Crop,
+                )
+            }
         }
     }
 }
+
+
 
 //@OptIn(ExperimentalComposeUiApi::class)
 //@Preview
