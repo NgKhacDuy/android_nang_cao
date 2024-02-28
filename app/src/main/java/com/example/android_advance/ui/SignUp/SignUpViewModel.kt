@@ -1,6 +1,7 @@
 package com.example.android_advance.ui.SignUp
 
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.dsc.form_builder.FormState
 import com.dsc.form_builder.TextFieldState
@@ -9,15 +10,17 @@ import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.model.request.userRequest
+import com.example.android_advance.ui.components.IconType
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-@HiltViewModel
 class SignUpViewModel : ViewModel() {
+    val isLoading = mutableStateOf(false)
+    val infoDialog = mutableStateOf(InfoDialog(fun() {}, fun() {}, "", "", "", ""))
+    val isShowDialog = mutableStateOf(false)
     val formState = FormState(
         fields = listOf(
             TextFieldState(
@@ -54,6 +57,7 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun signUp(name: String, phoneNumber: String, password: String) {
+        isLoading.value = true
         val userRequest = userRequest(name, password, phoneNumber)
         val apiService = APIClient.client?.create(ApiInterface::class.java)
         val call = apiService?.signUp(userRequest)
@@ -63,13 +67,45 @@ class SignUpViewModel : ViewModel() {
                 response: Response<ApiResponse.BaseApiResponse<Unit>>
             ) {
                 if (response.isSuccessful) {
-                    Log.e("signup", "Success")
+                    isLoading.value = false
+                    infoDialog.value = InfoDialog(
+                        fun() {
+                            isShowDialog.value = false
+
+                        },
+                        fun() {
+                            isShowDialog.value = false
+
+                        },
+                        "Đăng ký thành công",
+                        "Bạn đã đăng ký tài khoản thành công",
+                        "OK",
+                        "Hủy",
+                        IconType.SUCCESS
+                    )
+                    isShowDialog.value = true
 
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
                     val message = errorJsonObject.get("message").asString
-                    Log.e("Signup", "Error: $message")
+                    isLoading.value = false
+                    infoDialog.value = InfoDialog(
+                        fun() {
+                            isShowDialog.value = false
+
+                        },
+                        fun() {
+                            isShowDialog.value = false
+
+                        },
+                        "Đăng ký thất bại",
+                        message,
+                        "OK",
+                        "Hủy",
+                        IconType.ERROR
+                    )
+                    isShowDialog.value = true
 
 
                 }
@@ -77,9 +113,20 @@ class SignUpViewModel : ViewModel() {
 
             override fun onFailure(call: Call<ApiResponse.BaseApiResponse<Unit>>, t: Throwable) {
                 Log.e("Signup", "Error: $t")
+                isLoading.value = false
 
             }
 
         })
     }
 }
+
+data class InfoDialog(
+    val onDismissRequest: () -> Unit,
+    val onConfirmation: () -> Unit,
+    val dialogTitle: String,
+    val dialogText: String,
+    val positiveText: String,
+    val negativeText: String,
+    val iconType: IconType = IconType.NONE
+)

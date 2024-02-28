@@ -30,7 +30,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -51,6 +50,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dsc.form_builder.TextFieldState
 import com.example.android_advance.ui.SignUp.components.GradientButtonNoRipple
+import com.example.android_advance.ui.components.AlertDialogComponent
+import com.example.android_advance.ui.components.CenteredProgressIndicator
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -270,6 +271,19 @@ fun SignUpScreen(navController: NavController) {
             }
 
         }
+    }
+    if (viewModel.isLoading.value) {
+        CenteredProgressIndicator()
+    }
+    if (viewModel.isShowDialog.value) {
+        AlertDialogComponent(
+            onDismissRequest = viewModel.infoDialog.value.onDismissRequest,
+            onConfirmation = viewModel.infoDialog.value.onConfirmation,
+            dialogTitle = viewModel.infoDialog.value.dialogTitle,
+            dialogText = viewModel.infoDialog.value.dialogText,
+            positiveText = viewModel.infoDialog.value.positiveText,
+            negativeText = viewModel.infoDialog.value.negativeText
+        )
     }
 
 }
