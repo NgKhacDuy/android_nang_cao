@@ -116,6 +116,12 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
+//    shared preference
+    implementation("androidx.security:security-crypto:1.0.0")
+//    Onesignal
+    implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
+//    dotenv
+    implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 
 }
 

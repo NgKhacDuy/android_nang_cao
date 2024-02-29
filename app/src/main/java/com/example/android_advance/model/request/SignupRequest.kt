@@ -2,7 +2,7 @@ package com.example.android_advance.model.request
 
 import com.google.gson.annotations.SerializedName
 
-public class userRequest {
+class SignupRequest {
     @SerializedName("name")
     var name: String? = null
 
