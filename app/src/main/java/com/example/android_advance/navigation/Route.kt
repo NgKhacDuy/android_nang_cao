@@ -8,6 +8,7 @@ sealed class Route(val route: String) {
     object WelcomeScreen : Route(Constant.welcomeScreen)
     object HomeNavigation : Route(Constant.homeNavigation)
     object HomeScreen : Route(Constant.homeScreen)
+    object SignUpScreen : Route(Constant.signupScreen)
 
     fun withArgs(vararg args: String): String {
         return buildString {

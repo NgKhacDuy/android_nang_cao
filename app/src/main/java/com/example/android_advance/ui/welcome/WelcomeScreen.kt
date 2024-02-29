@@ -18,12 +18,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.android_advance.R
+import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.welcome.component.ButtonSignUp
 
 @Composable
-fun WelcomeScreen() {
-    fun onButtonClick() {}
+fun WelcomeScreen(navController: NavController) {
+    fun onButtonClick() {
+        navController.navigate(route = Route.SignUpScreen.route)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +64,9 @@ fun WelcomeScreen() {
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
-                modifier = Modifier.clickable(enabled = true) { }
+                modifier = Modifier.clickable(enabled = true) {
+                    navController.navigate(route = Route.LoginScreen.route)
+                }
             )
         }
     }
