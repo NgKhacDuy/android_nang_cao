@@ -46,6 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dsc.form_builder.TextFieldState
+import com.example.android_advance.ui.components.AlertDialogComponent
+import com.example.android_advance.ui.components.CenteredProgressIndicator
 import com.example.android_advance.ui.login.components.GradientButtonNoRipple
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -62,6 +64,13 @@ fun LoginScreen(navController: NavController) {
     }
     val sdtState: TextFieldState = formState.getState("sdt")
     val passwordState: TextFieldState = formState.getState("password")
+
+    fun handleLogin() {
+        if (formState.validate()) {
+            viewModel.signIn(sdtState.value, passwordState.value, navController)
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -181,8 +190,8 @@ fun LoginScreen(navController: NavController) {
                             indication = null, // Assign null to disable the ripple effect
                             interactionSource = interactionSource
                         ) {
-                            formState.validate()
                             keybroadController?.hide()
+                            handleLogin()
                         },
                 )
 
@@ -200,5 +209,19 @@ fun LoginScreen(navController: NavController) {
             }
 
         }
+    }
+
+    if (viewModel.isLoading.value) {
+        CenteredProgressIndicator()
+    }
+    if (viewModel.isShowDialog.value) {
+        AlertDialogComponent(
+            onDismissRequest = viewModel.infoDialog.value.onDismissRequest,
+            onConfirmation = viewModel.infoDialog.value.onConfirmation,
+            dialogTitle = viewModel.infoDialog.value.dialogTitle,
+            dialogText = viewModel.infoDialog.value.dialogText,
+            positiveText = viewModel.infoDialog.value.positiveText,
+            negativeText = viewModel.infoDialog.value.negativeText
+        )
     }
 }

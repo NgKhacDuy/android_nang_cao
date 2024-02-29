@@ -9,7 +9,8 @@ import com.dsc.form_builder.Validators
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
-import com.example.android_advance.model.request.userRequest
+import com.example.android_advance.data_class.InfoDialog
+import com.example.android_advance.model.request.SignupRequest
 import com.example.android_advance.ui.components.IconType
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -58,7 +59,7 @@ class SignUpViewModel : ViewModel() {
 
     fun signUp(name: String, phoneNumber: String, password: String) {
         isLoading.value = true
-        val userRequest = userRequest(name, password, phoneNumber)
+        val userRequest = SignupRequest(name, password, phoneNumber)
         val apiService = APIClient.client?.create(ApiInterface::class.java)
         val call = apiService?.signUp(userRequest)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
@@ -121,12 +122,3 @@ class SignUpViewModel : ViewModel() {
     }
 }
 
-data class InfoDialog(
-    val onDismissRequest: () -> Unit,
-    val onConfirmation: () -> Unit,
-    val dialogTitle: String,
-    val dialogText: String,
-    val positiveText: String,
-    val negativeText: String,
-    val iconType: IconType = IconType.NONE
-)
