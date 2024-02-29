@@ -1,4 +1,4 @@
-package com.example.android_advance.ui.SignUp
+package com.example.android_advance.ui.SignUp.components
 
 
 import androidx.compose.foundation.background
