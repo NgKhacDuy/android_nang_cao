@@ -22,6 +22,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.CameraAlt
+import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.AssistChipDefaults.shape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -55,16 +61,15 @@ data class User(
 fun HomeScreen() {
     Box(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+        ,
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 50.dp) // Adjust the padding to control the height of the second box
+                .fillMaxHeight(0.25f)
         ) {
             Box(
-                modifier = Modifier
-                    .weight(1f),
+
 
             ) {
                 // Content for the background image
@@ -82,19 +87,16 @@ fun HomeScreen() {
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // First image
-                    Image(
-                        painter = painterResource(R.drawable.search),
-                        contentDescription = null,
-                        colorFilter = ColorFilter.tint(Color.White)
-                        ,
-                        modifier = Modifier
-                            .size(45.dp)
-                            .clip(CircleShape)
-                            .padding(8.dp)
-                        ,
-                        contentScale = ContentScale.Crop
-                    )
+
+                    IconButton(onClick = {
+//                navController.popBackStack()
+                    }) {
+                        Icon(
+                            Icons.Rounded.Search,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp),
+                            tint = Color.White)
+                    }
 
                     // Text overlay on top of the image
                     Text(
@@ -136,101 +138,40 @@ fun HomeScreen() {
             Spacer(modifier = Modifier.height(50.dp))
         }
 
-        // Second Box with a specific height
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.75f) // Adjust the height of the second box
                 .align(Alignment.BottomStart)
-                .background(Color.White)
-                .clip(RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
-
         ) {
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .background(Color.White, shape = RoundedCornerShape(30.dp))
             ) {
-                val userList = listOf<User>(
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user) ,
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                // Content of the box
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
 
-                )
-                for (user in userList) {
-                    UserRow(user = user)
+                ) {
+                    val userList = listOf<User>(
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user) ,
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+
+                        )
+                    for (user in userList) {
+                        UserRow(user = user)
+                    }
                 }
             }
-
         }
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .fillMaxHeight(0.15f) // Adjust the height of the second box
-//                .align(Alignment.BottomStart)
-//                .background(Color.White)
-//                .clip(RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
-//                .border(
-//                    border = BorderStroke(
-//                        width = 1.dp,
-//                        color = Color.Black
-//                    )
-//                ),
-//
-//        ){
-////            Row(
-////                modifier = Modifier
-////                    .fillMaxWidth()
-////                    .padding(16.dp),
-////                horizontalArrangement = Arrangement.SpaceEvenly,
-////                verticalAlignment = Alignment.CenterVertically
-////            ){
-////                Column(){
-////                    Image(painter = painterResource(
-////                        id = R.drawable.message),
-////                        contentDescription =null,
-////                        modifier = Modifier
-////                            .size(20.dp)
-////                            .align(Alignment.CenterHorizontally)
-////                        )
-////                    Text(text = "Message", fontSize = 16.sp, fontWeight = FontWeight.Normal)
-////
-////                }
-////                Column(){
-////                    Image(painter = painterResource(
-////                        id = R.drawable.icons8_call_96),
-////                        contentDescription =null,
-////                        modifier = Modifier
-////                            .size(20.dp)
-////                            .align(Alignment.CenterHorizontally)
-////                    )
-////                    Text(text = "Call", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
-////                Column(){
-////                    Image(painter = painterResource(
-////                        id = R.drawable.user_nav),
-////                        contentDescription =null,
-////                        modifier = Modifier
-////                            .size(20.dp)
-////                            .align(Alignment.CenterHorizontally)
-////                    )
-////                    Text(text = "Contacts", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
-////                Column(){
-////                    Image(painter = painterResource(
-////                        id = R.drawable.setting),
-////                        contentDescription =null,
-////                        modifier = Modifier
-////                            .size(20.dp)
-////                            .align(Alignment.CenterHorizontally)
-////                    )
-////                    Text(text = "setting", fontSize = 16.sp, fontWeight = FontWeight.Normal)                }
-////            }
-//
-//
-//        }
+
     }
 }
 
@@ -241,19 +182,23 @@ fun UserRow(user: User) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
+            .padding(start = 8.dp, end = 8.dp)
             .border(
                 border = BorderStroke(
                     width = 1.dp,
                     color = Color.Black,
                 ),
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp)
+//                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp)
+                shape = RoundedCornerShape(40.dp)
 
             ), // Adjust padding as needed
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column (
-            modifier = Modifier.offset(x=(-20).dp).padding(vertical = 16.dp)
+            modifier = Modifier
+                .offset(x = (-20).dp)
+                .padding(vertical = 16.dp)
         ){
             Image(
                 painter = painterResource(user.avatar),
