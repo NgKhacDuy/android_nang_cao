@@ -12,7 +12,9 @@ internal object APIClient {
         get() {
             val interceptor = HttpLoggingInterceptor()
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+            val client: OkHttpClient =
+                OkHttpClient.Builder().addInterceptor(interceptor)
+                    .addNetworkInterceptor(appInterceptor()).build()
             retrofit = Retrofit.Builder()
                 .baseUrl(apiConstant.baseApi)
                 .addConverterFactory(GsonConverterFactory.create())
