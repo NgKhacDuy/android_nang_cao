@@ -156,7 +156,7 @@ fun HomeScreen() {
 
                 ) {
                     val userList = listOf<User>(
-                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                        User(R.drawable.person_avt, "Alex Linderson","How Are You ?m hahahah","2 min",R.drawable.user),
                         User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
                         User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
                         User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user) ,
@@ -182,7 +182,7 @@ fun UserRow(user: User) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .padding(start = 8.dp, end = 8.dp)
+            .padding(start = 4.dp, end = 4.dp)
             .border(
                 border = BorderStroke(
                     width = 1.dp,
@@ -195,7 +195,7 @@ fun UserRow(user: User) {
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column (
+        Row (
             modifier = Modifier
                 .offset(x = (-20).dp)
                 .padding(vertical = 16.dp)
@@ -211,15 +211,27 @@ fun UserRow(user: User) {
                 ,
                 contentScale = ContentScale.Crop
             )
+            Column(
+                modifier = Modifier.padding(start = 12.dp)
+            ){
+                val displayMessage = if (user.lastMessage.length > 13) {
+                    "${user.lastMessage.take(13)}..."
+                } else {
+                    user.lastMessage
+                }
+                Text(text = user.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(text = displayMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            }
+
         }
         // Three columns with Text elements
 
-        Column(
-            modifier = Modifier.offset(x=(-30).dp)
-        ){
-                Text(text = user.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = user.lastMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
-        }
+//        Column(
+////            modifier = Modifier.offset(x=(-30).dp)
+//        ){
+//                Text(text = user.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+//                Text(text = user.lastMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+//        }
         Column(
 //            modifier = Modifier.offset(x=(-20).dp)
         ){
@@ -231,9 +243,7 @@ fun UserRow(user: User) {
                 contentDescription =null,
                 modifier = Modifier
                     .size(20.dp)
-                    .offset(x = 40.dp)
-                ,
-
+                    .align(Alignment.End)
             )
 
         }
