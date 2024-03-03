@@ -20,10 +20,14 @@ class appInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()
         val originResponse = chain.proceed(request)
-        if (originResponse.code == 401) {
+        var tryCount = 0
+        while (!originResponse.isSuccessful && tryCount <= 3) {
+            tryCount++
             val newToken = refreshTokenFunction()
             if (newToken != "") {
-                request = request.newBuilder().header("Authorization", "Bearer $newToken").build()
+                request =
+                    request.newBuilder().header("Authorization", "Bearer $newToken").build()
+                originResponse.close()
                 return chain.proceed(request)
             }
         }
@@ -31,9 +35,10 @@ class appInterceptor @Inject constructor(
     }
 
     private fun refreshTokenFunction(): String {
+        val apiClient: APIClient = APIClient(context)
         val appSharedPreference = AppSharedPreference(context)
         val refreshRequest = RefreshRequest(refreshToken = appSharedPreference.refreshToken)
-        val apiService = APIClient.client?.create(ApiInterface::class.java)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
         val call = apiService?.refresh(refreshRequest)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<SigninResponse>> {
             override fun onResponse(
@@ -41,9 +46,11 @@ class appInterceptor @Inject constructor(
                 response: retrofit2.Response<ApiResponse.BaseApiResponse<SigninResponse>>
             ) {
                 if (response.isSuccessful) {
+                    Log.e("REFRESH", "REFRESH SUCCESSFULLY")
                     appSharedPreference.accessToken = response.body()?.data?.accessToken.toString()
                 } else {
                     Log.e("REFRESH", "REFRESH FAILED")
+//                    TODO: add logout function
                 }
             }
 

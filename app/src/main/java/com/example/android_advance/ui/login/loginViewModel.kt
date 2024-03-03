@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel()
 class loginViewModel @Inject constructor(
-    @ApplicationContext context: Context,
+    @ApplicationContext private val context: Context,
 ) : ViewModel() {
     val isLoading = mutableStateOf(false)
     val infoDialog = mutableStateOf(InfoDialog(fun() {}, fun() {}, "", "", "", ""))
@@ -54,8 +54,9 @@ class loginViewModel @Inject constructor(
 
     fun signIn(phoneNumber: String, password: String, navController: NavController) {
         isLoading.value = true
+        val apiClient: APIClient = APIClient(context)
         val signInRequest = SigninRequest(phoneNumber, password)
-        val apiService = APIClient.client?.create(ApiInterface::class.java)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
         val call = apiService?.signIn(signInRequest)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<SigninResponse>> {
             override fun onResponse(

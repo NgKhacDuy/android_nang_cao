@@ -1,5 +1,6 @@
 package com.example.android_advance.ui.SignUp
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -14,11 +15,16 @@ import com.example.android_advance.model.request.SignupRequest
 import com.example.android_advance.ui.components.IconType
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class SignUpViewModel : ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(@ApplicationContext private val context: Context) :
+    ViewModel() {
     val isLoading = mutableStateOf(false)
     val infoDialog = mutableStateOf(InfoDialog(fun() {}, fun() {}, "", "", "", ""))
     val isShowDialog = mutableStateOf(false)
@@ -59,8 +65,9 @@ class SignUpViewModel : ViewModel() {
 
     fun signUp(name: String, phoneNumber: String, password: String) {
         isLoading.value = true
+        val apiClient: APIClient = APIClient(context)
         val userRequest = SignupRequest(name, password, phoneNumber)
-        val apiService = APIClient.client?.create(ApiInterface::class.java)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
         val call = apiService?.signUp(userRequest)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
             override fun onResponse(

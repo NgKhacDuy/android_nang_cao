@@ -1,7 +1,6 @@
 package com.example.android_advance.ui.Home
 
 
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,23 +35,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android_advance.R
-import com.google.firebase.annotations.concurrent.Background
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
     val name: String,
     val lastMessage: String,
     val lastActive: String,
-    val messageCount : Int
+    val messageCount: Int
 )
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun HomeScreen() {
+    val viewModel = hiltViewModel<HomeScreenViewModel>()
+    android.os.Handler().postDelayed({
+        viewModel.getUserInfo()
+    }, 15000)
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -66,7 +67,7 @@ fun HomeScreen() {
                 modifier = Modifier
                     .weight(1f),
 
-            ) {
+                ) {
                 // Content for the background image
                 Image(
                     painter = painterResource(id = R.drawable.welcome),
@@ -86,13 +87,11 @@ fun HomeScreen() {
                     Image(
                         painter = painterResource(R.drawable.search),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(Color.White)
-                        ,
+                        colorFilter = ColorFilter.tint(Color.White),
                         modifier = Modifier
                             .size(45.dp)
                             .clip(CircleShape)
-                            .padding(8.dp)
-                        ,
+                            .padding(8.dp),
                         contentScale = ContentScale.Crop
                     )
 
@@ -127,9 +126,6 @@ fun HomeScreen() {
                 }
 
 
-
-
-
             }
 
             // Spacer with a specific height to create a separation between the first and second box
@@ -152,15 +148,57 @@ fun HomeScreen() {
                     .verticalScroll(rememberScrollState())
             ) {
                 val userList = listOf<User>(
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user) ,
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
-                    User(R.drawable.person_avt, "Alex Linderson","How Are You ?","2 min",R.drawable.user),
+                    User(
+                        R.drawable.person_avt,
+                        "Alex Linderson",
+                        "How Are You ?",
+                        "2 min",
+                        R.drawable.user
+                    ),
+                    User(
+                        R.drawable.person_avt,
+                        "Alex Linderson",
+                        "How Are You ?",
+                        "2 min",
+                        R.drawable.user
+                    ),
+                    User(
+                        R.drawable.person_avt,
+                        "Alex Linderson",
+                        "How Are You ?",
+                        "2 min",
+                        R.drawable.user
+                    ),
+                    User(
+                        R.drawable.person_avt,
+                        "Alex Linderson",
+                        "How Are You ?",
+                        "2 min",
+                        R.drawable.user
+                    ),
+                    User(
+                        R.drawable.person_avt,
+                        "Alex Linderson",
+                        "How Are You ?",
+                        "2 min",
+                        R.drawable.user
+                    ),
+                    User(
+                        R.drawable.person_avt,
+                        "Alex Linderson",
+                        "How Are You ?",
+                        "2 min",
+                        R.drawable.user
+                    ),
+                    User(
+                        R.drawable.person_avt,
+                        "Alex Linderson",
+                        "How Are You ?",
+                        "2 min",
+                        R.drawable.user
+                    ),
 
-                )
+                    )
                 for (user in userList) {
                     UserRow(user = user)
                 }
@@ -246,50 +284,56 @@ fun UserRow(user: User) {
                     width = 1.dp,
                     color = Color.Black,
                 ),
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp)
+                shape = RoundedCornerShape(
+                    topStart = 16.dp,
+                    topEnd = 16.dp,
+                    bottomStart = 16.dp,
+                    bottomEnd = 16.dp
+                )
 
             ), // Adjust padding as needed
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column (
-            modifier = Modifier.offset(x=(-20).dp).padding(vertical = 16.dp)
-        ){
+        Column(
+            modifier = Modifier
+                .offset(x = (-20).dp)
+                .padding(vertical = 16.dp)
+        ) {
             Image(
                 painter = painterResource(user.avatar),
                 contentDescription = null,
                 modifier = Modifier
 
                     .size(35.dp)
-                    .clip(CircleShape)
-
-                ,
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop
             )
         }
         // Three columns with Text elements
 
         Column(
-            modifier = Modifier.offset(x=(-30).dp)
-        ){
-                Text(text = user.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = user.lastMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            modifier = Modifier.offset(x = (-30).dp)
+        ) {
+            Text(text = user.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(text = user.lastMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
         }
         Column(
 //            modifier = Modifier.offset(x=(-20).dp)
-        ){
+        ) {
 
 
             Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal)
-            Image(painter = painterResource(
-                id = user.messageCount),
-                contentDescription =null,
+            Image(
+                painter = painterResource(
+                    id = user.messageCount
+                ),
+                contentDescription = null,
                 modifier = Modifier
                     .size(20.dp)
-                    .offset(x = 40.dp)
-                ,
+                    .offset(x = 40.dp),
 
-            )
+                )
 
         }
     }
