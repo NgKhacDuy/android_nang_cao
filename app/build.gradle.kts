@@ -122,6 +122,8 @@ dependencies {
     implementation("com.onesignal:OneSignal:[5.0.0, 5.99.99]")
 //    dotenv
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
+//    socket io
+    implementation("io.socket:socket.io-client:2.0.0")
 
 }
 
