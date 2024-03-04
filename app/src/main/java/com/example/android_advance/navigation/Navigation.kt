@@ -10,6 +10,7 @@ import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.HomeNavigation
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
+import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
 
@@ -29,12 +30,15 @@ fun Navigation() {
             }
         }
         composable(route = Route.HomeNavigation.route) {
-            HomeScreen()
+            HomeScreen(navController)
         }
         composable(route = Route.SignUpScreen.route) {
             SignUpScreen(navController)
         }
 
+        composable(route = Route.SearchScreen.route) {
+            SearchScreenPP(navController)
+        }
     }
 
 
