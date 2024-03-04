@@ -124,6 +124,8 @@ dependencies {
     implementation("io.github.cdimascio:dotenv-kotlin:6.4.1")
 //    socket io
     implementation("io.socket:socket.io-client:2.0.0")
+//    async
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
 
 }
 

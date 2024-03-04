@@ -34,7 +34,7 @@ class appInterceptor @Inject constructor(
         return originResponse
     }
 
-    private fun refreshTokenFunction(): String {
+    fun refreshTokenFunction(): String {
         val apiClient: APIClient = APIClient(context)
         val appSharedPreference = AppSharedPreference(context)
         val refreshRequest = RefreshRequest(refreshToken = appSharedPreference.refreshToken)
