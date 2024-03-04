@@ -35,14 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.android_advance.R
 import com.example.android_advance.navigation.Route
-import com.example.android_advance.ui.call_history.SearchScreenPP
-import com.google.firebase.annotations.concurrent.Background
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
