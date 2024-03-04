@@ -66,7 +66,7 @@ fun HomeNavigation() {
                 .padding(paddingValues)
         ) {
             composable(route = Screens.MessageScreen.name) {
-                HomeScreen()
+                HomeScreen(navController)
             }
             composable(route = Screens.CallScreen.name) {
                 CallSreen()

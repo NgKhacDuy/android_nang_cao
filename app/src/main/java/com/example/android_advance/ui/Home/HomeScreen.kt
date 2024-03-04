@@ -46,6 +46,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.android_advance.R
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.google.firebase.annotations.concurrent.Background
 
 data class User(
@@ -56,9 +58,8 @@ data class User(
     val messageCount : Int
 )
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -89,7 +90,7 @@ fun HomeScreen() {
                 ) {
 
                     IconButton(onClick = {
-//                navController.popBackStack()
+                        navController.navigate(Route.SearchScreen.route)
                     }) {
                         Icon(
                             Icons.Rounded.Search,

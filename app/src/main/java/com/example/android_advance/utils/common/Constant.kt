@@ -9,5 +9,6 @@ class Constant {
         const val homeNavigation = "home_navigation"
         const val homeScreen = "home_screen"
         const val signupScreen = "signup_screen"
+        const val searchScreen = "search_screen"
     }
 }

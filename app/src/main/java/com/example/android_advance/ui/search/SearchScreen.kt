@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.android_advance.R
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -93,7 +94,7 @@ fun SearchCard(avatar: Int, name: String, latestMessage: String) {
 }
 
 @Composable
-fun SearchScreenPP() {
+fun SearchScreenPP(navController: NavController) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     var searchValue by remember { mutableStateOf("") }
@@ -255,24 +256,7 @@ fun SearchScreenPP() {
                         )
                     }
                 }
-                Box(modifier = Modifier.fillMaxWidth())
-                {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        NavBarCard("Messages", R.drawable.message_icon)
-                        NavBarCard("Calls", R.drawable.phone_call_icon)
-                        NavBarCard("Setting", R.drawable.gear_icon)
-                    }
-                }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun SearchPreview() {
-    SearchScreenPP()
 }
