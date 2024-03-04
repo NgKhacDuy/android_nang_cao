@@ -8,6 +8,7 @@ import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.shared_preference.AppSharedPreference
+import com.example.android_advance.socketio.SocketManager
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,10 +18,21 @@ import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
-@HiltViewModel
+@HiltViewModel()
 class HomeScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) :
     ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
+
+    fun getRoomForUser() {
+        try {
+            val socketManager = SocketManager(context)
+            socketManager.connect()
+            socketManager.on("Error") {}
+        } catch (e: Exception) {
+            Log.e("EXCEPTION", e.message.toString())
+        }
+    }
+
     fun getUserInfo() {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
