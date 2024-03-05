@@ -7,7 +7,7 @@ class apiConstant {
         const val userSignInApi = "user/signin"
         const val userRefresh = "user/refresh"
         const val userInfo = "user/profile"
-
+        const val userSearch = "user/search"
     }
 
 }
