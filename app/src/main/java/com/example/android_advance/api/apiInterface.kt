@@ -25,6 +25,6 @@ interface ApiInterface {
     @GET(apiConstant.userInfo)
     fun profile(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<UserDto>>
 
-    @GET(apiConstant.userSearch+"/{keyword}")
-    fun Search(@Path("keyword") keyword:String): Call<ApiResponse.BaseApiResponse<UserDto>>
+    @GET(apiConstant.userSearch + "/{keyword}")
+    fun Search(@Path("keyword") keyword: String): Call<ApiResponse.BaseApiResponse<List<UserDto>>>
 }

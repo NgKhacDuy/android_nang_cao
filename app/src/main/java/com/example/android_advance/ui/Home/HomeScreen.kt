@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.android_advance.R
-import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.BottomNavigation.Screens
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
@@ -81,7 +81,7 @@ fun HomeScreen(navController: NavController) {
                 ) {
 
                     IconButton(onClick = {
-                        navController.navigate(Route.SearchScreen.route)
+                        navController.navigate(Screens.SearchScreen.name)
                     }) {
                         Icon(
                             Icons.Rounded.Search,

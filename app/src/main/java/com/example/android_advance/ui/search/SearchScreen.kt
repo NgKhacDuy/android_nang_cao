@@ -50,11 +50,8 @@ import com.example.android_advance.R
 import com.example.android_advance.ui.login.loginViewModel
 import com.example.android_advance.ui.search.SearchScreenModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchCard(avatar: Int, name: String, latestMessage: String) {
-    val viewModel = hiltViewModel<SearchScreenModel>()
-    viewModel.performSearch("D")
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     Card(
@@ -100,6 +97,8 @@ fun SearchCard(avatar: Int, name: String, latestMessage: String) {
 
 @Composable
 fun SearchScreenPP(navController: NavController) {
+    val viewModel = hiltViewModel<SearchScreenModel>()
+    viewModel.performSearch("D")
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     var searchValue by remember { mutableStateOf("") }

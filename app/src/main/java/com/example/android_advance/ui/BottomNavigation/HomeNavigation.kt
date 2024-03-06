@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
+import com.example.android_advance.ui.call_history.SearchScreenPP
 
 @Composable
 fun HomeNavigation() {
@@ -71,8 +72,11 @@ fun HomeNavigation() {
             composable(route = Screens.CallScreen.name) {
                 CallSreen()
             }
-            composable(route = Screens.SettingSreen.name) {
+            composable(route = Screens.SettingScreen.name) {
                 SettingScreen()
+            }
+            composable(route = Screens.SearchScreen.name) {
+                SearchScreenPP(navController = navController)
             }
         }
     }
