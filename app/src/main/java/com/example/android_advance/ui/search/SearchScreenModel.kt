@@ -21,10 +21,9 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchScreenModel @Inject constructor(@ApplicationContext private val context: Context) :
     ViewModel() {
-    private val _searchResult = MutableLiveData<List<SearchResponse>>()
+    private val _searchResult = MutableLiveData<List<SearchResponse>?>()
     val search = mutableStateOf("")
-    val searchResults: LiveData<List<SearchResponse>> get() = _searchResult
-
+    val searchResults: MutableLiveData<List<SearchResponse>?> get() = _searchResult
     fun performSearch(keyword: String) {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -35,8 +34,20 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
                 response: Response<ApiResponse.BaseApiResponse<List<UserDto>>>
             ) {
                 if (response.isSuccessful) {
-                    Log.d("Search", response.body()?.data.toString())
+                    val searchResults = response.body()?.data?.map { userDto ->
+                        SearchResponse(
+                            id = userDto.id,
+                            name = userDto.name,
+                            phoneNumber = userDto.phoneNumber,
+                            createAt = userDto.createAt,
+                            updateAt = userDto.updateAt,
+                            deletedAt = userDto.deletedAt,
+                            friends = ArrayList()
+                        )
+                    }
+                    _searchResult.value = searchResults
                 }
+                Log.d("Search", response.body()?.data.toString())
             }
 
             override fun onFailure(
