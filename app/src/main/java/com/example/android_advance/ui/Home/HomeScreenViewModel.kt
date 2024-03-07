@@ -27,7 +27,9 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         try {
             val socketManager = SocketManager(context)
             socketManager.connect()
-            socketManager.on("Error") {}
+            socketManager.on("rooms") {
+                Log.d("rooms", it.toString())
+            }
         } catch (e: Exception) {
             Log.e("EXCEPTION", e.message.toString())
         }

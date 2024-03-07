@@ -37,9 +37,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
-import com.example.android_advance.navigation.Route
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
@@ -52,6 +52,7 @@ data class User(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
+    val viewModel = hiltViewModel<HomeScreenViewModel>()
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -81,7 +82,8 @@ fun HomeScreen(navController: NavController) {
                 ) {
 
                     IconButton(onClick = {
-                        navController.navigate(Route.SearchScreen.route)
+//                        navController.navigate(Route.SearchScreen.route)
+                        viewModel.getRoomForUser()
                     }) {
                         Icon(
                             Icons.Rounded.Search,

@@ -10,13 +10,14 @@ import io.socket.client.Socket
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.net.ConnectException
+import java.io.IOException
+import java.net.SocketException
 import javax.inject.Inject
 
 class SocketManager @Inject constructor(@ApplicationContext private val context: Context) {
 
     private var socket: Socket? = null
-    private val url = "https://android-nang-cao-backend.onrender.com"
+    private val url = "http://10.0.3.2:8000"
     val appSharedPreference = AppSharedPreference(context)
     val appInterceptor = appInterceptor(context)
 
@@ -33,7 +34,15 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
                 }
                 socket = IO.socket(url, options)
                 socket?.connect()
-            } catch (e: ConnectException) {
+                var tryCount = 3
+                for (i in 0 until tryCount) {
+                    if (!socket?.connected()!!) {
+                        refreshToken()
+                        socket?.connect()
+                    }
+                    tryCount++
+                }
+            } catch (e: Exception) {
                 Log.e("error socket", e.message.toString())
                 e.printStackTrace()
             }
@@ -53,12 +62,14 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
 
     fun on(event: String, callback: (args: Array<Any>) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
-            if (event == "Error") {
-                refreshToken()
-                socket?.connect()
-            }
-            socket?.on(event) { args ->
-                callback(args)
+            try {
+                socket?.on(event) { args ->
+                    callback(args)
+                }
+            } catch (e: IOException) {
+                if (e is SocketException) {
+                    Log.d("DISCONNECT", e.message.toString())
+                }
             }
         }
     }
