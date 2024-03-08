@@ -2,6 +2,7 @@ package com.example.android_advance.ui.call_history
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -93,18 +94,13 @@ fun SearchCard(avatar: Int, name: String, latestMessage: String) {
                 }
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
-            Button(
-                onClick = {
-                    // Xử lý sự kiện khi nút được nhấn
-                },
-                modifier = Modifier
-                    .size(width = 100.dp, height = 40.dp)
-                    .background(color = Color.Blue)
-                    .padding(end = 10.dp)
-            ) {
-                Text(text = "Add friend")
-            }
+            Text(
+                text = "+",
+                fontSize = 24.sp,
+                modifier = Modifier.clickable {
+                    // Xử lý sự kiện khi biểu tượng được nhấn
+                }
+            )
         }
     }
 }
@@ -198,33 +194,34 @@ fun SearchScreenPP(navController: NavController) {
                     ),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-//                Column(
-//                    modifier = Modifier
-//                        .verticalScroll(rememberScrollState())
-//                        .weight(weight = 1f, fill = false)
-//                        .padding(start = 10.dp, top = 5.dp, bottom = 5.dp, end = 20.dp)
-//                        .background(color = Color.Transparent),
-//                    verticalArrangement = Arrangement.spacedBy(10.dp),
-//                    horizontalAlignment = Alignment.CenterHorizontally
-//                ) {
-//                    viewModel.searchResults.value?.forEach { result ->
-//                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-//                            Text(
-//                                text = "People",
-//                                fontFamily = poppinsFamily,
-//                                fontSize = 18.sp,
-//                                modifier = Modifier
-//                                    .padding(start = 20.dp)
-//                                    .align(Alignment.Start)
-//                            )
-//                            result.name?.let { SearchCard(R.drawable.user_solid, it, "Today ") }
-//                            Divider(
-//                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-//                                    .width((screenWidth / 4).dp)
-//                                    .align(Alignment.End)
-//                            )
-//                        }
-//                    }
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .weight(weight = 1f, fill = false)
+                        .padding(start = 10.dp, top = 5.dp, bottom = 5.dp, end = 20.dp)
+                        .background(color = Color.Transparent),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Text(
+                                text = "People",
+                                fontFamily = poppinsFamily,
+                                fontSize = 18.sp,
+                                modifier = Modifier
+                                    .padding(start = 20.dp)
+                                    .align(Alignment.Start)
+                            )
+                            viewModel.searchResults.value?.forEach { result ->
+                                result.name?.let { SearchCard(R.drawable.user_solid, it, "Today ") }
+                                Divider(
+                                    color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                        .width((screenWidth / 4).dp)
+                                        .align(Alignment.End)
+                                )
+                            }
+                        }
 //                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
 //                        Text(
 //                            text = "Group",
@@ -259,7 +256,7 @@ fun SearchScreenPP(navController: NavController) {
 //                                .align(Alignment.End)
 //                        )
 //                    }
-//                }
+                }
             }
         }
     }
