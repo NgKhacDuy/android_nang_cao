@@ -1,6 +1,7 @@
 package com.example.android_advance.ui.Home
 
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,6 +29,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -40,10 +44,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
+import com.example.android_advance.model.response.roomDto
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
-    val name: String,
+    val name: String? = "",
     val lastMessage: String,
     val lastActive: String,
     val messageCount: Int
@@ -53,6 +62,7 @@ data class User(
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
+    val roomState = viewModel.onNewRoom.observeAsState()
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -141,71 +151,23 @@ fun HomeScreen(navController: NavController) {
                     .fillMaxSize()
                     .background(Color.White, shape = RoundedCornerShape(30.dp))
             ) {
-                // Content of the box
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-
-                ) {
-                    val userList = listOf<User>(
-                        User(
-                            R.drawable.person_avt,
-                            "Alex Linderson",
-                            "How Are You ?m hahahah",
-                            "2 min",
-                            R.drawable.user
-                        ),
-                        User(
-                            R.drawable.person_avt,
-                            "Alex Linderson",
-                            "How Are You ?",
-                            "2 min",
-                            R.drawable.user
-                        ),
-                        User(
-                            R.drawable.person_avt,
-                            "Alex Linderson",
-                            "How Are You ?",
-                            "2 min",
-                            R.drawable.user
-                        ),
-                        User(
-                            R.drawable.person_avt,
-                            "Alex Linderson",
-                            "How Are You ?",
-                            "2 min",
-                            R.drawable.user
-                        ),
-                        User(
-                            R.drawable.person_avt,
-                            "Alex Linderson",
-                            "How Are You ?",
-                            "2 min",
-                            R.drawable.user
-                        ),
-                        User(
-                            R.drawable.person_avt,
-                            "Alex Linderson",
-                            "How Are You ?",
-                            "2 min",
-                            R.drawable.user
-                        ),
-                        User(
-                            R.drawable.person_avt,
-                            "Alex Linderson",
-                            "How Are You ?",
-                            "2 min",
-                            R.drawable.user
-                        ),
-
-                        )
-                    for (user in userList) {
-                        UserRow(user = user)
+                LazyColumn {
+                    roomState.value?.let { it ->
+                        items(it.size) {
+                            roomState.value!![it].lastMessage?.content?.let { it1 ->
+                                User(
+                                    R.drawable.person_avt,
+                                    roomState.value!![it].name,
+                                    it1,
+                                    timeAgo(roomState.value!![it].lastMessage?.createAt.toString()),
+                                    R.drawable.user
+                                )
+                            }?.let { it2 -> UserRow(it2) }
+                        }
                     }
                 }
             }
         }
-
     }
 }
 
@@ -251,7 +213,13 @@ fun UserRow(user: User) {
                 } else {
                     user.lastMessage
                 }
-                Text(text = user.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+
+                val nameRoom = if (user.name!!.length > 10) {
+                    "${user.name.take(13)}..."
+                } else {
+                    user.name
+                }
+                Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(text = displayMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
             }
 
@@ -284,11 +252,35 @@ fun UserRow(user: User) {
     }
 }
 
-//@OptIn(ExperimentalComposeUiApi::class)
-//@Preview
-//@Composable
-//fun HomeScreen(navController: NavHostController) {
-//    val navController = rememberNavController()
-//    HomeScreenContent()
-//}
-//
+fun timeAgo(dtStr: String, locale: Locale = Locale("vi", "VN")): String {
+    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    formatter.timeZone = TimeZone.getTimeZone("UTC")
+
+    val date = formatter.parse(dtStr)
+    val now = Date()
+
+    val delta = now.time - date.time
+
+    // Vietnamese unit translations (modify as needed)
+    val units = arrayOf(
+        Pair("năm", 31536000000L),
+        Pair("tháng", 2592000000L),
+        Pair("tuần", 604800000L),
+        Pair("ngày", 86400000L),
+        Pair("giờ", 3600000L),
+        Pair("phút", 60000L),
+        Pair("giây", 1000L)
+    )
+
+    // Find the most suitable unit
+    for (unit in units) {
+        val threshold = unit.second
+        if (delta >= threshold) {
+            val value = (delta / threshold).toInt()
+            val unitStr = unit.first + (if (value > 1) "" else "")
+            return "$value $unitStr trước" // Customize formatting for Vietnamese
+        }
+    }
+
+    return "vừa mới" // "vừa mới" for "just now" in Vietnamese
+}

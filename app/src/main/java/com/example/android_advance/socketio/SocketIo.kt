@@ -7,42 +7,35 @@ import com.example.android_advance.shared_preference.AppSharedPreference
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.socket.client.IO
 import io.socket.client.Socket
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.io.IOException
-import java.net.SocketException
+import java.net.ConnectException
 import javax.inject.Inject
 
 class SocketManager @Inject constructor(@ApplicationContext private val context: Context) {
 
-    private var socket: Socket? = null
-    private val url = "http://10.0.3.2:8000"
     val appSharedPreference = AppSharedPreference(context)
     val appInterceptor = appInterceptor(context)
+
+    private val url = "https://android-nang-cao-backend.onrender.com"
+    private val options = IO.Options().apply {
+        extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
+    }
+    private val socket: Socket = IO.socket(url, options)
 
     fun refreshToken() {
         appInterceptor.refreshTokenFunction()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun connect() {
         GlobalScope.launch(Dispatchers.IO) {
             try {
-                val options = IO.Options().apply {
-                    // Set the authorization header as a list
-                    extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
-                }
-                socket = IO.socket(url, options)
-                socket?.connect()
-                var tryCount = 3
-                for (i in 0 until tryCount) {
-                    if (!socket?.connected()!!) {
-                        refreshToken()
-                        socket?.connect()
-                    }
-                    tryCount++
-                }
-            } catch (e: Exception) {
+
+                socket.connect()
+            } catch (e: ConnectException) {
                 Log.e("error socket", e.message.toString())
                 e.printStackTrace()
             }
@@ -50,26 +43,25 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
     }
 
     fun disconnect() {
-        socket?.disconnect()
-        socket = null
+        socket.disconnect()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun emit(event: String, data: String) {
         GlobalScope.launch(Dispatchers.IO) {
-            socket?.emit(event, data)
+            socket.emit(event, data)
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun on(event: String, callback: (args: Array<Any>) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
-            try {
-                socket?.on(event) { args ->
-                    callback(args)
-                }
-            } catch (e: IOException) {
-                if (e is SocketException) {
-                    Log.d("DISCONNECT", e.message.toString())
-                }
+            if (event == "Error") {
+                refreshToken()
+                socket.connect()
+            }
+            socket.on(event) { args ->
+                callback(args)
             }
         }
     }
