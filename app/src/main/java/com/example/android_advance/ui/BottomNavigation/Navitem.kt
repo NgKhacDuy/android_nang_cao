@@ -12,7 +12,7 @@ data class Navitem(
     val route: String,
 )
 
-val listOfNavItems : List<Navitem> = listOf(
+val listOfNavItems: List<Navitem> = listOf(
     Navitem(
         label = "Message Screen",
         icon = Icons.Default.Message,
@@ -21,10 +21,11 @@ val listOfNavItems : List<Navitem> = listOf(
     Navitem(
         label = "Call Screen",
         icon = Icons.Default.Call,
-        route = Screens.CallScreen.name),
+        route = Screens.CallScreen.name
+    ),
     Navitem(
         label = "Setting Screen",
         icon = Icons.Default.Settings,
-        route = Screens.SettingSreen.name
+        route = Screens.SettingScreen.name
     )
 )

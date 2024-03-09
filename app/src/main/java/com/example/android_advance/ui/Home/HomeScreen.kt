@@ -49,6 +49,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import com.example.android_advance.ui.BottomNavigation.Screens
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
@@ -92,8 +93,7 @@ fun HomeScreen(navController: NavController) {
                 ) {
 
                     IconButton(onClick = {
-//                        navController.navigate(Route.SearchScreen.route)
-                        viewModel.getRoomForUser()
+                        navController.navigate(Screens.SearchScreen.name)
                     }) {
                         Icon(
                             Icons.Rounded.Search,

@@ -2,11 +2,13 @@ package com.example.android_advance.ui.call_history
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +23,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -44,10 +47,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
+import com.example.android_advance.ui.login.loginViewModel
+import com.example.android_advance.ui.search.SearchScreenModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SearchCard(avatar: Int, name: String, latestMessage: String) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
@@ -89,12 +94,20 @@ fun SearchCard(avatar: Int, name: String, latestMessage: String) {
                 }
             }
 
+            Text(
+                text = "+",
+                fontSize = 24.sp,
+                modifier = Modifier.clickable {
+                    // Xử lý sự kiện khi biểu tượng được nhấn
+                }
+            )
         }
     }
 }
 
 @Composable
 fun SearchScreenPP(navController: NavController) {
+    val viewModel = hiltViewModel<SearchScreenModel>()
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     var searchValue by remember { mutableStateOf("") }
@@ -151,7 +164,10 @@ fun SearchScreenPP(navController: NavController) {
                         focusedLabelColor = Color.Black
                     ),
                     value = searchValue,
-                    onValueChange = { searchValue = it },
+                    onValueChange = { newValue ->
+                        searchValue = newValue
+                        viewModel.performSearch(newValue)
+                    },
                     label = { Text("Search", fontFamily = poppinsFamily) },
                     singleLine = true
                 )
@@ -187,74 +203,59 @@ fun SearchScreenPP(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text(
-                            text = "People",
-                            fontFamily = poppinsFamily,
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .padding(start = 20.dp)
-                                .align(Alignment.Start)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Today")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Keep working")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Be yourself")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Tomorrow")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                    }
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text(
-                            text = "Group",
-                            fontFamily = poppinsFamily,
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .padding(start = 20.dp)
-                                .align(Alignment.Start)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
-                        Divider(
-                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                .width((screenWidth / 4).dp)
-                                .align(Alignment.End)
-                        )
-                    }
+
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Text(
+                                text = "People",
+                                fontFamily = poppinsFamily,
+                                fontSize = 18.sp,
+                                modifier = Modifier
+                                    .padding(start = 20.dp)
+                                    .align(Alignment.Start)
+                            )
+                            viewModel.searchResults.value?.forEach { result ->
+                                result.name?.let { SearchCard(R.drawable.user_solid, it, "Today ") }
+                                Divider(
+                                    color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+                                        .width((screenWidth / 4).dp)
+                                        .align(Alignment.End)
+                                )
+                            }
+                        }
+//                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+//                        Text(
+//                            text = "Group",
+//                            fontFamily = poppinsFamily,
+//                            fontSize = 18.sp,
+//                            modifier = Modifier
+//                                .padding(start = 20.dp)
+//                                .align(Alignment.Start)
+//                        )
+//                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+//                        Divider(
+//                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+//                                .width((screenWidth / 4).dp)
+//                                .align(Alignment.End)
+//                        )
+//                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+//                        Divider(
+//                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+//                                .width((screenWidth / 4).dp)
+//                                .align(Alignment.End)
+//                        )
+//                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+//                        Divider(
+//                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+//                                .width((screenWidth / 4).dp)
+//                                .align(Alignment.End)
+//                        )
+//                        SearchCard(R.drawable.user_solid, "name", "Today, 09:30 AM")
+//                        Divider(
+//                            color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
+//                                .width((screenWidth / 4).dp)
+//                                .align(Alignment.End)
+//                        )
+//                    }
                 }
             }
         }

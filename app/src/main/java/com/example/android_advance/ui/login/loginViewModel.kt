@@ -68,7 +68,7 @@ class loginViewModel @Inject constructor(
                     appSharedPreference.accessToken = response.body()?.data?.accessToken.toString()
                     appSharedPreference.refreshToken =
                         response.body()?.data?.refreshToken.toString()
-                    navController.navigate(route = Route.HomeNavigation.route)
+                    navController.navigate(route = Route.WelcomeScreen.route)
 
 
                 } else {
