@@ -8,7 +8,8 @@ class roomDto(
     @SerializedName("listUsers") var listUsers: ArrayList<String> = arrayListOf(),
     @SerializedName("messages") var messages: ArrayList<messageDto> = arrayListOf(),
     @SerializedName("isGroup") var isGroup: Boolean? = null,
-    @SerializedName("lastMessage") var lastMessage: messageDto? = messageDto()
+    @SerializedName("lastMessage") var lastMessage: messageDto? = messageDto(),
+    @SerializedName("partner") var partner: UserDto? = UserDto()
 ) {
 
 

@@ -157,7 +157,7 @@ fun HomeScreen(navController: NavController) {
                             roomState.value!![it].lastMessage?.content?.let { it1 ->
                                 User(
                                     R.drawable.person_avt,
-                                    roomState.value!![it].name,
+                                    roomState.value!![it].partner?.name,
                                     it1,
                                     timeAgo(roomState.value!![it].lastMessage?.createAt.toString()),
                                     R.drawable.user
@@ -214,8 +214,8 @@ fun UserRow(user: User) {
                     user.lastMessage
                 }
 
-                val nameRoom = if (user.name!!.length > 10) {
-                    "${user.name.take(13)}..."
+                val nameRoom = if (user.name!!.length > 15) {
+                    "${user.name.take(15)}..."
                 } else {
                     user.name
                 }
