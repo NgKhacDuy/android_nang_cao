@@ -10,5 +10,9 @@ class Constant {
         const val homeScreen = "home_screen"
         const val signupScreen = "signup_screen"
         const val searchScreen = "search_screen"
+        const val messageScreen = "message_screen"
+        const val callScreen = "call_screen"
+        const val settingScreen = "setting_screen"
+        const val roomScreen = "room_screen"
     }
 }

@@ -1,11 +1,7 @@
 package com.example.android_advance.ui.Home
 
 
-import android.util.Log
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,17 +15,14 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -42,21 +35,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.android_advance.R
-import com.example.android_advance.model.response.roomDto
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import com.example.android_advance.ui.BottomNavigation.Screens
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
     val name: String? = "",
     val lastMessage: String,
     val lastActive: String,
-    val messageCount: Int
+    val messageCount: Int,
+    val idRoom: String
 )
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -93,7 +89,7 @@ fun HomeScreen(navController: NavController) {
                 ) {
 
                     IconButton(onClick = {
-                        navController.navigate(Screens.SearchScreen.name)
+                        navController.navigate(ChildRoute.SearchScreen.route)
                     }) {
                         Icon(
                             Icons.Rounded.Search,
@@ -160,9 +156,10 @@ fun HomeScreen(navController: NavController) {
                                     roomState.value!![it].partner?.name,
                                     it1,
                                     timeAgo(roomState.value!![it].lastMessage?.createAt.toString()),
-                                    R.drawable.user
+                                    R.drawable.user,
+                                    roomState.value!![it].id!!
                                 )
-                            }?.let { it2 -> UserRow(it2) }
+                            }?.let { it2 -> UserRow(it2, navController, it2.idRoom) }
                         }
                     }
                 }
@@ -172,13 +169,16 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun UserRow(user: User) {
+fun UserRow(user: User, navController: NavController, idRoom: String) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .padding(start = 4.dp, end = 4.dp)
+            .clickable {
+                navController.navigate(ChildRoute.MessageScreen.withArgs(user.idRoom))
+            }
             .border(
                 border = BorderStroke(
                     width = 1.dp,

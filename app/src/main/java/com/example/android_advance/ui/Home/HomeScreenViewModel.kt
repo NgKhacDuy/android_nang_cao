@@ -42,9 +42,10 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         getRoomForUser()
     }
 
+
     fun getRoomForUser() {
         try {
-            val socketManager = SocketManager(context)
+            val socketManager = SocketManager.getInstance(context)
             socketManager.connect()
             socketManager.on("rooms") { args ->
                 args.let { d ->

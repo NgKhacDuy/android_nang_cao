@@ -25,6 +25,16 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
     }
     private val socket: Socket = IO.socket(url, options)
 
+    companion object {
+        @Volatile
+        private var instance: SocketManager? = null
+
+        fun getInstance(context: Context): SocketManager =
+            instance ?: synchronized(this) {
+                instance ?: SocketManager(context).also { instance = it }
+            }
+    }
+
     fun refreshToken() {
         appInterceptor.refreshTokenFunction()
     }

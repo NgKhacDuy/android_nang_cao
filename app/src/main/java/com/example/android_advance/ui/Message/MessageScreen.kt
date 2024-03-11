@@ -21,14 +21,7 @@ import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.AttachFile
-import androidx.compose.material.icons.rounded.Call
-import androidx.compose.material.icons.rounded.CameraAlt
-import androidx.compose.material.icons.rounded.CameraEnhance
-import androidx.compose.material.icons.rounded.Mic
-import androidx.compose.material.icons.rounded.VideoCall
-import androidx.compose.material.icons.rounded.Videocam
+import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -47,19 +40,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.android_advance.R
 
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
-fun MessageScreen() {
+fun MessageScreen(idRoom: String, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
 
-    ) {
+        ) {
         Column(
 
         ) {
@@ -76,24 +70,25 @@ fun MessageScreen() {
 
                     verticalAlignment = Alignment.CenterVertically,
 
-                ){
+                    ) {
                     IconButton(onClick = {
-//                navController.popBackStack()
+                        navController.popBackStack()
                     }) {
-                        Icon(Icons.Rounded.ArrowBack, contentDescription = null,modifier = Modifier.size(40.dp))
+                        Icon(Icons.Rounded.ArrowBack, contentDescription = null, modifier = Modifier.size(40.dp))
                     }
 
-                    Image(painter = painterResource(
-                        id = R.drawable.person_avt),
+                    Image(
+                        painter = painterResource(
+                            id = R.drawable.person_avt
+                        ),
                         contentDescription = null,
                         modifier = Modifier
                             .size(45.dp)
-                            .clip(CircleShape)
-
-                        ,
-                        contentScale = ContentScale.Crop)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
                     Column(
-                        modifier = Modifier.offset(x=25.dp)
+                        modifier = Modifier.offset(x = 25.dp)
 
 
                     ) {
@@ -117,17 +112,18 @@ fun MessageScreen() {
 
                 Row(
                     modifier = Modifier
-                        .offset(x=-(16.dp))
+                        .offset(x = -(16.dp))
                         .width(100.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
-                ){
+                ) {
                     IconButton(onClick = {
 //                navController.popBackStack()
                     }) {
                         Icon(
                             Icons.Rounded.Call,
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp))
+                            modifier = Modifier.size(40.dp)
+                        )
                     }
                     IconButton(onClick = {
 //                navController.popBackStack()
@@ -135,22 +131,15 @@ fun MessageScreen() {
                         Icon(
                             Icons.Rounded.Videocam,
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp))
+                            modifier = Modifier.size(40.dp)
+                        )
                     }
-
 
 
                 }
 
 
-
-
-
-
             }
-
-
-
 
 
             // Second Row with size 8/10
@@ -162,8 +151,8 @@ fun MessageScreen() {
 //                verticalAlignment = Alignment.CenterVertically,
 //                horizontalArrangement = Arrangement.Center
             ) {
-                Column (
-                ){
+                Column(
+                ) {
                     MessageRow(message = "hiiiii", isSentByMe = true)
                     MessageRow(message = "hello", isSentByMe = false)
                     MessageRow(message = "how are you ?", isSentByMe = false)
@@ -194,7 +183,7 @@ fun MessageScreen() {
                 IconButton(onClick = {
 //                navController.popBackStack()
                 }) {
-                    Icon(Icons.Rounded.AttachFile, contentDescription = null,modifier = Modifier.size(40.dp))
+                    Icon(Icons.Rounded.AttachFile, contentDescription = null, modifier = Modifier.size(40.dp))
                 }
 
                 OutlinedTextField(
@@ -208,12 +197,17 @@ fun MessageScreen() {
                 IconButton(onClick = {
 //                navController.popBackStack()
                 }) {
-                    Icon(Icons.Rounded.CameraAlt, contentDescription = null,modifier = Modifier.size(40.dp))
+                    Icon(Icons.Rounded.CameraAlt, contentDescription = null, modifier = Modifier.size(40.dp))
                 }
                 IconButton(onClick = {
 //                navController.popBackStack()
                 }) {
-                    Icon(Icons.Rounded.Mic, contentDescription = null,modifier = Modifier.size(40.dp))
+                    Icon(Icons.Rounded.Mic, contentDescription = null, modifier = Modifier.size(40.dp))
+                }
+                IconButton(onClick = {
+//                navController.popBackStack()
+                }) {
+                    Icon(Icons.Rounded.Send, contentDescription = null, modifier = Modifier.size(40.dp))
                 }
 
 
@@ -279,7 +273,6 @@ fun MessageRow(message: String, isSentByMe: Boolean) {
         }
     }
 }
-
 
 
 //@OptIn(ExperimentalComposeUiApi::class)
