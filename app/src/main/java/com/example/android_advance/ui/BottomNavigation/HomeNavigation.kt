@@ -1,6 +1,5 @@
 package com.example.android_advance.ui.BottomNavigation
 
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -21,7 +20,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.CallSreen
@@ -87,16 +85,23 @@ fun HomeNavigation() {
                 SearchScreenPP(navController = navController)
             }
             composable(
-                route = ChildRoute.MessageScreen.route + "/{idRoom}", arguments = listOf(
+                route = ChildRoute.MessageScreen.route + "/{idRoom}/{namePartner}", arguments = listOf(
                     navArgument("idRoom") {
                         type = NavType.StringType
                         nullable = false
-                    }
+                    },
+                    navArgument("namePartner") {
+                        type = NavType.StringType
+                        nullable = false
+                    },
                 )
             ) {
                 bottomBarVisible.value = false
 
-                it.arguments?.getString("idRoom")?.let { it1 -> MessageScreen(idRoom = it1, navController) }
+                it.arguments?.getString("idRoom")
+                    ?.let { it1 ->
+                        MessageScreen(idRoom = it1, navController, it.arguments?.getString("namePartner")!!)
+                    }
                 LaunchedEffect(Unit) {
                     navController.addOnDestinationChangedListener { _, destination, _ ->
                         if (destination.route != ChildRoute.MessageScreen.route) {

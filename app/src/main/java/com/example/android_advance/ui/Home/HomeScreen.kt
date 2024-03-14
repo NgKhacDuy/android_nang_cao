@@ -35,16 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.example.android_advance.R
-import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import com.example.android_advance.utils.common.ConvertDateTime
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
@@ -60,6 +54,7 @@ data class User(
 fun HomeScreen(navController: NavController) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     val roomState = viewModel.onNewRoom.observeAsState()
+    val convertDateTime: ConvertDateTime = ConvertDateTime()
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -155,11 +150,15 @@ fun HomeScreen(navController: NavController) {
                                     R.drawable.person_avt,
                                     roomState.value!![it].partner?.name,
                                     it1,
-                                    timeAgo(roomState.value!![it].lastMessage?.createAt.toString()),
+                                    convertDateTime.timeAgo(roomState.value!![it].lastMessage?.createAt.toString()),
                                     R.drawable.user,
                                     roomState.value!![it].id!!
                                 )
-                            }?.let { it2 -> UserRow(it2, navController, it2.idRoom) }
+                            }?.let { it2 -> roomState.value!![it].partner?.name?.let { it1 ->
+                                UserRow(it2, navController, it2.idRoom,
+                                    it1
+                                )
+                            } }
                         }
                     }
                 }
@@ -169,7 +168,7 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun UserRow(user: User, navController: NavController, idRoom: String) {
+fun UserRow(user: User, navController: NavController, idRoom: String, partnerName: String) {
 
     Row(
         modifier = Modifier
@@ -177,7 +176,7 @@ fun UserRow(user: User, navController: NavController, idRoom: String) {
             .padding(vertical = 8.dp)
             .padding(start = 4.dp, end = 4.dp)
             .clickable {
-                navController.navigate(ChildRoute.MessageScreen.withArgs(user.idRoom))
+                navController.navigate(ChildRoute.MessageScreen.withArgs(user.idRoom, partnerName))
             }
             .border(
                 border = BorderStroke(
@@ -252,35 +251,3 @@ fun UserRow(user: User, navController: NavController, idRoom: String) {
     }
 }
 
-fun timeAgo(dtStr: String, locale: Locale = Locale("vi", "VN")): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    formatter.timeZone = TimeZone.getTimeZone("UTC")
-
-    val date = formatter.parse(dtStr)
-    val now = Date()
-
-    val delta = now.time - date.time
-
-    // Vietnamese unit translations (modify as needed)
-    val units = arrayOf(
-        Pair("năm", 31536000000L),
-        Pair("tháng", 2592000000L),
-        Pair("tuần", 604800000L),
-        Pair("ngày", 86400000L),
-        Pair("giờ", 3600000L),
-        Pair("phút", 60000L),
-        Pair("giây", 1000L)
-    )
-
-    // Find the most suitable unit
-    for (unit in units) {
-        val threshold = unit.second
-        if (delta >= threshold) {
-            val value = (delta / threshold).toInt()
-            val unitStr = unit.first + (if (value > 1) "" else "")
-            return "$value $unitStr trước" // Customize formatting for Vietnamese
-        }
-    }
-
-    return "vừa mới" // "vừa mới" for "just now" in Vietnamese
-}

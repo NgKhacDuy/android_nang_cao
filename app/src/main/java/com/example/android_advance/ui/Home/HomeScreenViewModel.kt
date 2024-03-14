@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
+import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -33,12 +34,17 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
     private val appSharedPreference = AppSharedPreference(context)
 
     private val _onNewRoom = MutableLiveData<List<roomDto>>()
+
+    private lateinit var db: DatabaseHelper
+
     val onNewRoom: LiveData<List<roomDto>> get() = _onNewRoom
     var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
 
     init {
+        db = DatabaseHelper(context)
+        getUserInfo()
         getRoomForUser()
     }
 
@@ -74,7 +80,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                 response: Response<ApiResponse.BaseApiResponse<UserDto>>
             ) {
                 if (response.isSuccessful) {
-                    Log.e("USER INFO", response.body()?.data?.name.toString())
+                    response.body()?.data?.let { db.insertUser(it) }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
