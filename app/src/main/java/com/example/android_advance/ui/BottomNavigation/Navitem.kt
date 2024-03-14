@@ -16,16 +16,16 @@ val listOfNavItems: List<Navitem> = listOf(
     Navitem(
         label = "Message Screen",
         icon = Icons.Default.Message,
-        route = Screens.MessageScreen.name
+        route = ChildRoute.RoomScreen.route
     ),
     Navitem(
         label = "Call Screen",
         icon = Icons.Default.Call,
-        route = Screens.CallScreen.name
+        route = ChildRoute.CallScreen.route
     ),
     Navitem(
         label = "Setting Screen",
         icon = Icons.Default.Settings,
-        route = Screens.SettingScreen.name
+        route = ChildRoute.SettingScreen.route
     )
 )

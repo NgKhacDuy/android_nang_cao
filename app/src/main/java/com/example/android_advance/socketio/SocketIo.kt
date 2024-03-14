@@ -20,10 +20,22 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
     val appInterceptor = appInterceptor(context)
 
     private val url = "https://android-nang-cao-backend.onrender.com"
+//    private val url = "http://10.0.3.2:3000"
+
     private val options = IO.Options().apply {
         extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
     }
     private val socket: Socket = IO.socket(url, options)
+
+    companion object {
+        @Volatile
+        private var instance: SocketManager? = null
+
+        fun getInstance(context: Context): SocketManager =
+            instance ?: synchronized(this) {
+                instance ?: SocketManager(context).also { instance = it }
+            }
+    }
 
     fun refreshToken() {
         appInterceptor.refreshTokenFunction()
