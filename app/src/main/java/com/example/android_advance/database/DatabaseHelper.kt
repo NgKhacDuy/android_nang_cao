@@ -15,6 +15,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_ID = "id"
         private const val COLUMN_NAME = "name"
         private const val COLUMN_PHONENUMBER = "phoneNumber"
+        private const val COLUMN_FRIENDS = "friends"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {

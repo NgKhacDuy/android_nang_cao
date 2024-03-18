@@ -1,7 +1,6 @@
 package com.example.android_advance.model.response
 
 import com.google.gson.annotations.SerializedName
-import java.util.Objects
 
 class UserDto(
     @SerializedName("id") var id: String? = null,
@@ -10,7 +9,7 @@ class UserDto(
     @SerializedName("createAt") var createAt: String? = null,
     @SerializedName("updateAt") var updateAt: String? = null,
     @SerializedName("deletedAt") var deletedAt: String? = null,
-    @SerializedName("friends") var friends: ArrayList<Objects>? = arrayListOf()
+    @SerializedName("friends") var friends: ArrayList<FriendsDto>? = arrayListOf()
 ) {
 
 }
