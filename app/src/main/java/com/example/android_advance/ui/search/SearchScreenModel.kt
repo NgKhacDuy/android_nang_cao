@@ -11,6 +11,7 @@ import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.model.response.SearchResponse
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.shared_preference.AppSharedPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Call
@@ -23,11 +24,12 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
     ViewModel() {
     private val _searchResult = MutableLiveData<List<SearchResponse>?>()
     val search = mutableStateOf("")
-    val searchResults: MutableLiveData<List<SearchResponse>?> get() = _searchResult
+    val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
+    private val appSharedPreference = AppSharedPreference(context)
     fun performSearch(keyword: String) {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
-        val call = apiService?.Search(keyword)
+        val call = apiService?.Search("Bearer ${appSharedPreference.accessToken}", keyword)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<List<UserDto>>> {
             override fun onResponse(
                 call: Call<ApiResponse.BaseApiResponse<List<UserDto>>>,
@@ -35,17 +37,19 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
             ) {
                 if (response.isSuccessful) {
                     val searchResults = response.body()?.data?.map { userDto ->
-                        SearchResponse(
-                            id = userDto.id,
-                            name = userDto.name,
-                            phoneNumber = userDto.phoneNumber,
-                            createAt = userDto.createAt,
-                            updateAt = userDto.updateAt,
-                            deletedAt = userDto.deletedAt,
-                            friends = ArrayList()
-                        )
+                        userDto.friends?.let {
+                            SearchResponse(
+                                id = userDto.id,
+                                name = userDto.name,
+                                phoneNumber = userDto.phoneNumber,
+                                createAt = userDto.createAt,
+                                updateAt = userDto.updateAt,
+                                deletedAt = userDto.deletedAt,
+                                friends = it
+                            )
+                        }
                     }
-                    _searchResult.value = searchResults
+                    _searchResult.postValue(searchResults as List<SearchResponse>?)
                 }
                 Log.d("Search", response.body()?.data.toString())
             }

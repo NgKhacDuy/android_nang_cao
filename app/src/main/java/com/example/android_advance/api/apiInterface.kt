@@ -6,11 +6,7 @@ import com.example.android_advance.model.request.SignupRequest
 import com.example.android_advance.model.response.SigninResponse
 import com.example.android_advance.model.response.UserDto
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiInterface {
     @POST(apiConstant.userSignUpApi)
@@ -26,5 +22,8 @@ interface ApiInterface {
     fun profile(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<UserDto>>
 
     @GET(apiConstant.userSearch + "/{keyword}")
-    fun Search(@Path("keyword") keyword: String): Call<ApiResponse.BaseApiResponse<List<UserDto>>>
+    fun Search(
+        @Header("Authorization") authHeader: String,
+        @Path("keyword") keyword: String
+    ): Call<ApiResponse.BaseApiResponse<List<UserDto>>>
 }
