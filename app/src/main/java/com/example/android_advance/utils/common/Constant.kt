@@ -14,5 +14,6 @@ class Constant {
         const val callScreen = "call_screen"
         const val settingScreen = "setting_screen"
         const val roomScreen = "room_screen"
+        const val CreateGroupScreen = "create_group_screen"
     }
 }
