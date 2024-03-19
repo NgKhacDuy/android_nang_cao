@@ -11,19 +11,37 @@ import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.VideoCall
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LiveData
 import com.example.android_advance.R
+import androidx.lifecycle.asLiveData
+import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.Home.HomeScreenViewModel
+
 
 @Composable
 fun ProfileScreen(){
+    val viewModel = hiltViewModel<ProfileScreenViewModel>()
+    val userLiveData = viewModel.getFriendInfo()
+//    val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -40,11 +58,21 @@ fun ProfileScreen(){
             CustomImage(R.drawable.user , "User", size = 100.dp)
             Spacer(modifier = Modifier.width(16.dp))
             Column {
-                Text(
-                    text = "John Doe",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
-                )
+//                when (val user = userState.value) {
+//                    null -> {
+//                        // Show loading indicator or handle error
+//                    }
+//                    else -> {
+//                        user.name?.let {
+//                            Text(
+//                                text = it,
+//                                fontWeight = FontWeight.Bold,
+//                                fontSize = 24.sp
+//                            )
+//                        }
+//                    }
+//                }
+
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -56,11 +84,15 @@ fun ProfileScreen(){
                 }
             }
         }
-
-        // User Information
-        UserInfo(title = "Display Name", value = "John Doe")
-        UserInfo(title = "Email", value = "john.doe@example.com")
-        UserInfo(title = "Phone Number", value = "+123456789")
+//        when (val user = userState.value) {
+//            null -> {
+//                // Show loading indicator or handle error
+//            }
+//            else -> {
+//                user.name?.let { UserInfo(title = "Display Name", value = it) }
+//                user.phoneNumber?.let { UserInfo(title = "Phone Number", value = it) }
+//            }
+//        }
     }
 }
 
@@ -107,4 +139,11 @@ fun UserInfo(title: String, value: String) {
             fontSize = 14.sp
         )
     }
+}
+
+@Preview
+@Composable
+fun ProfileScreenPR()
+{
+    ProfileScreen()
 }

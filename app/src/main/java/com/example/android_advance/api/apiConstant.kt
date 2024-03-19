@@ -8,6 +8,7 @@ class apiConstant {
         const val userRefresh = "user/refresh"
         const val userInfo = "user/profile"
         const val userSearch = "user/search"
+        const val userFriend = "friend"
     }
 
 }
