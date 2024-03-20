@@ -3,7 +3,7 @@ package com.example.android_advance.api
 import com.example.android_advance.model.request.RefreshRequest
 import com.example.android_advance.model.request.SigninRequest
 import com.example.android_advance.model.request.SignupRequest
-import com.example.android_advance.model.response.FriendList
+import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.model.response.SigninResponse
 import com.example.android_advance.model.response.UserDto
 import retrofit2.Call
@@ -28,5 +28,5 @@ interface ApiInterface {
         @Path("keyword") keyword: String
     ): Call<ApiResponse.BaseApiResponse<List<UserDto>>>
     @GET(apiConstant.userFriend)
-    fun friend(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<List<FriendList>>>
+    fun friend(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<List<FriendResponse>>>
 }
