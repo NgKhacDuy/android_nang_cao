@@ -34,6 +34,10 @@ fun SettingScreen() {
     val viewModel = hiltViewModel<SettingScreenViewModel>()
     val userLiveData = viewModel.getUserInfo()
     val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
+    var demo = hiltViewModel<ProfileScreenViewModel>()
+    demo.getFriendInfo()
+//    val demo = hiltViewModel<ProfileScreenViewModel>()
+//    Log.e("gg", demo.getUserInfo().value?.size.toString())
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -90,6 +94,13 @@ fun SettingScreen() {
                     }
                 }
             }
+//            demo.getUserInfo().value?.get(0)?.user?.name?.let {
+//                Text(
+//                    text = it,
+//                    fontWeight = FontWeight.Bold,
+//                    fontSize = 18.sp
+//                )
+//            }
         }
 
         // Settings List
