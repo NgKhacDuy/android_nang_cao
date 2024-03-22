@@ -11,6 +11,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun AlertDialogComponent(
@@ -45,10 +46,10 @@ fun AlertDialogComponent(
             }
         },
         title = {
-            Text(text = dialogTitle)
+            Text(text = dialogTitle, textAlign = TextAlign.Center)
         },
         text = {
-            Text(text = dialogText)
+            Text(text = dialogText, textAlign = TextAlign.Center)
         },
         onDismissRequest = {
             onDismissRequest()

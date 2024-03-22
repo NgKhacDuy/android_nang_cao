@@ -1,19 +1,13 @@
 package com.example.android_advance.ui.call_history
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.IconButton
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.HourglassTop
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,11 +27,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
 import com.example.android_advance.model.response.FriendsDto
+import com.example.android_advance.ui.components.AlertDialogComponent
 import com.example.android_advance.ui.search.SearchScreenModel
 import kotlinx.coroutines.*
 
 @Composable
-fun SearchCard(avatar: Int, name: String, latestMessage: String, friend: ArrayList<FriendsDto>) {
+fun SearchCard(
+    avatar: Int,
+    name: String,
+    latestMessage: String,
+    friend: ArrayList<FriendsDto>,
+    idUser: String,
+    viewModel: SearchScreenModel
+) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     Card(
@@ -80,14 +82,22 @@ fun SearchCard(avatar: Int, name: String, latestMessage: String, friend: ArrayLi
 
             }) {
                 if (friend.isEmpty()) {
-                    Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(24.dp))
+                    Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(24.dp).clickable() {
+                        viewModel.addFriend(idUser, name)
+                    })
                 } else {
+                    val idSender = friend.first().idSender
                     if (friend.first().status == "Accepted") {
                         Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(24.dp))
-
-                    } else {
+                    } else if (viewModel.checkCurrentUser(idSender!!)) {
                         Icon(Icons.Filled.HourglassTop, contentDescription = null, modifier = Modifier.size(24.dp))
-
+                    } else {
+                        Icon(
+                            Icons.Default.PersonAdd,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp).clickable {
+                                viewModel.performRequestFriend(idUser)
+                            })
                     }
 
                 }
@@ -169,7 +179,7 @@ fun SearchScreenPP(navController: NavController) {
                         if (newValue.isNotEmpty() && newValue.isNotBlank()) {
                             debounceJob.value?.cancel()
                             debounceJob.value = CoroutineScope(Dispatchers.Main).launch {
-                                delay(2000L)
+                                delay(1000L)
                                 viewModel.performSearch(newValue)
                             }
                         }
@@ -207,7 +217,16 @@ fun SearchScreenPP(navController: NavController) {
                                 .align(Alignment.Start)
                         )
                         searchState.value?.forEach { result ->
-                            result.name?.let { SearchCard(R.drawable.user_solid, it, "Today ", result.friends) }
+                            result.name?.let {
+                                SearchCard(
+                                    R.drawable.user_solid,
+                                    it,
+                                    "Today ",
+                                    result.friends,
+                                    result.id!!,
+                                    viewModel
+                                )
+                            }
                             Divider(
                                 color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                     .width((screenWidth / 4).dp)
@@ -218,5 +237,15 @@ fun SearchScreenPP(navController: NavController) {
                 }
             }
         }
+    }
+    if (viewModel.isShowDialog.value) {
+        AlertDialogComponent(
+            onDismissRequest = viewModel.infoDialog.value.onDismissRequest,
+            onConfirmation = viewModel.infoDialog.value.onConfirmation,
+            dialogTitle = viewModel.infoDialog.value.dialogTitle,
+            dialogText = viewModel.infoDialog.value.dialogText,
+            positiveText = viewModel.infoDialog.value.positiveText,
+            negativeText = viewModel.infoDialog.value.negativeText
+        )
     }
 }
