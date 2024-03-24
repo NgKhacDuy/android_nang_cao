@@ -114,6 +114,7 @@ fun HomeScreen(navController: NavController) {
 //                            .offset(y = 40.dp)
                     )
 
+
                     // Second image
                     Box(
                         modifier = Modifier
