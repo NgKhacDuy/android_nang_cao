@@ -1,6 +1,7 @@
 package com.example.android_advance.ui.Home
 
 
+import android.content.Context
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,10 +36,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigator
+import androidx.navigation.compose.rememberNavController
 import com.example.android_advance.R
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
@@ -129,6 +138,81 @@ fun HomeScreen(navController: NavController) {
 
             // Spacer with a specific height to create a separation between the first and second box
             Spacer(modifier = Modifier.height(50.dp))
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 60.dp)
+                .padding(top = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray.copy(alpha = 0.4f))
+                ) {
+                    IconButton(
+                        onClick = { /* Handle account button click */ },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Icon(
+                            Icons.Filled.AccountCircle,
+                            contentDescription = "Account",
+                            tint = Color.White
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray.copy(alpha = 0.4f))
+                ) {
+                    IconButton(
+                        onClick = {
+                                  navController.navigate(ChildRoute.CreateGroup.route)
+                        },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Icon(
+                            Icons.Filled.Group,
+                            contentDescription = "Group",
+                            tint = Color.White
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray.copy(alpha = 0.4f))
+                ) {
+                    IconButton(
+                        onClick = { /* Handle call button click */ },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Icon(
+                            Icons.Filled.Call,
+                            contentDescription = "Call",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
         }
 
         Box(
