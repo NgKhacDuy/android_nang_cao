@@ -336,3 +336,4 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
     }
 }
 
+
