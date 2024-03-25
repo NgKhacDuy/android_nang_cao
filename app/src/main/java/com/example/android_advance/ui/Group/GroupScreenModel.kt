@@ -12,6 +12,7 @@ import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.api.ApiResponse.*
 import com.example.android_advance.model.request.RoomRequest
 import com.example.android_advance.model.response.FriendList
+import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -63,25 +64,24 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
         return liveData
     }
 
-    fun getFriendInfo(): MutableLiveData<List<FriendList?>?> {
+    fun getFriendInfo(): MutableLiveData<List<FriendResponse?>?> {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
-        val liveData = MutableLiveData<List<FriendList?>?>()
+        val liveData = MutableLiveData<List<FriendResponse?>?>()
         val call = apiService?.friend("Bearer ${appSharedPreference.accessToken}")
-        call?.enqueue(object : Callback<BaseApiResponse<List<FriendList>>> {
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<List<FriendResponse>>> {
             override fun onResponse(
-                call: Call<BaseApiResponse<List<FriendList>>>,
-                response: Response<BaseApiResponse<List<FriendList>>>
+                call: Call<ApiResponse.BaseApiResponse<List<FriendResponse>>>,
+                response: Response<ApiResponse.BaseApiResponse<List<FriendResponse>>>
             ) {
                 if (response.isSuccessful) {
                     val userDtoData = response.body()?.data?.map { userDto ->
-                        FriendList(
+                        FriendResponse(
                             user = userDto.user,
                             status = userDto.status
                         )
                     }
-                    if (userDtoData != null)
-                    {
+                    if (userDtoData != null) {
                         liveData.postValue(userDtoData)
                     }
                 } else {
@@ -89,7 +89,8 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
                     Log.e("FRIEND INFO", "error")
                 }
             }
-            override fun onFailure(call: Call<BaseApiResponse<List<FriendList>>>, t: Throwable) {
+
+            override fun onFailure(call: Call<ApiResponse.BaseApiResponse<List<FriendResponse>>>, t: Throwable) {
                 Log.e("FRIEND INFO ERROR", t.message.toString())
             }
         })

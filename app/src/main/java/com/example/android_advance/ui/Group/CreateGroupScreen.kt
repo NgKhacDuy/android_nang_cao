@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
 import com.example.android_advance.model.response.FriendList
+import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.call_history.SearchCard
@@ -41,7 +42,7 @@ fun CreateGroupScreen(navController: NavController) {
     val userLiveData = viewModel.getUserInfo()
     val friendLiveData = viewModel.getFriendInfo()
     val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
-    val friendState: State<List<FriendList?>?> = friendLiveData.observeAsState(initial = null)
+    val friendState: State<List<FriendResponse?>?> = friendLiveData.observeAsState(initial = null)
 
     LazyColumn(
         modifier = Modifier
