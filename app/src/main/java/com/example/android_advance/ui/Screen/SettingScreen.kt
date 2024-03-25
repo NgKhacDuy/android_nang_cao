@@ -7,6 +7,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Help
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -21,14 +28,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.android_advance.model.response.UserDto
 import androidx.navigation.NavController
+import com.example.android_advance.database.DatabaseHelper
+import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.ui.Home.HomeScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingScreen() {
-    val viewModel = hiltViewModel<SettingScreenViewModel>()
-    val userLiveData = viewModel.getUserInfo()
+fun SettingScreen(navController: NavController) {
+    val settingViewModel = hiltViewModel<SettingScreenViewModel>()
+    val homeScreenViewModel = hiltViewModel<HomeScreenViewModel>()
+    val userLiveData = settingViewModel.getUserInfo()
     val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
     Column(
         modifier = Modifier
@@ -76,6 +86,7 @@ fun SettingScreen() {
                 null -> {
                     // Show loading indicator or handle error
                 }
+
                 else -> {
                     user.name?.let {
                         Text(
@@ -113,7 +124,16 @@ fun SettingScreen() {
             icon = Icons.Default.Logout,
             title = "Log out",
             onClick = {
-
+                settingViewModel.deleteToken()
+                settingViewModel.deleteSqlite()
+                homeScreenViewModel.disconnectSocket()
+                    .also {
+                        navController.navigate(route = "auth") {
+                            popUpTo("home") {
+                                inclusive = true
+                            }
+                        }
+                    }
             }
         )
     }
