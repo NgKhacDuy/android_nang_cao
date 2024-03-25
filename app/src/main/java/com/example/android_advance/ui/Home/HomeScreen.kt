@@ -114,7 +114,6 @@ fun HomeScreen(navController: NavController) {
 //                            .offset(y = 40.dp)
                     )
 
-
                     // Second image
                     Box(
                         modifier = Modifier
@@ -139,6 +138,81 @@ fun HomeScreen(navController: NavController) {
 
             // Spacer with a specific height to create a separation between the first and second box
             Spacer(modifier = Modifier.height(50.dp))
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 60.dp)
+                .padding(top = 80.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray.copy(alpha = 0.4f))
+                ) {
+                    IconButton(
+                        onClick = { /* Handle account button click */ },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Icon(
+                            Icons.Filled.AccountCircle,
+                            contentDescription = "Account",
+                            tint = Color.White
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray.copy(alpha = 0.4f))
+                ) {
+                    IconButton(
+                        onClick = {
+                            navController.navigate(ChildRoute.CreateGroup.route)
+                        },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Icon(
+                            Icons.Filled.Group,
+                            contentDescription = "Group",
+                            tint = Color.White
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(Color.LightGray.copy(alpha = 0.4f))
+                ) {
+                    IconButton(
+                        onClick = { /* Handle call button click */ },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .align(Alignment.Center)
+                    ) {
+                        Icon(
+                            Icons.Filled.Call,
+                            contentDescription = "Call",
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
         }
 
         Box(
