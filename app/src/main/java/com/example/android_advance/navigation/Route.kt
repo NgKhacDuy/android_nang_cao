@@ -21,6 +21,8 @@ sealed class Route(val route: String) {
     object SettingScreen : Route(Constant.settingScreen)
     object VideoCall_1 : Route(Constant.videoCall_1)
     object VideoCall_2 : Route(Constant.videoCall_2)
+    object RoomScreen : Route(Constant.roomScreen)
+    object CallScreen : Route(Constant.callScreen)
 
     fun withArgs(vararg args: String): String {
         return buildString {

@@ -26,6 +26,8 @@ import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.call_history.SearchScreenPP
+import com.example.android_advance.ui.welcome.WelcomeScreen
+
 @Composable
 fun HomeNavigation() {
     val navController: NavHostController = rememberNavController()
@@ -79,8 +81,7 @@ fun HomeNavigation() {
                 CallSreen()
             }
             composable(route = ChildRoute.SettingScreen.route) {
-                SettingScreen()
-//                CreateGroupScreen(navController)
+                SettingScreen(navController)
             }
             composable(route = ChildRoute.SearchScreen.route) {
                 SearchScreenPP(navController = navController)

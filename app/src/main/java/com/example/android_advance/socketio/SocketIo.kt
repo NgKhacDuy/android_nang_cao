@@ -20,9 +20,7 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
     val appInterceptor = appInterceptor(context)
 
     private val url = "https://android-nang-cao-backend.onrender.com"
-
-    //    private val url = "http://192.168.100.2:3000"
-    private val options = IO.Options().apply {
+    private var options = IO.Options().apply {
         extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
     }
     private val socket: Socket = IO.socket(url, options)

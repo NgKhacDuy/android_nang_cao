@@ -2,13 +2,20 @@ package com.example.android_advance.ui.Screen
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
+import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.navigation.Route
 import com.example.android_advance.shared_preference.AppSharedPreference
+import com.example.android_advance.ui.Home.HomeScreenViewModel
+import com.example.android_advance.ui.login.LoginScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Call
@@ -19,6 +26,10 @@ import javax.inject.Inject
 @HiltViewModel()
 class SettingScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel(){
     private val appSharedPreference = AppSharedPreference(context)
+    private lateinit var db: DatabaseHelper
+    init {
+        db = DatabaseHelper(context)
+    }
     fun getUserInfo(): MutableLiveData<UserDto?> {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -46,5 +57,15 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
             }
         })
         return liveData
+    }
+
+    fun deleteToken()
+    {
+        appSharedPreference.refreshToken=""
+        appSharedPreference.accessToken=""
+    }
+
+    fun deleteSqlite(){
+        db.deleteUser()
     }
 }

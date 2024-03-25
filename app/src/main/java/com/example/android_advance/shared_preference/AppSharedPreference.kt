@@ -1,6 +1,8 @@
 package com.example.android_advance.shared_preference
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 
@@ -33,5 +35,4 @@ class AppSharedPreference(context: Context) {
             encryptedEditor.putString(keyRefreshToken, value)
             encryptedEditor.commit()
         }
-
 }
