@@ -9,6 +9,8 @@ sealed class ChildRoute(val route: String) {
     object SearchScreen : ChildRoute(Constant.searchScreen)
     object RoomScreen : ChildRoute(Constant.roomScreen)
 
+    object CreateGroup: ChildRoute(Constant.createGroupScreen)
+
     fun withArgs(vararg args: String): String {
         return buildString {
             append(route)

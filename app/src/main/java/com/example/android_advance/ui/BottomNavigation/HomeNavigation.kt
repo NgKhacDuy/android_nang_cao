@@ -20,12 +20,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.android_advance.ui.Group.CreateGroupScreen
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.call_history.SearchScreenPP
-
 @Composable
 fun HomeNavigation() {
     val navController: NavHostController = rememberNavController()
@@ -80,9 +80,13 @@ fun HomeNavigation() {
             }
             composable(route = ChildRoute.SettingScreen.route) {
                 SettingScreen()
+//                CreateGroupScreen(navController)
             }
             composable(route = ChildRoute.SearchScreen.route) {
                 SearchScreenPP(navController = navController)
+            }
+            composable(route = ChildRoute.CreateGroup.route) {
+                CreateGroupScreen(navController)
             }
             composable(
                 route = ChildRoute.MessageScreen.route + "/{idRoom}/{namePartner}", arguments = listOf(
