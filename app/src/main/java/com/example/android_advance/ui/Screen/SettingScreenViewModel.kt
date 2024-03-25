@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
+import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -25,6 +26,10 @@ import javax.inject.Inject
 @HiltViewModel()
 class SettingScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel(){
     private val appSharedPreference = AppSharedPreference(context)
+    private lateinit var db: DatabaseHelper
+    init {
+        db = DatabaseHelper(context)
+    }
     fun getUserInfo(): MutableLiveData<UserDto?> {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -56,12 +61,11 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
 
     fun deleteToken()
     {
-        val storage = context.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-        val edit = storage.edit()
-        edit.remove("accessToken")
-        edit.commit()
-        edit.remove("refreshToken")
-        edit.commit()
-        //Log.e("REFRESHTOKEN", storage.getString("refreshToken",null)!!)
+        appSharedPreference.refreshToken=""
+        appSharedPreference.accessToken=""
+    }
+
+    fun deleteSqlite(){
+        db.deleteUser()
     }
 }

@@ -35,14 +35,4 @@ class AppSharedPreference(context: Context) {
             encryptedEditor.putString(keyRefreshToken, value)
             encryptedEditor.commit()
         }
-
-    fun checkTokenStillExist(context: Context): Boolean {
-        val storage = context.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-        if(storage.getString("refreshToken",null)==null)
-        {
-            return false
-        }
-        //Log.e("REFRESHTOKEN", encryptedSharedPreferences.getString("refreshToken",null)!!)
-        return true
-    }
 }

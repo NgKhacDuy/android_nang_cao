@@ -1,6 +1,7 @@
 package com.example.android_advance.navigation
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -94,7 +95,8 @@ fun Navigation() {
                     LoginScreen(navController)
                 }
                 composable(route = Route.WelcomeScreen.route) {
-                    if (appSharedPreference.checkTokenStillExist(context)==false) {
+                    if (appSharedPreference.accessToken == "" && appSharedPreference.refreshToken == "") {
+                        Log.e("RefreshToken",appSharedPreference.refreshToken)
                         bottomBarVisible.value = false
                         WelcomeScreen(navController)
                     } else {

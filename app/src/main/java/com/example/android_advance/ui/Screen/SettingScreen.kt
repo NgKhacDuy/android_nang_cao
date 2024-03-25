@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.ui.Home.HomeScreenViewModel
 
@@ -115,6 +116,7 @@ fun SettingItem(icon: ImageVector, title: String,navController: NavController) {
             .clickable {
                 if (title == "Log Out") {
                     settingViewModel.deleteToken()
+                    settingViewModel.deleteSqlite()
                     homeScreenViewModel.disconnectSocket()
                         .also {
                             navController.navigate(route = "auth") {
