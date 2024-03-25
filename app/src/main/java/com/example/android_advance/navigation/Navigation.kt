@@ -85,6 +85,10 @@ fun Navigation() {
             startDestination = "auth",
             modifier = Modifier.padding(paddingValues)) {
             navigation(startDestination = Route.WelcomeScreen.route, route = "auth") {
+                composable(route = Route.SignUpScreen.route){
+                    bottomBarVisible.value = false
+                    SignUpScreen(navController)
+                }
                 composable(route = Route.LoginScreen.route) {
                     bottomBarVisible.value = false
                     LoginScreen(navController)
