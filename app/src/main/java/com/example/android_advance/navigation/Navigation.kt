@@ -34,6 +34,7 @@ import androidx.navigation.navArgument
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.HomeNavigation
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
+import com.example.android_advance.ui.Group.CreateGroupScreen
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.CallSreen
@@ -81,12 +82,14 @@ fun Navigation() {
                     }
                 }
             }
-        }) {paddingValues: PaddingValues ->
-        NavHost(navController = navController,
+        }) { paddingValues: PaddingValues ->
+        NavHost(
+            navController = navController,
             startDestination = "auth",
-            modifier = Modifier.padding(paddingValues)) {
+            modifier = Modifier.padding(paddingValues)
+        ) {
             navigation(startDestination = Route.WelcomeScreen.route, route = "auth") {
-                composable(route = Route.SignUpScreen.route){
+                composable(route = Route.SignUpScreen.route) {
                     bottomBarVisible.value = false
                     SignUpScreen(navController)
                 }
@@ -96,7 +99,7 @@ fun Navigation() {
                 }
                 composable(route = Route.WelcomeScreen.route) {
                     if (appSharedPreference.accessToken == "" && appSharedPreference.refreshToken == "") {
-                        Log.e("RefreshToken",appSharedPreference.refreshToken)
+                        Log.e("RefreshToken", appSharedPreference.refreshToken)
                         bottomBarVisible.value = false
                         WelcomeScreen(navController)
                     } else {
@@ -121,6 +124,9 @@ fun Navigation() {
                 }
                 composable(route = Route.SearchScreen.route) {
                     SearchScreenPP(navController = navController)
+                }
+                composable(route = Route.CreateGroupScreen.route) {
+                    CreateGroupScreen(navController = navController)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",

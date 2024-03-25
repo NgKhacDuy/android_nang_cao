@@ -36,8 +36,9 @@ import com.example.android_advance.ui.Home.HomeScreenViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(navController: NavController) {
-    val viewModel = hiltViewModel<SettingScreenViewModel>()
-    val userLiveData = viewModel.getUserInfo()
+    val settingViewModel = hiltViewModel<SettingScreenViewModel>()
+    val homeScreenViewModel = hiltViewModel<HomeScreenViewModel>()
+    val userLiveData = settingViewModel.getUserInfo()
     val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
     Column(
         modifier = Modifier
@@ -85,6 +86,7 @@ fun SettingScreen(navController: NavController) {
                 null -> {
                     // Show loading indicator or handle error
                 }
+
                 else -> {
                     user.name?.let {
                         Text(
@@ -122,14 +124,23 @@ fun SettingScreen(navController: NavController) {
             icon = Icons.Default.Logout,
             title = "Log out",
             onClick = {
-
+                settingViewModel.deleteToken()
+                settingViewModel.deleteSqlite()
+                homeScreenViewModel.disconnectSocket()
+                    .also {
+                        navController.navigate(route = "auth") {
+                            popUpTo("home") {
+                                inclusive = true
+                            }
+                        }
+                    }
             }
         )
     }
 }
 
 @Composable
-fun SettingItem(icon: ImageVector, title: String, onClick: () -> Unit,navController: NavController) {
+fun SettingItem(icon: ImageVector, title: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
