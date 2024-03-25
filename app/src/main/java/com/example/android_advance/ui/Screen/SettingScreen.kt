@@ -6,12 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Help
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -27,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android_advance.model.response.UserDto
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,20 +89,42 @@ fun SettingScreen() {
         }
 
         // Settings List
-        SettingItem(icon = Icons.Default.AccountCircle, title = "Account")
-        SettingItem(icon = Icons.Default.Chat, title = "Chat")
-        SettingItem(icon = Icons.Default.Notifications, title = "Notifications")
-        SettingItem(icon = Icons.Default.Help, title = "Help")
-        SettingItem(icon = Icons.Default.PersonAdd, title = "Invite Friend")
+        SettingItem(
+            icon = Icons.Default.AccountCircle,
+            title = "Account",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Chat,
+            title = "Chat",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Notifications,
+            title = "Notifications",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Help,
+            title = "Help",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Logout,
+            title = "Log out",
+            onClick = {
+
+            }
+        )
     }
 }
 
 @Composable
-fun SettingItem(icon: ImageVector, title: String) {
+fun SettingItem(icon: ImageVector, title: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { /* Handle item click */ }
+            .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
