@@ -20,10 +20,18 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
     val appInterceptor = appInterceptor(context)
 
     private val url = "https://android-nang-cao-backend.onrender.com"
-    private val options = IO.Options().apply {
+    private var options = IO.Options().apply {
         extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
     }
-    private val socket: Socket = IO.socket(url, options)
+    private var socket: Socket = IO.socket(url, options)
+
+    fun renewSocket()
+    {
+        options = IO.Options().apply {
+            extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
+        }
+        socket = IO.socket(url, options)
+    }
 
     companion object {
         @Volatile
