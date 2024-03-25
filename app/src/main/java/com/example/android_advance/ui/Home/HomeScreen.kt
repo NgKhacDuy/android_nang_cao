@@ -303,7 +303,7 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                     user.name
                 }
                 Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = displayMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+                Text(text = displayMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal, maxLines = 1)
             }
 
         }
