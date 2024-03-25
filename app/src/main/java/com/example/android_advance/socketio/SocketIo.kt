@@ -23,15 +23,7 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
     private var options = IO.Options().apply {
         extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
     }
-    private var socket: Socket = IO.socket(url, options)
-
-    fun renewSocket()
-    {
-        options = IO.Options().apply {
-            extraHeaders = mapOf("Authorization" to listOf(appSharedPreference.accessToken))
-        }
-        socket = IO.socket(url, options)
-    }
+    private val socket: Socket = IO.socket(url, options)
 
     companion object {
         @Volatile

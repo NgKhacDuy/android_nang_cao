@@ -107,11 +107,11 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
         infoDialog.value = InfoDialog(
             fun() {
                 isShowDialog.value = false
-                decideFriend(idUser, "Accept")
+                decideFriend(idUser, "Reject")
             },
             fun() {
                 isShowDialog.value = false
-                decideFriend(idUser, "Reject")
+                decideFriend(idUser, "Accept")
             },
             "Xác nhận",
             "Bạn muốn chấp nhận kết bạn hay từ chối kết bạn ?",
