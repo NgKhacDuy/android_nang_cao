@@ -1,8 +1,10 @@
 package com.example.android_advance.api
 
+import com.example.android_advance.model.request.FriendRequest
 import com.example.android_advance.model.request.RefreshRequest
 import com.example.android_advance.model.request.SigninRequest
 import com.example.android_advance.model.request.SignupRequest
+import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.model.response.SigninResponse
 import com.example.android_advance.model.response.UserDto
 import retrofit2.Call
@@ -26,4 +28,20 @@ interface ApiInterface {
         @Header("Authorization") authHeader: String,
         @Path("keyword") keyword: String
     ): Call<ApiResponse.BaseApiResponse<List<UserDto>>>
+
+    @GET(apiConstant.userFriend)
+    fun friend(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<List<FriendResponse>>>
+
+    @POST(apiConstant.userFriend)
+    fun addFriend(
+        @Header("Authorization") authHeader: String,
+        @Body() friendBody: FriendRequest
+    ): Call<ApiResponse.BaseApiResponse<Unit>>
+
+    @PATCH(apiConstant.userFriend + "/{id}")
+    fun performFriend(
+        @Header("Authorization") authHeader: String,
+        @Path("id") id: String,
+        @Query("status") status: String
+    ): Call<ApiResponse.BaseApiResponse<Unit>>
 }
