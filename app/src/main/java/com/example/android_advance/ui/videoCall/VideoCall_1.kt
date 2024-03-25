@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -151,6 +152,4 @@ fun VideoCall(name: String, modifier: Modifier = Modifier) {
     ) {
         Icon(painter = painterResource(id = com.example.android_advance.R.drawable.icons8_hang_up_96), contentDescription = "null")
     }
-
-
 }

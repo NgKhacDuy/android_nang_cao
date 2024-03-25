@@ -85,6 +85,9 @@ fun HomeNavigation() {
             composable(route = ChildRoute.SearchScreen.route) {
                 SearchScreenPP(navController = navController)
             }
+            composable(route = ChildRoute.CreateGroup.route) {
+                CreateGroupScreen(navController)
+            }
             composable(
                 route = ChildRoute.MessageScreen.route + "/{idRoom}/{namePartner}", arguments = listOf(
                     navArgument("idRoom") {

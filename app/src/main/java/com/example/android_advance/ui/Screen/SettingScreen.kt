@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Help
@@ -97,36 +98,42 @@ fun SettingScreen(navController: NavController) {
         }
 
         // Settings List
-        SettingItem(icon = Icons.Default.AccountCircle, title = "Account",navController)
-        SettingItem(icon = Icons.Default.Chat, title = "Chat",navController)
-        SettingItem(icon = Icons.Default.Notifications, title = "Notifications",navController)
-        SettingItem(icon = Icons.Default.Help, title = "Help",navController)
-        SettingItem(icon = Icons.Default.PersonAdd, title = "Invite Friend",navController)
-        SettingItem(icon = Icons.Default.Logout, title = "Log Out",navController)
+        SettingItem(
+            icon = Icons.Default.AccountCircle,
+            title = "Account",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Chat,
+            title = "Chat",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Notifications,
+            title = "Notifications",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Help,
+            title = "Help",
+            onClick = {}
+        )
+        SettingItem(
+            icon = Icons.Default.Logout,
+            title = "Log out",
+            onClick = {
+
+            }
+        )
     }
 }
 
 @Composable
-fun SettingItem(icon: ImageVector, title: String,navController: NavController) {
-    val settingViewModel = hiltViewModel<SettingScreenViewModel>()
-    val homeScreenViewModel = hiltViewModel<HomeScreenViewModel>()
+fun SettingItem(icon: ImageVector, title: String, onClick: () -> Unit,navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                if (title == "Log Out") {
-                    settingViewModel.deleteToken()
-                    settingViewModel.deleteSqlite()
-                    homeScreenViewModel.disconnectSocket()
-                        .also {
-                            navController.navigate(route = "auth") {
-                                popUpTo("home") {
-                                    inclusive = true
-                                }
-                            }
-                        }
-                }
-            }
+            .clickable { onClick() }
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
