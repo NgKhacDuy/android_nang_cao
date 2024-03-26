@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
@@ -20,6 +21,7 @@ import com.example.android_advance.ui.Home.HomeScreenViewModel
 import com.example.android_advance.ui.login.LoginScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,13 +31,18 @@ import javax.inject.Inject
 class SettingScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel(){
     private val appSharedPreference = AppSharedPreference(context)
     private lateinit var db: DatabaseHelper
+    private val _onNewUserInfo = MutableLiveData<UserDto?>()
+    val onNewUserInfo: LiveData<UserDto?> get() = _onNewUserInfo
+    private val _onIsSignOutSuccess = MutableLiveData<Boolean>()
+    val onIsSignOutSuccess: LiveData<Boolean> get() = _onIsSignOutSuccess
     init {
         db = DatabaseHelper(context)
+        getUserInfo()
     }
-    fun getUserInfo(): MutableLiveData<UserDto?> {
+
+    fun getUserInfo() {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
-        val liveData = MutableLiveData<UserDto?>()
         val call = apiService?.profile("Bearer ${appSharedPreference.accessToken}")
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<UserDto>> {
             override fun onResponse(
@@ -46,10 +53,10 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
                     Log.e("USER INFO", response.body().toString())
                     val userDtoData = response.body()?.data
                     if (userDtoData != null) {
-                        liveData.postValue(userDtoData)
+                        _onNewUserInfo.postValue(userDtoData)
                     }
                 } else {
-                    liveData.postValue(null)
+                    _onNewUserInfo.postValue(null)
                     Log.e("USER INFO", "error")
                 }
             }
@@ -58,7 +65,6 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
                 Log.e("USER INFO ERROR", t.message.toString())
             }
         })
-        return liveData
     }
 
     fun deleteToken()
@@ -71,24 +77,32 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
         db.deleteUser()
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun signOut(): Boolean {
+        var isSignOutSuccess = true
+        GlobalScope.launch(Dispatchers.IO) {
+            launch {
+                isSignOutSuccess = signOutAsync()
+            }
+        }
+        return isSignOutSuccess
+    }
+
+    suspend fun signOutAsync(): Boolean {
         var isSignOutSuccess = false
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
-        val call = apiService?.signOut("Bearer ${appSharedPreference.accessToken}")
-        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
-            override fun onResponse(
-                p0: Call<ApiResponse.BaseApiResponse<Unit>>,
-                p1: Response<ApiResponse.BaseApiResponse<Unit>>
-            ) {
-                isSignOutSuccess = p1.isSuccessful
+        try {
+            val response = apiService?.signOut("Bearer ${appSharedPreference.accessToken}")?.execute()
+            if (response?.isSuccessful == true) {
+                Log.e("SIGN OUT", response.body().toString())
+                isSignOutSuccess = true
+            } else {
+                Log.e("SIGN OUT", "error")
             }
-
-            override fun onFailure(p0: Call<ApiResponse.BaseApiResponse<Unit>>, p1: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
+        } catch (e: Exception) {
+            Log.e("SIGN OUT ERROR", e.message.toString())
+        }
         return isSignOutSuccess
     }
 }

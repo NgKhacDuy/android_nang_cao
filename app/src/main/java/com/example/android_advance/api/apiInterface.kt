@@ -38,7 +38,7 @@ interface ApiInterface {
         @Body() friendBody: FriendRequest
     ): Call<ApiResponse.BaseApiResponse<Unit>>
 
-    @POST(apiConstant.userSignOut)
+    @GET(apiConstant.userSignOut)
     fun signOut(
         @Header("Authorization") authHeader: String,
     ): Call<ApiResponse.BaseApiResponse<Unit>>

@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,14 +33,15 @@ import androidx.navigation.NavController
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.ui.Home.HomeScreenViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingScreen(navController: NavController) {
     val settingViewModel = hiltViewModel<SettingScreenViewModel>()
     val homeScreenViewModel = hiltViewModel<HomeScreenViewModel>()
-    val userLiveData = settingViewModel.getUserInfo()
-    val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
+    val userState = settingViewModel.onNewUserInfo.observeAsState()
+    val coroutineScope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -124,18 +126,25 @@ fun SettingScreen(navController: NavController) {
             icon = Icons.Default.Logout,
             title = "Log out",
             onClick = {
-                if (settingViewModel.signOut()) {
-                    settingViewModel.deleteToken()
-                    settingViewModel.deleteSqlite()
-                    homeScreenViewModel.disconnectSocket()
-                        .also {
-                            navController.navigate(route = "auth") {
-                                popUpTo("home") {
-                                    inclusive = true
+                coroutineScope.launch {
+                    launch {
+                        val isSignOut = settingViewModel.signOut()
+                        Log.e("isSignOut", isSignOut.toString())
+                        if (isSignOut) {
+                            settingViewModel.deleteToken()
+                            settingViewModel.deleteSqlite()
+                            homeScreenViewModel.disconnectSocket()
+                                .also {
+                                    navController.navigate(route = "auth") {
+                                        popUpTo("home") {
+                                            inclusive = true
+                                        }
+                                    }
                                 }
-                            }
                         }
+                    }
                 }
+
             }
         )
     }
