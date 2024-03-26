@@ -195,7 +195,5 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
         val roomId: String,
         val participantIds: List<String>
     )
-
-
 }
 

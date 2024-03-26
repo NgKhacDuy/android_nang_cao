@@ -274,7 +274,6 @@ fun UserListItem(text: String, userId: String, viewModel: GroupScreenModel) {
         }
     }
 }
-
 //@Composable
 //fun GroupTypeButton(icon: ImageVector, text: String, selected: Boolean) {
 //    Box(
