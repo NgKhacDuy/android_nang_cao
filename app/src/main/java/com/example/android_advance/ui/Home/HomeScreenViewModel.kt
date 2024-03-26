@@ -37,6 +37,8 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
     private lateinit var db: DatabaseHelper
 
+    private var socketManager = SocketManager.getInstance(context)
+
     val onNewRoom: LiveData<List<roomDto>> get() = _onNewRoom
     var gson: Gson = GsonBuilder()
         .setLenient()
@@ -51,7 +53,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
     fun getRoomForUser() {
         try {
-            val socketManager = SocketManager.getInstance(context)
+            socketManager.renewSocket()
             socketManager.connect()
             socketManager.on("rooms") { args ->
                 args.let { d ->
@@ -60,6 +62,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                         if (data.toString().isNotEmpty()) {
                             val listType = object : TypeToken<List<roomDto>>() {}.type
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
+                            Log.e("ROOMS",temp.toString())
                             _onNewRoom.postValue(temp)
                         }
                     }
@@ -94,5 +97,9 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
             }
 
         })
+    }
+
+    fun disconnectSocket() {
+        socketManager.disconnect()
     }
 }

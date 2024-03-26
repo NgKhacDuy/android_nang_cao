@@ -46,6 +46,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.compose.rememberNavController
 import com.example.android_advance.R
+import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
 
@@ -93,7 +94,7 @@ fun HomeScreen(navController: NavController) {
                 ) {
 
                     IconButton(onClick = {
-                        navController.navigate(ChildRoute.SearchScreen.route)
+                        navController.navigate(Route.SearchScreen.route)
                     }) {
                         Icon(
                             Icons.Rounded.Search,
@@ -179,7 +180,7 @@ fun HomeScreen(navController: NavController) {
                 ) {
                     IconButton(
                         onClick = {
-                            navController.navigate(ChildRoute.CreateGroup.route)
+                            navController.navigate(Route.CreateGroupScreen.route)
                         },
                         modifier = Modifier
                             .size(36.dp)
@@ -238,11 +239,14 @@ fun HomeScreen(navController: NavController) {
                                     R.drawable.user,
                                     roomState.value!![it].id!!
                                 )
-                            }?.let { it2 -> roomState.value!![it].partner?.name?.let { it1 ->
-                                UserRow(it2, navController, it2.idRoom,
-                                    it1
-                                )
-                            } }
+                            }?.let { it2 ->
+                                roomState.value!![it].partner?.name?.let { it1 ->
+                                    UserRow(
+                                        it2, navController, it2.idRoom,
+                                        it1
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -303,7 +307,7 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                     user.name
                 }
                 Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = displayMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
+                Text(text = displayMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal, maxLines = 1)
             }
 
         }

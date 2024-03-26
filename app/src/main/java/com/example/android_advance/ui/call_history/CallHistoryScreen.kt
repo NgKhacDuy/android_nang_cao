@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.android_advance.R
 
 
@@ -167,7 +168,7 @@ fun NavBarCard(name: String, image: Int) {
 }
 
 @Composable
-fun CallHistoryScreenPP() {
+fun CallHistoryScreenPP(navController: NavController) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     //var searchValue by remember { mutableStateOf("") }
@@ -399,8 +400,8 @@ fun CallHistoryScreenPP() {
     }
 }
 
-@Preview
-@Composable
-fun CallHistoryPreview() {
-    CallHistoryScreenPP()
-}
+//@Preview
+//@Composable
+//fun CallHistoryPreview() {
+//    CallHistoryScreenPP()
+//}

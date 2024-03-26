@@ -51,13 +51,30 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun insertUser(userDto: UserDto) {
         val db = writableDatabase
-        val values = ContentValues().apply {
-            put(COLUMN_ID, userDto.id)
-            put(COLUMN_NAME, userDto.name)
-            put(COLUMN_PHONENUMBER, userDto.phoneNumber)
+
+        // Check if user already exists
+        val selection = "$COLUMN_ID = ?"
+        val selectionArgs = arrayOf(userDto.id)
+        val cursor = db.query(TABLE_USER, null, selection, selectionArgs, null, null, null)
+
+        if (cursor.count == 0) {
+            // User doesn't exist, insert it
+            val values = ContentValues().apply {
+                put(COLUMN_ID, userDto.id)
+                put(COLUMN_NAME, userDto.name)
+                put(COLUMN_PHONENUMBER, userDto.phoneNumber)
+            }
+            db.insert(TABLE_USER, null, values)
         }
-        db.insert(TABLE_USER, null, values)
+
+        cursor.close()
         db.close()
     }
 
+    fun deleteUser()
+    {
+        val db = writableDatabase
+        db.delete(TABLE_USER, null, null)
+        db.close()
+    }
 }
