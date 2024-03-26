@@ -38,6 +38,11 @@ interface ApiInterface {
         @Body() friendBody: FriendRequest
     ): Call<ApiResponse.BaseApiResponse<Unit>>
 
+    @POST(apiConstant.userSignOut)
+    fun signOut(
+        @Header("Authorization") authHeader: String,
+    ): Call<ApiResponse.BaseApiResponse<Unit>>
+
     @PATCH(apiConstant.userFriend + "/{id}")
     fun performFriend(
         @Header("Authorization") authHeader: String,

@@ -124,16 +124,18 @@ fun SettingScreen(navController: NavController) {
             icon = Icons.Default.Logout,
             title = "Log out",
             onClick = {
-                settingViewModel.deleteToken()
-                settingViewModel.deleteSqlite()
-                homeScreenViewModel.disconnectSocket()
-                    .also {
-                        navController.navigate(route = "auth") {
-                            popUpTo("home") {
-                                inclusive = true
+                if (settingViewModel.signOut()) {
+                    settingViewModel.deleteToken()
+                    settingViewModel.deleteSqlite()
+                    homeScreenViewModel.disconnectSocket()
+                        .also {
+                            navController.navigate(route = "auth") {
+                                popUpTo("home") {
+                                    inclusive = true
+                                }
                             }
                         }
-                    }
+                }
             }
         )
     }

@@ -25,6 +25,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
+import com.onesignal.OneSignal
 
 @HiltViewModel()
 class loginViewModel @Inject constructor(
@@ -54,8 +55,10 @@ class loginViewModel @Inject constructor(
 
     fun signIn(phoneNumber: String, password: String, navController: NavController) {
         isLoading.value = true
+        val oneSignalUserID: String? = OneSignal.User.pushSubscription.id
+        Log.e("AppID", oneSignalUserID.toString())
         val apiClient: APIClient = APIClient(context)
-        val signInRequest = SigninRequest(phoneNumber, password)
+        val signInRequest = SigninRequest(phoneNumber, password, oneSignalUserID)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
         val call = apiService?.signIn(signInRequest)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<SigninResponse>> {
