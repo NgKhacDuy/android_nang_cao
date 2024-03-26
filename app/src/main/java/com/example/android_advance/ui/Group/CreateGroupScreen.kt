@@ -34,6 +34,7 @@ import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.call_history.SearchCard
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +44,8 @@ fun CreateGroupScreen(navController: NavController) {
     val friendLiveData = viewModel.getFriendInfo()
     val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
     val friendState: State<List<FriendResponse?>?> = friendLiveData.observeAsState(initial = null)
+    val SearchState = viewModel.searchResults.observeAsState()
+    val debounceJob = remember { mutableStateOf<Job?>(null) }
 
     LazyColumn(
         modifier = Modifier
@@ -60,33 +63,34 @@ fun CreateGroupScreen(navController: NavController) {
         }
 
         // Title
-        item {
-            Text(
-                text = "Create Group",
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                color = Color.Black,
-                textAlign = TextAlign.Center, // Căn giữa văn bản
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-            )
-        }
+//        item {
+//            Text(
+//                text = "Create Group",
+//                fontWeight = FontWeight.Bold,
+//                fontSize = 24.sp,
+//                color = Color.Black,
+//                textAlign = TextAlign.Center, // Căn giữa văn bản
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(vertical = 16.dp)
+//            )
+//        }
 
         // Group Description
         item {
-            Text(
-                text = "Group name",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+//            Text(
+//                text = "Group name",
+//                fontSize = 18.sp,
+//                fontWeight = FontWeight.Bold,
+//                color = Color.Black,
+//                modifier = Modifier.padding(bottom = 8.dp)
+//            )
             var inputValue by remember { mutableStateOf("") }
 
             OutlinedTextField(
                 value = inputValue,
                 onValueChange = { inputValue = it},
+                label = { Text("Enter Group name") },
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -106,19 +110,21 @@ fun CreateGroupScreen(navController: NavController) {
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 15.dp ,top = 16.dp, bottom = 8.dp)
             )
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(start = 7.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 // Admin Image
                 Image(
-                    painter = painterResource(id = R.drawable.user), // Replace with actual image
+                    painter = painterResource(id = R.drawable.user),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(45.dp)
                         .clip(CircleShape)
+                        .background(Color.White)
+                        .padding(8.dp)
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -143,11 +149,38 @@ fun CreateGroupScreen(navController: NavController) {
         // Invited Members
         item {
             Text(
-                text = "Invited Members",
+                text = "Invite Members",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(top = 20.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 15.dp ,top = 20.dp, bottom = 8.dp)
+            )
+
+            var searchValue by remember { mutableStateOf("") }
+
+            OutlinedTextField(
+                value = searchValue,
+                onValueChange = { newValue ->
+                    searchValue = newValue
+                    if (newValue.isNotEmpty() && newValue.isNotBlank()) {
+                        debounceJob.value?.cancel()
+                        debounceJob.value = CoroutineScope(Dispatchers.Main).launch {
+                            delay(1000L)
+                            viewModel.performSearch(newValue)
+                        }
+                    }
+                },
+                label = { Text("Search") },
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.Blue, // Adjust as needed
+                    unfocusedBorderColor = Color.Gray // Adjust as needed
+                )
+
             )
 
             friendState.value?.forEach { result ->
@@ -161,6 +194,12 @@ fun CreateGroupScreen(navController: NavController) {
                     }
                 }
             }
+
+            SearchState.value?.forEach({ result ->
+                result.name?.let {
+                    result.id?.let { it1 -> UserListItem(it, it1, viewModel) }
+                }
+            })
         }
 
         // Create Group Button
@@ -183,7 +222,7 @@ fun UserListItem(text: String, userId: String, viewModel: GroupScreenModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 16.dp),
+            .padding(start = 7.dp ,bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Invited Members List
