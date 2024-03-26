@@ -2,6 +2,7 @@ package com.example.android_advance.ui.Group
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,10 +12,7 @@ import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.api.ApiResponse.*
 import com.example.android_advance.model.request.RoomRequest
-import com.example.android_advance.model.response.FriendList
-import com.example.android_advance.model.response.FriendResponse
-import com.example.android_advance.model.response.UserDto
-import com.example.android_advance.model.response.roomDto
+import com.example.android_advance.model.response.*
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.socketio.SocketManager
 import com.google.gson.Gson
@@ -35,6 +33,9 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
         .setLenient()
         .create()
     val socketManager = SocketManager.getInstance(context)
+    private val _searchResult = MutableLiveData<List<SearchResponse>?>()
+    val search = mutableStateOf("")
+    val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
     fun getUserInfo(): MutableLiveData<UserDto?> {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -149,6 +150,44 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
                 Log.e("SocketCallback", "No data received in callback")
             }
         }
+    }
+
+    fun performSearch(keyword: String) {
+        val apiClient: APIClient = APIClient(context)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
+        val call = apiService?.Search("Bearer ${appSharedPreference.accessToken}", keyword)
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<List<UserDto>>> {
+            override fun onResponse(
+                call: Call<ApiResponse.BaseApiResponse<List<UserDto>>>,
+                response: Response<ApiResponse.BaseApiResponse<List<UserDto>>>
+            ) {
+                if (response.isSuccessful) {
+                    val searchResults = response.body()?.data?.map { userDto ->
+                        userDto.friends?.let {
+                            SearchResponse(
+                                id = userDto.id,
+                                name = userDto.name,
+                                phoneNumber = userDto.phoneNumber,
+                                createAt = userDto.createAt,
+                                updateAt = userDto.updateAt,
+                                deletedAt = userDto.deletedAt,
+                                friends = it
+                            )
+                        }
+                    }
+                    _searchResult.postValue(searchResults as List<SearchResponse>?)
+                }
+                Log.d("Search", response.body()?.data.toString())
+            }
+
+            override fun onFailure(
+                call: Call<ApiResponse.BaseApiResponse<List<UserDto>>>,
+                t: Throwable
+            ) {
+                Log.d("SearchError", t.message.toString())
+            }
+
+        })
     }
 
 
