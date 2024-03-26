@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 class SigninRequest(
     @SerializedName("phoneNumber") var phoneNumber: String?,
-    @SerializedName("password") var password: String?
+    @SerializedName("password") var password: String?,
+    @SerializedName("appId") var appId: String?
 ) {
 
 }

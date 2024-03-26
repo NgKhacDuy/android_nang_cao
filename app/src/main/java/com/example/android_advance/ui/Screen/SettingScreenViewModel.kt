@@ -11,6 +11,8 @@ import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
+import com.example.android_advance.model.request.SigninRequest
+import com.example.android_advance.model.response.SigninResponse
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -67,5 +69,26 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
 
     fun deleteSqlite(){
         db.deleteUser()
+    }
+
+    fun signOut(): Boolean {
+        var isSignOutSuccess = false
+        val apiClient: APIClient = APIClient(context)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
+        val call = apiService?.signOut("Bearer ${appSharedPreference.accessToken}")
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
+            override fun onResponse(
+                p0: Call<ApiResponse.BaseApiResponse<Unit>>,
+                p1: Response<ApiResponse.BaseApiResponse<Unit>>
+            ) {
+                isSignOutSuccess = p1.isSuccessful
+            }
+
+            override fun onFailure(p0: Call<ApiResponse.BaseApiResponse<Unit>>, p1: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+        return isSignOutSuccess
     }
 }

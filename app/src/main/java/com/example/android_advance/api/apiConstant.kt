@@ -11,6 +11,7 @@ class apiConstant {
         const val userInfo = "user/profile"
         const val userSearch = "user/search"
         const val userFriend = "friend"
+        const val userSignOut = "user/signout"
     }
 
 }
