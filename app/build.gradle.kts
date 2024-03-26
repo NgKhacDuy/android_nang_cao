@@ -132,6 +132,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 // webrtc
     implementation("com.mesibo.api:webrtc:1.0.5")
+//
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
 }
 
 kapt {
