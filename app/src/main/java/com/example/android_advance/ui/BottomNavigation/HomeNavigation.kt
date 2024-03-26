@@ -25,6 +25,7 @@ import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
+import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
 @Composable
 fun HomeNavigation() {
@@ -76,7 +77,7 @@ fun HomeNavigation() {
                 HomeScreen(navController)
             }
             composable(route = ChildRoute.CallScreen.route) {
-                CallSreen()
+                CallHistoryScreenPP()
             }
             composable(route = ChildRoute.SettingScreen.route) {
                 SettingScreen()

@@ -393,17 +393,6 @@ fun CallHistoryScreenPP() {
                             R.drawable.phone_arrow_down_left
                         )
                     }
-                    Box(modifier = Modifier.fillMaxWidth())
-                    {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            NavBarCard("Messages", R.drawable.message_icon)
-                            NavBarCard("Calls", R.drawable.phone_call_icon)
-                            NavBarCard("Setting", R.drawable.gear_icon)
-                        }
-                    }
                 }
             }
         }
