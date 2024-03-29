@@ -24,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class GroupScreenModel  @Inject constructor(@ApplicationContext private val context: Context) : ViewModel(){
@@ -115,11 +116,12 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
     fun getAddedFriendIds(): List<String> = addedFriendIds
 
 
-    fun createRoom() {
-        val roomId = UUID.randomUUID().toString()
-        val roomRequest = RoomRequest(roomId)
+    fun createRoom(groupName: String) {
+        val listUser = ArrayList(addedFriendIds)
+        val roomRequest = RoomRequest(listUser,groupName)
+        Log.d("SocketCallback", "Creating room with group name: $groupName")
         socketManager.emit("create_room", gson.toJson(roomRequest))
-        socketManager.on("create_room_result") { args ->
+        socketManager.on("create_room") { args ->
             Log.d("SocketCallback", "Received create_room_result callback")
 
             if (args.isNotEmpty()) {

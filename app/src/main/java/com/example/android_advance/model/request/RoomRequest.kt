@@ -3,10 +3,14 @@ package com.example.android_advance.model.request
 import com.google.gson.annotations.SerializedName
 
 class RoomRequest {
-    @SerializedName("roomId")
-    var roomId: String
+    @SerializedName("listUser")
+    var listUser: ArrayList<String>
 
-    constructor(roomId: String) {
-        this.roomId = roomId
+    @SerializedName("groupName")
+    var groupName: String
+
+    constructor(listUser: ArrayList<String>, groupName: String) {
+        this.listUser = listUser
+        this.groupName = groupName
     }
 }

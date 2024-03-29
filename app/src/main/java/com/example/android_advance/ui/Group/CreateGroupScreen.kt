@@ -46,6 +46,8 @@ fun CreateGroupScreen(navController: NavController) {
     val friendState: State<List<FriendResponse?>?> = friendLiveData.observeAsState(initial = null)
     val SearchState = viewModel.searchResults.observeAsState()
     val debounceJob = remember { mutableStateOf<Job?>(null) }
+    var inputValue by remember { mutableStateOf("") }
+    var searchValue by remember { mutableStateOf("") }
 
     LazyColumn(
         modifier = Modifier
@@ -85,7 +87,6 @@ fun CreateGroupScreen(navController: NavController) {
 //                color = Color.Black,
 //                modifier = Modifier.padding(bottom = 8.dp)
 //            )
-            var inputValue by remember { mutableStateOf("") }
 
             OutlinedTextField(
                 value = inputValue,
@@ -156,8 +157,6 @@ fun CreateGroupScreen(navController: NavController) {
                 modifier = Modifier.padding(start = 15.dp ,top = 20.dp, bottom = 8.dp)
             )
 
-            var searchValue by remember { mutableStateOf("") }
-
             OutlinedTextField(
                 value = searchValue,
                 onValueChange = { newValue ->
@@ -205,7 +204,7 @@ fun CreateGroupScreen(navController: NavController) {
         // Create Group Button
         item {
             Button(
-                onClick = { viewModel.createRoom() },
+                onClick = { viewModel.createRoom(inputValue) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)
