@@ -79,7 +79,7 @@ fun HomeNavigation() {
                 HomeScreen(navController)
             }
             composable(route = ChildRoute.CallScreen.route) {
-                CallHistoryScreenPP()
+                CallHistoryScreenPP(navController)
             }
             composable(route = ChildRoute.SettingScreen.route) {
                 SettingScreen(navController)

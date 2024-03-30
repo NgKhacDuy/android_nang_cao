@@ -130,10 +130,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 // layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-// webrtc
-    implementation("com.mesibo.api:webrtc:1.0.5")
+// agora
+    implementation("io.agora.rtc:full-sdk:3.5.0")
+    implementation("com.github.AgoraIO-Community:Android-UIKit:v2.0.0")
 //
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 }
 
 kapt {

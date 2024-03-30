@@ -25,9 +25,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavController
 import com.example.android_advance.R
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.messageDto
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
 
 @Composable
@@ -37,7 +40,9 @@ fun ChatScreen(
     modifier: Modifier,
     onClickBack: () -> Unit,
     db: DatabaseHelper,
-    partnerName: String
+    partnerName: String,
+    navController: NavController,
+    idRoom: String
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (_, chatBox) = createRefs()
@@ -92,7 +97,8 @@ fun ChatScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(onClick = {
-//                navController.popBackStack()
+//                    navController.navigate(Route.VideoScreen.withArgs(idRoom))
+                    navController.navigate(Route.VideoScreen.withArgs("zolacall"))
                 }) {
                     Icon(
                         Icons.Rounded.Call,
