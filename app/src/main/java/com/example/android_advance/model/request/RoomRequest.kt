@@ -6,7 +6,7 @@ class RoomRequest {
     @SerializedName("listUser")
     var listUser: ArrayList<String>
 
-    @SerializedName("groupName")
+    @SerializedName("name")
     var groupName: String
 
     constructor(listUser: ArrayList<String>, groupName: String) {
