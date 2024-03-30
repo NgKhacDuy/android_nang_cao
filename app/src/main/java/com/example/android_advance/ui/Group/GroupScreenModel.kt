@@ -13,6 +13,7 @@ import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.api.ApiResponse.*
+import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.request.RoomRequest
 import com.example.android_advance.model.response.*
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -36,6 +37,7 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
         .setLenient()
         .create()
     val socketManager = SocketManager.getInstance(context)
+    private val db: DatabaseHelper = DatabaseHelper(context)
     private val _searchResult = MutableLiveData<List<SearchResponse>?>()
     val search = mutableStateOf("")
     val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
@@ -118,12 +120,18 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
 
     fun getAddedFriendIds(): List<String> = addedFriendIds
 
-
     fun createRoom(groupName: String) {
-        val listUser = ArrayList(addedFriendIds)
-        val roomRequest = RoomRequest(listUser,groupName)
-        Log.d("SocketCallback", "Creating room with group name: $groupName")
-        socketManager.emit("create_room", gson.toJson(roomRequest))
+        val currentUserId = db.getUserId()
+        currentUserId?.let { userId ->
+            val listUser = ArrayList(addedFriendIds)
+            listUser.add(userId)
+            val roomRequest = RoomRequest(listUser, groupName)
+            Log.d("SocketCallback", "Creating room with group name: $groupName")
+            Log.d("SocketCallback", "List of user IDs in the room: $listUser")
+            socketManager.emit("create_room", gson.toJson(roomRequest))
+        } ?: run {
+            Log.e("RoomCreation", "Failed to get current user ID.")
+        }
     }
 
     fun performSearch(keyword: String) {
