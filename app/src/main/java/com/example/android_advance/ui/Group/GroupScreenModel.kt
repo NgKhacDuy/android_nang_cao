@@ -2,7 +2,9 @@ package com.example.android_advance.ui.Group
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,6 +39,7 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
     private val _searchResult = MutableLiveData<List<SearchResponse>?>()
     val search = mutableStateOf("")
     val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
+
     fun getUserInfo(): MutableLiveData<UserDto?> {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -121,37 +124,6 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
         val roomRequest = RoomRequest(listUser,groupName)
         Log.d("SocketCallback", "Creating room with group name: $groupName")
         socketManager.emit("create_room", gson.toJson(roomRequest))
-        socketManager.on("create_room") { args ->
-            Log.d("SocketCallback", "Received create_room_result callback")
-
-            if (args.isNotEmpty()) {
-                Log.d("SocketCallback", "Data received in callback: $args")
-                val data = args[0]
-                if (data != null && data.toString().isNotEmpty()) {
-                    Log.d("SocketCallback", "Non-empty data received: $data")
-                    val roomDto = gson.fromJson(data.toString(), roomDto::class.java)
-                    if (roomDto.id != null) {
-                        Log.d("SocketCallback", "Room created successfully")
-                        val friendIds = roomDto.listUsers
-                        val currentUser = getUserInfo().value?.id ?: ""
-                        if (!friendIds.contains(currentUser)) {
-                            friendIds.add(currentUser)
-                        }
-
-                        Log.d("SocketCallback", "Room ID: ${roomDto.id}")
-                        Log.d("SocketCallback", "Participants in Room: $friendIds")
-                        val roomParticipants = RoomParticipants(roomDto.id!!, friendIds)
-                        socketManager.emit("add_participants", gson.toJson(roomParticipants))
-                    } else {
-                        Log.e("SocketCallback", "Failed to create room")
-                    }
-                } else {
-                    Log.e("SocketCallback", "Empty or null data received")
-                }
-            } else {
-                Log.e("SocketCallback", "No data received in callback")
-            }
-        }
     }
 
     fun performSearch(keyword: String) {

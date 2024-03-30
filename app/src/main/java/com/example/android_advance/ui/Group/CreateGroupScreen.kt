@@ -31,6 +31,7 @@ import com.example.android_advance.R
 import com.example.android_advance.model.response.FriendList
 import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.call_history.SearchCard
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -204,7 +205,11 @@ fun CreateGroupScreen(navController: NavController) {
         // Create Group Button
         item {
             Button(
-                onClick = { viewModel.createRoom(inputValue) },
+                onClick = {
+                    viewModel.createRoom(inputValue)
+
+                    navController.popBackStack()
+                          },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)
