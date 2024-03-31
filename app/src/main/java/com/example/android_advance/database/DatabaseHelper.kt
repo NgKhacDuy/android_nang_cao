@@ -49,6 +49,20 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     }
 
+    fun getUserId(): String? {
+        var userId: String? = null
+        val db = readableDatabase
+        val tableQuery = "SELECT $COLUMN_ID FROM $TABLE_USER"
+        val cursor = db.rawQuery(tableQuery, null)
+        if (cursor != null && cursor.moveToFirst()) {
+            userId = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_ID))
+        }
+        cursor?.close()
+        db.close()
+        return userId
+    }
+
+
     fun insertUser(userDto: UserDto) {
         val db = writableDatabase
 
