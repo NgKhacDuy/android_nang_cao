@@ -27,5 +27,6 @@ class Constant {
 
         //        APP ID AGORA
         const val appIdAgora = "566c6e877ab94b699e6dddd9d230a124"
+        const val agoraCert = "b16789a05451435ea16e6681842ab425"
     }
 }

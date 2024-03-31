@@ -97,8 +97,7 @@ fun ChatScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(onClick = {
-//                    navController.navigate(Route.VideoScreen.withArgs(idRoom))
-                    navController.navigate(Route.VideoScreen.withArgs("zolacall"))
+                    navController.navigate(Route.VideoScreen.withArgs(idRoom))
                 }) {
                     Icon(
                         Icons.Rounded.Call,

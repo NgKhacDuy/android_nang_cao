@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android_advance.ui.login.loginViewModel
 import com.example.android_advance.utils.common.Constant
 import io.agora.agorauikit_android.AgoraConnectionData
 import io.agora.agorauikit_android.AgoraSettings
@@ -20,9 +22,9 @@ import io.agora.agorauikit_android.AgoraVideoViewer
 @Composable
 fun VideoScreen(
     roomName: String,
-    onNavigateUp: () -> Unit,
-    viewModel: VideoViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
+    val viewModel = hiltViewModel<VideoViewModel>()
+    viewModel.savedStateHandle.set("roomName", roomName)
     var agoraView: AgoraVideoViewer? = null
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -42,7 +44,6 @@ fun VideoScreen(
     }
     BackHandler {
         agoraView?.leaveChannel()
-        onNavigateUp()
     }
 
 //    if (viewModel.hasAudioPermission.value && viewModel.hasCameraPermission.value) {
@@ -51,13 +52,13 @@ fun VideoScreen(
             it,
             connectionData = AgoraConnectionData(
                 appId = Constant.appIdAgora,
-                appToken = "007eJxTYJD58X8j1+XDHHN2Tlx59HRDfDFv1bMluvw8ty5fypK9dMhMgcHUzCzZLNXC3DwxydIkyczSMtUsBQgsU4yMDRINjUyaPrOnNQQyMig/+MHMyACBID4HQ1V+TmJyYk4OAwMAZbEi/Q=="
+                appToken = viewModel.agoraToken.value
             )
         ).also {
             try {
                 it.join(
                     roomName,
-                    token = "007eJxTYJD58X8j1+XDHHN2Tlx59HRDfDFv1bMluvw8ty5fypK9dMhMgcHUzCzZLNXC3DwxydIkyczSMtUsBQgsU4yMDRINjUyaPrOnNQQyMig/+MHMyACBID4HQ1V+TmJyYk4OAwMAZbEi/Q=="
+                    token = viewModel.agoraToken.value
                 )
                 it.style = AgoraVideoViewer.Style.FLOATING
                 it.delegate = null

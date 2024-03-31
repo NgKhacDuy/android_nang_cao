@@ -137,7 +137,7 @@ fun Navigation() {
                         ))) {
                     val roomName =
                         it.arguments?.getString("roomName") ?: return@composable
-                    VideoScreen(roomName = roomName, onNavigateUp = navController::navigateUp)
+                    VideoScreen(roomName = roomName)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",
