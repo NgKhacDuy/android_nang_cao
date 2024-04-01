@@ -43,7 +43,7 @@ class MessageViewModel @Inject constructor(
         db = DatabaseHelper(context)
     }
 
-    private val _onNewMessage = MutableLiveData<List<messageDto>>()
+    private val _onNewMessage = MutableLiveData<List<messageDto>>(emptyList())
     val onNewMessage: LiveData<List<messageDto>> get() = _onNewMessage
 
     fun sendMessage(content: String) {
@@ -62,6 +62,8 @@ class MessageViewModel @Inject constructor(
                         val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
                         _onNewMessage.postValue(messages)
                     }
+                } else {
+                    _onNewMessage.postValue(emptyList())
                 }
             }
         }

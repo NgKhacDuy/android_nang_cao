@@ -117,16 +117,27 @@ fun ChatScreen(
             }
         }
         Column {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f) // Occupies all remaining space after ChatBox
-                    .padding(top = (screenHeight * 0.1f).dp),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                items(model.size) { item ->
-                    ChatItem(model[item], db.getUser().first().id == model[item].senderId)
+            if (!model.isNullOrEmpty()) {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f) // Occupies all remaining space after ChatBox
+                        .padding(top = (screenHeight * 0.1f).dp),
+                    contentPadding = PaddingValues(16.dp)
+                ) {
+                    items(model.size) { item ->
+                        ChatItem(model[item], db.getUser().first().id == model[item].senderId)
+                    }
+                }
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f) // Occupies all remaining space after ChatBox
+                        .padding(top = (screenHeight * 0.1f).dp),
+                ) {
+                    
                 }
             }
             // Use Spacer to push ChatBox to the bottom

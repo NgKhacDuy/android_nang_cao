@@ -2,9 +2,11 @@ package com.example.android_advance.ui.Home
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
@@ -38,11 +40,16 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
     private lateinit var db: DatabaseHelper
 
     private var socketManager = SocketManager.getInstance(context)
-
+    var isRefreshing = mutableStateOf(false)
     val onNewRoom: LiveData<List<roomDto>> get() = _onNewRoom
     var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
+
+    fun swipe() = viewModelScope.launch {
+        isRefreshing.value = true
+        getRoomForUser()
+    }
 
     init {
         db = DatabaseHelper(context)
@@ -53,6 +60,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
     fun getRoomForUser() {
         try {
+            socketManager.disconnect()
             socketManager.connect()
             socketManager.on("rooms") { args ->
                 args.let { d ->
@@ -63,6 +71,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
                             Log.e("ROOMS", temp.toString())
                             _onNewRoom.postValue(temp)
+                            isRefreshing.value = false
                         }
                     }
                 }

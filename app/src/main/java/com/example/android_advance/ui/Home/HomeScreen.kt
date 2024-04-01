@@ -18,11 +18,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -49,6 +53,8 @@ import com.example.android_advance.R
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
+import java.text.SimpleDateFormat
+import java.util.*
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
@@ -59,11 +65,15 @@ data class User(
     val idRoom: String
 )
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     val roomState = viewModel.onNewRoom.observeAsState()
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = viewModel.isRefreshing.value,
+        onRefresh = { viewModel.swipe() }
+    )
     val convertDateTime: ConvertDateTime = ConvertDateTime()
     Box(
         modifier = Modifier
@@ -230,28 +240,35 @@ fun HomeScreen(navController: NavController) {
                 LazyColumn {
                     roomState.value?.let { it ->
                         items(it.size) {
-                            roomState.value!![it].lastMessage?.content?.let { it1 ->
-                                User(
-                                    R.drawable.person_avt,
-                                    roomState.value!![it].partner?.name,
-                                    it1,
-                                    convertDateTime.timeAgo(roomState.value!![it].lastMessage?.createAt.toString()),
-                                    R.drawable.user,
-                                    roomState.value!![it].id!!
-                                )
-                            }?.let { it2 ->
-                                roomState.value!![it].partner?.name?.let { it1 ->
+                            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                            val currentDate = sdf.format(Date())
+                            User(
+                                R.drawable.person_avt,
+                                if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
+                                roomState.value?.get(it)?.lastMessage?.content ?: "Nhóm đã được tạo",
+                                convertDateTime.timeAgo(
+                                    roomState.value!![it].lastMessage?.createAt ?: currentDate
+                                ),
+                                R.drawable.user,
+                                roomState.value!![it].id!!
+                            )
+                                .let { it2 ->
                                     UserRow(
                                         it2, navController, it2.idRoom,
-                                        it1
+                                        roomState.value!![it].partner?.name ?: it2.name!!
                                     )
+
                                 }
-                            }
                         }
                     }
                 }
             }
         }
+        PullRefreshIndicator(
+            refreshing = viewModel.isRefreshing.value,
+            pullRefreshState,
+            Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
@@ -311,16 +328,8 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
             }
 
         }
-        // Three columns with Text elements
 
-//        Column(
-////            modifier = Modifier.offset(x=(-30).dp)
-//        ){
-//                Text(text = user.name, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-//                Text(text = user.lastMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal)
-//        }
         Column(
-//            modifier = Modifier.offset(x=(-20).dp)
         ) {
 
 
