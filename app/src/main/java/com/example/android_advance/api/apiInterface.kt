@@ -4,6 +4,7 @@ import com.example.android_advance.model.request.FriendRequest
 import com.example.android_advance.model.request.RefreshRequest
 import com.example.android_advance.model.request.SigninRequest
 import com.example.android_advance.model.request.SignupRequest
+import com.example.android_advance.model.response.AgoraTokenDto
 import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.model.response.SigninResponse
 import com.example.android_advance.model.response.UserDto
@@ -49,4 +50,9 @@ interface ApiInterface {
         @Path("id") id: String,
         @Query("status") status: String
     ): Call<ApiResponse.BaseApiResponse<Unit>>
+
+    @GET(apiConstant.agora + "/{name}")
+    fun getAgoraToken(
+        @Path("name") name: String
+    ): Call<ApiResponse.BaseApiResponse<AgoraTokenDto>>
 }
