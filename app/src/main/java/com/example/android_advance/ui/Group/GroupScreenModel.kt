@@ -2,6 +2,7 @@ package com.example.android_advance.ui.Group
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -120,18 +121,41 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
 
     fun getAddedFriendIds(): List<String> = addedFriendIds
 
-    fun createRoom(groupName: String) {
+    fun createRoom(groupName: String) : Boolean {
         val currentUserId = db.getUserId()
         currentUserId?.let { userId ->
-            val listUser = ArrayList(addedFriendIds)
-            listUser.add(userId)
-            val roomRequest = RoomRequest(listUser, groupName)
-            Log.d("SocketCallback", "Creating room with group name: $groupName")
-            Log.d("SocketCallback", "List of user IDs in the room: $listUser")
-            socketManager.emit("create_room", gson.toJson(roomRequest))
+            var createGroupSuccess = true
+            if(addedFriendIds.size < 3){
+                Log.e("RoomCreation", "Vui lòng phải có ít nhất 3 thành viên trong nhóm.")
+                showToast("Vui lòng phải có ít nhất 3 thành viên trong nhóm")
+                createGroupSuccess = false
+            }
+            if (groupName.isEmpty()){
+                Log.e("RoomCreation", "Vui lòng nhập tên nhóm.")
+                showToast("Vui lòng nhập tên nhóm")
+                createGroupSuccess = false
+            }
+
+            if (createGroupSuccess){
+                val listUser = ArrayList(addedFriendIds)
+                listUser.add(userId)
+                val roomRequest = RoomRequest(listUser, groupName)
+                Log.d("SocketCallback", "Creating room with group name: $groupName")
+                Log.d("SocketCallback", "List of user IDs in the room: $listUser")
+                socketManager.emit("create_room", gson.toJson(roomRequest))
+                return true
+            } else {
+                return false
+            }
+
         } ?: run {
             Log.e("RoomCreation", "Failed to get current user ID.")
+            return false
         }
+    }
+
+    fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     fun performSearch(keyword: String) {
@@ -171,11 +195,5 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
 
         })
     }
-
-
-    data class RoomParticipants(
-        val roomId: String,
-        val participantIds: List<String>
-    )
 }
 
