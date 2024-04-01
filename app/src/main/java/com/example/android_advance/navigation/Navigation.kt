@@ -1,5 +1,6 @@
 package com.example.android_advance.navigation
 
+import OptionsMenu
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
@@ -169,6 +170,12 @@ fun Navigation() {
                             }
                         }
                     }
+                }
+                composable(route = Route.OptionsMenuChat.route + "/{partnerName}") {
+                        backStackEntry ->
+                    val arguments = requireNotNull(backStackEntry.arguments)
+                    val partnerName = arguments.getString("partnerName") ?: "nothing"
+                    OptionsMenu(navController = navController, partnerName = partnerName)
                 }
             }
         }

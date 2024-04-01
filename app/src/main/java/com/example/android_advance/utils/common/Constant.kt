@@ -24,6 +24,8 @@ class Constant {
         const val incomingCall_2 = "incoming_call_2"
         const val callHistoryScreen = "call_history_screen"
         const val videoScreen = "video_screen"
+        const val optionsMenu = "options_menu"
+
 
         //        APP ID AGORA
         const val appIdAgora = "566c6e877ab94b699e6dddd9d230a124"

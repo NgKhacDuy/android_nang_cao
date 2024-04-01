@@ -1,3 +1,8 @@
+import android.net.Uri
+import android.util.Base64
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -6,9 +11,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,6 +26,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -32,6 +40,8 @@ import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 
 @Composable
 fun ChatScreen(
@@ -93,7 +103,7 @@ fun ChatScreen(
             Row(
                 modifier = Modifier
                     .offset(x = -(16.dp))
-                    .width(100.dp),
+                   ,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(onClick = {
@@ -110,6 +120,15 @@ fun ChatScreen(
                 }) {
                     Icon(
                         Icons.Rounded.Videocam,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                IconButton(onClick = {
+                    navController.navigate(Route.OptionsMenuChat.withArgs(partnerName))
+                }) {
+                    Icon(
+                        Icons.Rounded.Menu,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp)
                     )
@@ -188,7 +207,50 @@ fun ChatBox(
 ) {
     val focusRequester = remember { FocusRequester() }
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
+    val context = LocalContext.current // Obtain the context
+
+    val galleryLauncher = rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) {
+            uri: Uri? ->
+        uri?.let{
+            try {
+                // Read the image data from the URI
+                val inputStream = context.contentResolver.openInputStream(uri) // Access contentResolver using context
+                val byteArrayOutputStream = ByteArrayOutputStream()
+                inputStream?.use { input ->
+                    byteArrayOutputStream.use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                val byteArray = byteArrayOutputStream.toByteArray()
+
+                // Encode the image data as Base64
+                val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+
+                // Log the Base64 representation of the image
+                Log.e("Picked image", "Base64 image: $base64Image")
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
     Row(modifier = modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
+
+        IconButton(
+            onClick = {
+                galleryLauncher.launch("image/*")
+
+            },
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(color = Color(0xFFD0BCFF))
+                .align(Alignment.CenterVertically)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Image,
+                contentDescription = "Send_Picture",
+                modifier = Modifier.fillMaxSize().padding(8.dp)
+            )
+        }
         TextField(
             value = chatBoxValue,
             onValueChange = { newText ->
