@@ -42,6 +42,7 @@ import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
+import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
 
 @Composable
@@ -127,6 +128,16 @@ fun Navigation() {
                 }
                 composable(route = Route.CreateGroupScreen.route) {
                     CreateGroupScreen(navController = navController)
+                }
+                composable(route = Route.VideoScreen.route + "/{roomName}", arguments = listOf((
+                        navArgument("roomName") {
+                            type = NavType.StringType
+                            nullable = false
+                        }
+                        ))) {
+                    val roomName =
+                        it.arguments?.getString("roomName") ?: return@composable
+                    VideoScreen(roomName = roomName, navController)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",

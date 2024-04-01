@@ -96,7 +96,6 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-rxjava2")
     implementation("com.google.dagger:hilt-android:2.48")
     kapt("com.google.dagger:hilt-android-compiler:2.48")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.3.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -130,10 +129,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 // layout
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-// webrtc
-    implementation("com.mesibo.api:webrtc:1.0.5")
+// agora
+    implementation("io.agora.rtc:full-sdk:3.5.0")
+    implementation("com.github.AgoraIO-Community:Android-UIKit:v2.0.0")
 //
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation("commons-codec:commons-codec:1.11")
 }
 
 kapt {

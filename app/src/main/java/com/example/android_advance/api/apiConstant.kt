@@ -12,6 +12,7 @@ class apiConstant {
         const val userSearch = "user/search"
         const val userFriend = "friend"
         const val userSignOut = "user/logout"
+        const val agora = "agora"
     }
 
 }

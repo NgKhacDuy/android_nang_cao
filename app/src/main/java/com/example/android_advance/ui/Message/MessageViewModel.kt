@@ -13,6 +13,7 @@ import com.example.android_advance.model.request.MessageRequest
 import com.example.android_advance.model.request.RoomRequest
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.socketio.SocketManager
+import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.ui.Group.GroupScreenModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -65,28 +66,6 @@ class MessageViewModel @Inject constructor(
             }
         }
     }
-
-//    fun getRoomForUser(roomId: String) {
-//        try {
-//            Log.e("RoomID", roomId)
-//            socketManager.connect()
-//            socketManager.emit("join_room", roomId)
-//            socketManager.on("message") { args ->
-//                args.let { d ->
-//                    if (d.isNotEmpty()) {
-//                        val data = d[0]
-//                        if (data.toString().isNotEmpty()) {
-//                            val listType = object : TypeToken<List<messageDto>>() {}.type
-//                            val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
-//                            _onNewMessage.postValue(messages)
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (e: Exception) {
-//            Log.e("EXCEPTION", e.message.toString())
-//        }
-//    }
 
     fun getRoomForUser(roomId: String) {
         try {

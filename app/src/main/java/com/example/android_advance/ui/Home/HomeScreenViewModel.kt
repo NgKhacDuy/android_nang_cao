@@ -61,7 +61,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                         if (data.toString().isNotEmpty()) {
                             val listType = object : TypeToken<List<roomDto>>() {}.type
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
-                            Log.e("ROOMS",temp.toString())
+                            Log.e("ROOMS", temp.toString())
                             _onNewRoom.postValue(temp)
                         }
                     }
