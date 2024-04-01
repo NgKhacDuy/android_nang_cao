@@ -38,6 +38,9 @@ class VideoViewModel @Inject public constructor(
     private val _agoraToken = mutableStateOf("")
     val agoraToken: State<String> = _agoraToken
 
+    private val _isLeaveChannel = mutableStateOf(false)
+    val isLeaveChannel: State<Boolean> = _isLeaveChannel
+
     init {
         getToken()
     }
@@ -61,5 +64,9 @@ class VideoViewModel @Inject public constructor(
             RtcTokenBuilder2.Role.ROLE_PUBLISHER, timeStamp, timeStamp
         )
         _agoraToken.value = result
+    }
+
+    fun triggerLeaveChannel() {
+        _isLeaveChannel.value = true
     }
 }

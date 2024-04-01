@@ -6,22 +6,29 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.ui.login.loginViewModel
 import com.example.android_advance.utils.common.Constant
 import io.agora.agorauikit_android.AgoraConnectionData
 import io.agora.agorauikit_android.AgoraSettings
 import io.agora.agorauikit_android.AgoraVideoViewer
+import io.agora.rtc.IRtcEngineEventHandler
 
 
 @OptIn(ExperimentalUnsignedTypes::class)
 @Composable
 fun VideoScreen(
     roomName: String,
+    navController: NavController
 ) {
     val viewModel = hiltViewModel<VideoViewModel>()
     viewModel.savedStateHandle.set("roomName", roomName)
@@ -47,28 +54,42 @@ fun VideoScreen(
     }
 
 //    if (viewModel.hasAudioPermission.value && viewModel.hasCameraPermission.value) {
-    AndroidView(factory = {
-        AgoraVideoViewer(
-            it,
-            connectionData = AgoraConnectionData(
-                appId = Constant.appIdAgora,
-                appToken = viewModel.agoraToken.value
-            )
-        ).also {
-            try {
-                it.join(
-                    roomName,
-                    token = viewModel.agoraToken.value
-                )
-                it.style = AgoraVideoViewer.Style.FLOATING
-                it.delegate = null
-                agoraView = it
-            } catch (e: Exception) {
-                Log.e("VideoScreen", e.toString())
+    if (!viewModel.isLeaveChannel.value) {
+        AndroidView(factory = {
+            AgoraVideoViewer(
+                it,
+                connectionData = AgoraConnectionData(
+                    appId = Constant.appIdAgora,
+                    appToken = viewModel.agoraToken.value
+                ),
+            ).also {
+                try {
+                    it.join(
+                        roomName,
+                        token = viewModel.agoraToken.value
+                    )
+                    it.style = AgoraVideoViewer.Style.FLOATING
+                    it.delegate = null
+                    it.agkit.addHandler(object : IRtcEngineEventHandler() {
+                        override fun onLeaveChannel(stats: RtcStats?) {
+                            super.onLeaveChannel(stats)
+                            Log.e("LEAVE CHANNEL", true.toString())
+                            viewModel.triggerLeaveChannel()
+
+                        }
+                    }
+                    )
+                    agoraView = it
+
+                } catch (e: Exception) {
+                    Log.e("VideoScreen", e.toString())
+                }
             }
-        }
-    }, modifier = Modifier.fillMaxSize())
-//    }
+        }, modifier = Modifier.fillMaxSize())
+    } else {
+        navController.navigate(route = "home")
+//
+    }
 
 
 }
