@@ -1,3 +1,5 @@
+import android.os.Message
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -6,6 +8,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
@@ -19,24 +22,29 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
+import com.example.android_advance.components.ImagePicker.ImagePicker
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
+import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.utils.common.ConvertDateTime
+import com.example.android_advance.utils.common.MessageEnum
 
 @Composable
 fun ChatScreen(
     model: List<messageDto>,
-    onSendChatClickListener: (String) -> Unit,
+    onSendChatClickListener: (String, String, List<String>) -> Unit,
     modifier: Modifier,
     onClickBack: () -> Unit,
     db: DatabaseHelper,
@@ -137,7 +145,7 @@ fun ChatScreen(
                         .weight(1f) // Occupies all remaining space after ChatBox
                         .padding(top = (screenHeight * 0.1f).dp),
                 ) {
-                    
+
                 }
             }
             // Use Spacer to push ChatBox to the bottom
@@ -183,12 +191,30 @@ fun ChatItem(message: messageDto, isSender: Boolean) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatBox(
-    onSendChatClickListener: (String) -> Unit,
+    onSendChatClickListener: (String, String, List<String>) -> Unit,
     modifier: Modifier,
 ) {
     val focusRequester = remember { FocusRequester() }
+    val context = LocalContext.current
+    var showImagePickerDialog by remember { mutableStateOf(false) }
     var chatBoxValue by remember { mutableStateOf(TextFieldValue("")) }
+    val viewModel = hiltViewModel<MessageViewModel>()
     Row(modifier = modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp)) {
+        IconButton(
+            onClick = {
+                showImagePickerDialog = true
+            },
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(color = Color(0xFFD0BCFF))
+                .align(Alignment.CenterVertically)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Image,
+                contentDescription = "Send_Picture",
+                modifier = Modifier.fillMaxSize().padding(8.dp)
+            )
+        }
         TextField(
             value = chatBoxValue,
             onValueChange = { newText ->
@@ -211,7 +237,7 @@ fun ChatBox(
             onClick = {
                 val msg = chatBoxValue.text
                 if (msg.isBlank()) return@IconButton
-                onSendChatClickListener(chatBoxValue.text)
+                onSendChatClickListener(chatBoxValue.text, MessageEnum.RAW.type, arrayListOf())
                 chatBoxValue = TextFieldValue("")
             },
             modifier = Modifier
@@ -225,5 +251,21 @@ fun ChatBox(
                 modifier = Modifier.fillMaxSize().padding(8.dp)
             )
         }
+    }
+
+    if (showImagePickerDialog) {
+        var selectedImageBase64: ArrayList<String> = arrayListOf()
+        ImagePicker(
+            onDismiss = {
+                showImagePickerDialog = false
+            },
+            context,
+            onImagesSelected = { base64Image ->
+                base64Image.forEach {
+                    selectedImageBase64.add(it)
+                }
+
+                onSendChatClickListener("image", MessageEnum.IMAGE.type, selectedImageBase64.toList())
+            }) // Call ImagePicker here when the dialog should be shown
     }
 }
