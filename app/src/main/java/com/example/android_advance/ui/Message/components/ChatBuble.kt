@@ -97,10 +97,9 @@ fun ChatScreen(
                 }
             }
 
-
             Row(
                 modifier = Modifier
-                    .offset(x = -(16.dp))
+                    .offset(x = 0.dp)
                     .width(100.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -113,15 +112,15 @@ fun ChatScreen(
                         modifier = Modifier.size(28.dp)
                     )
                 }
-                IconButton(onClick = {
-//                navController.popBackStack()
-                }) {
-                    Icon(
-                        Icons.Rounded.Videocam,
-                        contentDescription = null,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
+//                IconButton(onClick = {
+////                navController.popBackStack()
+//                }) {
+//                    Icon(
+//                        Icons.Rounded.Videocam,
+//                        contentDescription = null,
+//                        modifier = Modifier.size(28.dp)
+//                    )
+//                }
             }
         }
         Column {
