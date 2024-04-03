@@ -129,7 +129,6 @@ fun SettingScreen(navController: NavController) {
                 coroutineScope.launch {
                     launch {
                         val isSignOut = settingViewModel.signOut()
-                        Log.e("isSignOut", isSignOut.toString())
                         if (isSignOut) {
                             settingViewModel.deleteToken()
                             settingViewModel.deleteSqlite()

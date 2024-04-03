@@ -34,8 +34,8 @@ fun MessageScreen(idRoom: String, navController: NavController, namePartner: Str
         ) {
 
             messageState.value?.let { it ->
-                ChatScreen(model = it, onSendChatClickListener = {
-                    viewModel.sendMessage(it)
+                ChatScreen(model = it, onSendChatClickListener = { content, type, image ->
+                    viewModel.sendMessage(content, type, image)
                 }, modifier = Modifier, onClickBack = {
                     viewModel.socketManager.disconnect()
                     navController.popBackStack()

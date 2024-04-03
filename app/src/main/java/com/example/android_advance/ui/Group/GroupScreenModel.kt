@@ -30,7 +30,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 @HiltViewModel
-class GroupScreenModel  @Inject constructor(@ApplicationContext private val context: Context) : ViewModel(){
+class GroupScreenModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
     private val addedFriendIds = mutableListOf<String>()
     var gson: Gson = GsonBuilder()
@@ -53,7 +53,6 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
                 response: Response<BaseApiResponse<UserDto>>
             ) {
                 if (response.isSuccessful) {
-                    Log.e("USER INFO", response.body().toString())
                     val userDtoData = response.body()?.data
                     if (userDtoData != null) {
                         liveData.postValue(userDtoData)

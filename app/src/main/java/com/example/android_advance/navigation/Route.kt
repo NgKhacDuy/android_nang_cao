@@ -24,6 +24,7 @@ sealed class Route(val route: String) {
     object RoomScreen : Route(Constant.roomScreen)
     object CallScreen : Route(Constant.callScreen)
     object VideoScreen : Route(Constant.videoScreen)
+    object ImagePicker : Route(Constant.ImagePicker)
 
     fun withArgs(vararg args: String): String {
         return buildString {

@@ -5,7 +5,9 @@ import com.google.gson.annotations.SerializedName
 class MessageRequest(
     @SerializedName("senderId") var senderId: String,
     @SerializedName("content") var content: String,
-    @SerializedName("roomId") var roomId: String
+    @SerializedName("roomId") var roomId: String,
+    @SerializedName("type") var type: String,
+    @SerializedName("image") var image: List<String>
 ) {
 
 }

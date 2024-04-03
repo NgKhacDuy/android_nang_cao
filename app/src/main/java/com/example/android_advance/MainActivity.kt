@@ -57,9 +57,7 @@ class MainActivity : ComponentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                Log.e("PERMISSION GRANT", true.toString())
             } else {
-                Log.e("PERMISSION GRANT", false.toString())
             }
         }
     }

@@ -69,7 +69,6 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                         if (data.toString().isNotEmpty()) {
                             val listType = object : TypeToken<List<roomDto>>() {}.type
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
-                            Log.e("ROOMS", temp.toString())
                             _onNewRoom.postValue(temp)
                             isRefreshing.value = false
                         }
@@ -96,7 +95,6 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
                     val message = errorJsonObject.get("message").asString
-                    Log.e("USER INFO", message)
                 }
             }
 

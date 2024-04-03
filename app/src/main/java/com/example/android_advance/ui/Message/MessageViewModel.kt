@@ -2,7 +2,7 @@ package com.example.android_advance.ui.Message
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -45,12 +45,15 @@ class MessageViewModel @Inject constructor(
 
     private val _onNewMessage = MutableLiveData<List<messageDto>>(emptyList())
     val onNewMessage: LiveData<List<messageDto>> get() = _onNewMessage
+    var selectedImageBase64 =
+        mutableStateOf<List<String>>(emptyList())
 
-    fun sendMessage(content: String) {
+
+    fun sendMessage(content: String, typeMessage: String, image: List<String>) {
         if (content.isNotEmpty()) {
             socketManager.emit(
                 "message",
-                gson.toJson(db.getUser().first().id?.let { MessageRequest(it, content, roomId) })
+                gson.toJson(db.getUser().first().id?.let { MessageRequest(it, content, roomId, typeMessage, image) })
             )
         }
         socketManager.on("message") { args ->
@@ -71,7 +74,6 @@ class MessageViewModel @Inject constructor(
 
     fun getRoomForUser(roomId: String) {
         try {
-            Log.e("RoomID", roomId)
             socketManager.connect()
             socketManager.emit("join_room", roomId)
             socketManager.on("message") { args ->
