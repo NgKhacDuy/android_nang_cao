@@ -7,7 +7,9 @@ class messageDto(
     @SerializedName("senderId") var senderId: String? = null,
     @SerializedName("content") var content: String? = null,
     @SerializedName("readBy") var readBy: ArrayList<String> = arrayListOf(),
-    @SerializedName("createAt") var createAt: String? = null
+    @SerializedName("createAt") var createAt: String? = null,
+    @SerializedName("type") var type: String? = null,
+    @SerializedName("images") var image: ArrayList<ImageDto> = arrayListOf()
 
 ) {
 }
