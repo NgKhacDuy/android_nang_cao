@@ -2,6 +2,8 @@ package com.example.android_advance.app
 
 import android.app.Application
 import com.onesignal.OneSignal
+import com.onesignal.notifications.INotificationLifecycleListener
+import com.onesignal.notifications.INotificationWillDisplayEvent
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +23,13 @@ class AppChatZola : Application() {
         CoroutineScope(Dispatchers.IO).launch {
             OneSignal.Notifications.requestPermission(true)
         }
+
+        OneSignal.Notifications.addForegroundLifecycleListener(object : INotificationLifecycleListener {
+            override fun onWillDisplay(event: INotificationWillDisplayEvent) {
+                event.preventDefault()
+            }
+
+        })
 
     }
 }

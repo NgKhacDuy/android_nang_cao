@@ -137,6 +137,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("commons-codec:commons-codec:1.11")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.20.0")
+
 }
 
 kapt {

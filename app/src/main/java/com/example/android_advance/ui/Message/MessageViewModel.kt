@@ -48,9 +48,28 @@ class MessageViewModel @Inject constructor(
     var selectedImageBase64 =
         mutableStateOf<List<String>>(emptyList())
 
+    fun getRoomForUser(roomId: String) {
+        try {
+            socketManager.connect()
+            socketManager.emit("join_room", roomId)
+            socketManager.on("message") { args ->
+                if (args.isNotEmpty()) {
+                    val data = args[0]
+                    if (data != null && data.toString().isNotEmpty()) {
+                        val listType = object : TypeToken<List<messageDto>>() {}.type
+                        val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
+                        _onNewMessage.postValue(messages)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("EXCEPTION", e.message.toString())
+        }
+    }
 
     fun sendMessage(content: String, typeMessage: String, image: List<String>) {
         if (content.isNotEmpty()) {
+            Log.e("Type", typeMessage)
             socketManager.emit(
                 "message",
                 gson.toJson(db.getUser().first().id?.let { MessageRequest(it, content, roomId, typeMessage, image) })
@@ -69,25 +88,6 @@ class MessageViewModel @Inject constructor(
                     _onNewMessage.postValue(emptyList())
                 }
             }
-        }
-    }
-
-    fun getRoomForUser(roomId: String) {
-        try {
-            socketManager.connect()
-            socketManager.emit("join_room", roomId)
-            socketManager.on("message") { args ->
-                if (args.isNotEmpty()) {
-                    val data = args[0]
-                    if (data != null && data.toString().isNotEmpty()) {
-                        val listType = object : TypeToken<List<messageDto>>() {}.type
-                        val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
-                        _onNewMessage.postValue(messages)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("EXCEPTION", e.message.toString())
         }
     }
 }
