@@ -63,7 +63,7 @@ fun ManageAccountInfoScreen(navController: NavController)
     fun handleUpdate() {
         if (formState.validate()) {
             if (userId != null) {
-                accountViewModel.updateUserInfo(userId, nameState.value, sdtState.value)
+                accountViewModel.updateUserInfo(nameState.value, sdtState.value)
             }
         }
     }
@@ -74,7 +74,7 @@ fun ManageAccountInfoScreen(navController: NavController)
     {
         Row()
         {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = { navController.popBackStack()}) {
                 Icons.Default.ArrowBack
             }
         }
