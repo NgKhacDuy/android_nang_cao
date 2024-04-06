@@ -28,13 +28,14 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel()
-class SettingScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel(){
+class SettingScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
     private lateinit var db: DatabaseHelper
     private val _onNewUserInfo = MutableLiveData<UserDto?>()
     val onNewUserInfo: LiveData<UserDto?> get() = _onNewUserInfo
     private val _onIsSignOutSuccess = MutableLiveData<Boolean>()
     val onIsSignOutSuccess: LiveData<Boolean> get() = _onIsSignOutSuccess
+
     init {
         db = DatabaseHelper(context)
         getUserInfo()
@@ -50,7 +51,6 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
                 response: Response<ApiResponse.BaseApiResponse<UserDto>>
             ) {
                 if (response.isSuccessful) {
-                    Log.e("USER INFO", response.body().toString())
                     val userDtoData = response.body()?.data
                     if (userDtoData != null) {
                         _onNewUserInfo.postValue(userDtoData)
@@ -67,13 +67,12 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
         })
     }
 
-    fun deleteToken()
-    {
-        appSharedPreference.refreshToken=""
-        appSharedPreference.accessToken=""
+    fun deleteToken() {
+        appSharedPreference.refreshToken = ""
+        appSharedPreference.accessToken = ""
     }
 
-    fun deleteSqlite(){
+    fun deleteSqlite() {
         db.deleteUser()
     }
 
@@ -95,7 +94,6 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
         try {
             val response = apiService?.signOut("Bearer ${appSharedPreference.accessToken}")?.execute()
             if (response?.isSuccessful == true) {
-                Log.e("SIGN OUT", response.body().toString())
                 isSignOutSuccess = true
             } else {
                 Log.e("SIGN OUT", "error")

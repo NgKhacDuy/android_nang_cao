@@ -2,7 +2,7 @@ package com.example.android_advance.ui.Message
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -45,12 +45,34 @@ class MessageViewModel @Inject constructor(
 
     private val _onNewMessage = MutableLiveData<List<messageDto>>(emptyList())
     val onNewMessage: LiveData<List<messageDto>> get() = _onNewMessage
+    var selectedImageBase64 =
+        mutableStateOf<List<String>>(emptyList())
 
-    fun sendMessage(content: String) {
+    fun getRoomForUser(roomId: String) {
+        try {
+            socketManager.connect()
+            socketManager.emit("join_room", roomId)
+            socketManager.on("message") { args ->
+                if (args.isNotEmpty()) {
+                    val data = args[0]
+                    if (data != null && data.toString().isNotEmpty()) {
+                        val listType = object : TypeToken<List<messageDto>>() {}.type
+                        val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
+                        _onNewMessage.postValue(messages)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("EXCEPTION", e.message.toString())
+        }
+    }
+
+    fun sendMessage(content: String, typeMessage: String, image: List<String>) {
         if (content.isNotEmpty()) {
+            Log.e("Type", typeMessage)
             socketManager.emit(
                 "message",
-                gson.toJson(db.getUser().first().id?.let { MessageRequest(it, content, roomId) })
+                gson.toJson(db.getUser().first().id?.let { MessageRequest(it, content, roomId, typeMessage, image) })
             )
         }
         socketManager.on("message") { args ->
@@ -66,26 +88,6 @@ class MessageViewModel @Inject constructor(
                     _onNewMessage.postValue(emptyList())
                 }
             }
-        }
-    }
-
-    fun getRoomForUser(roomId: String) {
-        try {
-            Log.e("RoomID", roomId)
-            socketManager.connect()
-            socketManager.emit("join_room", roomId)
-            socketManager.on("message") { args ->
-                if (args.isNotEmpty()) {
-                    val data = args[0]
-                    if (data != null && data.toString().isNotEmpty()) {
-                        val listType = object : TypeToken<List<messageDto>>() {}.type
-                        val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
-                        _onNewMessage.postValue(messages)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            Log.e("EXCEPTION", e.message.toString())
         }
     }
 }

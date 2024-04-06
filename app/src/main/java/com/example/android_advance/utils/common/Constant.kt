@@ -26,6 +26,7 @@ class Constant {
         const val videoScreen = "video_screen"
         const val optionsMenu = "options_menu"
 
+        const val ImagePicker = "image_picker"
 
         //        APP ID AGORA
         const val appIdAgora = "566c6e877ab94b699e6dddd9d230a124"

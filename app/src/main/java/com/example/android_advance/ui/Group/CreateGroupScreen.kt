@@ -206,9 +206,10 @@ fun CreateGroupScreen(navController: NavController) {
         item {
             Button(
                 onClick = {
-                    viewModel.createRoom(inputValue)
-
-                    navController.popBackStack()
+                    val createRoomSuccess = viewModel.createRoom(inputValue)
+                    if (createRoomSuccess) {
+                        navController.popBackStack()
+                    }
                           },
                 modifier = Modifier
                     .fillMaxWidth()

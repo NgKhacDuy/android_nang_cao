@@ -26,6 +26,7 @@ sealed class Route(val route: String) {
     object VideoScreen : Route(Constant.videoScreen)
     object OptionsMenuChat : Route(Constant.optionsMenu)
 
+    object ImagePicker : Route(Constant.ImagePicker)
 
     fun withArgs(vararg args: String): String {
         return buildString {
