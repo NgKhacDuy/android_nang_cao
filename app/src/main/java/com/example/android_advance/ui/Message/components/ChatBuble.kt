@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -115,6 +116,15 @@ fun ChatScreen(
                 }) {
                     Icon(
                         Icons.Rounded.Call,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                IconButton(onClick = {
+                    navController.navigate(Route.OptionsMenuChat.withArgs(partnerName))
+                }) {
+                    Icon(
+                        Icons.Rounded.Menu,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp)
                     )
