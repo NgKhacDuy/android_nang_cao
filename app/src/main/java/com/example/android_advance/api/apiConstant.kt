@@ -13,6 +13,8 @@ class apiConstant {
         const val userFriend = "friend"
         const val userSignOut = "user/logout"
         const val agora = "agora"
+        const val userPatchPassword = "user/password"
+        const val userPatchInfo = "user"
     }
 
 }
