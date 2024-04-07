@@ -46,8 +46,6 @@ fun VideoScreen(
         permissionLauncher.launch(
             arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
         )
-        Log.e("PERMISSION AUDIO", viewModel.hasAudioPermission.value.toString())
-        Log.e("PERMISSION CAMERA", viewModel.hasCameraPermission.value.toString())
     }
     BackHandler {
         agoraView?.leaveChannel()
@@ -73,7 +71,6 @@ fun VideoScreen(
                     it.agkit.addHandler(object : IRtcEngineEventHandler() {
                         override fun onLeaveChannel(stats: RtcStats?) {
                             super.onLeaveChannel(stats)
-                            Log.e("LEAVE CHANNEL", true.toString())
                             viewModel.triggerLeaveChannel()
 
                         }

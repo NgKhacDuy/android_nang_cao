@@ -56,7 +56,6 @@ class loginViewModel @Inject constructor(
     fun signIn(phoneNumber: String, password: String, navController: NavController) {
         isLoading.value = true
         val oneSignalUserID: String? = OneSignal.User.pushSubscription.id
-        Log.e("AppID", oneSignalUserID.toString())
         val apiClient: APIClient = APIClient(context)
         val signInRequest = SigninRequest(phoneNumber, password, oneSignalUserID)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -72,7 +71,7 @@ class loginViewModel @Inject constructor(
                     appSharedPreference.refreshToken =
                         response.body()?.data?.refreshToken.toString()
 
-                    navController.navigate(route = "home"){
+                    navController.navigate(route = "home") {
                         popUpTo("auth") {
                             inclusive = true
                         }
