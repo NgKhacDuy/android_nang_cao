@@ -14,10 +14,14 @@ import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.request.FriendRequest
 import com.example.android_advance.model.response.SearchResponse
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.components.IconType
+import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Call
@@ -35,6 +39,8 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
     val isShowDialog = mutableStateOf(false)
     val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
     private val appSharedPreference = AppSharedPreference(context)
+
+
     fun performSearch(keyword: String) {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -72,6 +78,7 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
 
         })
     }
+
 
     fun addFriend(idUser: String, name: String) {
         val apiClient: APIClient = APIClient(context)

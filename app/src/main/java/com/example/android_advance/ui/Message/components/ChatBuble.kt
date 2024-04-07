@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -160,6 +161,17 @@ fun ChatItem(message: messageDto, isSender: Boolean) {
             .fillMaxWidth()
             .padding(4.dp)
     ) {
+        Text(
+            text = "Unknow",
+            style = TextStyle(
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color.Gray
+            ),
+            modifier = Modifier
+                .align(if (isSender) Alignment.End else Alignment.Start)
+                .padding(horizontal = 8.dp)
+        )
         Box(
             modifier = Modifier
                 .align(if (isSender) Alignment.End else Alignment.Start)

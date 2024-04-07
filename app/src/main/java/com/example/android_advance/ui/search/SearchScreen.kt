@@ -27,6 +27,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
 import com.example.android_advance.model.response.FriendsDto
+import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.ui.components.AlertDialogComponent
 import com.example.android_advance.ui.search.SearchScreenModel
 import kotlinx.coroutines.*
@@ -116,6 +117,7 @@ fun SearchScreenPP(navController: NavController) {
     var searchValue by remember { mutableStateOf("") }
     val debounceJob = remember { mutableStateOf<Job?>(null) }
     val searchState = viewModel.searchResults.observeAsState()
+
     val trailingIconView = @Composable {
         IconButton(
             onClick = {
@@ -209,7 +211,7 @@ fun SearchScreenPP(navController: NavController) {
 
                     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text(
-                            text = "People",
+                            text = "People or Group",
                             fontFamily = poppinsFamily,
                             fontSize = 18.sp,
                             modifier = Modifier
@@ -234,6 +236,7 @@ fun SearchScreenPP(navController: NavController) {
                             )
                         }
                     }
+
                 }
             }
         }

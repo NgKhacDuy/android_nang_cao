@@ -127,7 +127,7 @@ class GroupScreenModel  @Inject constructor(@ApplicationContext private val cont
             var createGroupSuccess = true
             if(addedFriendIds.size < 3){
                 Log.e("RoomCreation", "Vui lòng phải có ít nhất 3 thành viên trong nhóm.")
-                showToast("Vui lòng phải có ít nhất 3 thành viên trong nhóm")
+                showToast("Vui lòng phải có ít nhất  3 thành viên trong nhóm")
                 createGroupSuccess = false
             }
             if (groupName.isEmpty()){
