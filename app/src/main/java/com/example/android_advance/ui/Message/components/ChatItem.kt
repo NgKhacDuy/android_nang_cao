@@ -1,10 +1,7 @@
 package com.example.android_advance.ui.Message.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +37,14 @@ fun ChatItem(message: messageDto, isSender: Boolean) {
                     .background(Color(0xFFD0BCFF))
                     .padding(16.dp)
             ) {
-                message.content?.let { Text(text = it) }
+                Column(horizontalAlignment = Alignment.End) {
+                    androidx.compose.material.Text(
+                        message.user?.name.toString(),
+                        color = Color.Gray.copy(alpha = 0.9f)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    message.content?.let { Text(text = it) }
+                }
             }
         }
     } else {
