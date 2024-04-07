@@ -24,7 +24,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel()
-class AccountScreenViewModel@Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
+class AccountScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
     private val db: DatabaseHelper = DatabaseHelper(context)
     val passwordFormState = FormState(
@@ -72,7 +72,6 @@ class AccountScreenViewModel@Inject constructor(@ApplicationContext private val 
                 response: Response<ApiResponse.BaseApiResponse<UserDto>>
             ) {
                 if (response.isSuccessful) {
-                    Log.e("USER INFO", response.body().toString())
                     val userDtoData = response.body()?.data
                     if (userDtoData != null) {
                         liveData.postValue(userDtoData)

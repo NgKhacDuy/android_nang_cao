@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.android_advance"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -141,6 +141,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("commons-codec:commons-codec:1.11")
+    implementation("com.google.accompanist:accompanist-flowlayout:0.20.0")
+
 }
 
 kapt {

@@ -245,7 +245,7 @@ fun HomeScreen(navController: NavController) {
                             User(
                                 R.drawable.person_avt,
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
-                                roomState.value?.get(it)?.lastMessage?.content ?: "Nhóm đã được tạo",
+                                roomState.value?.get(it)?.lastMessage?.content ?: "Cuộc hội thoại đã được tạo",
                                 convertDateTime.timeAgo(
                                     roomState.value!![it].lastMessage?.createAt ?: currentDate
                                 ),

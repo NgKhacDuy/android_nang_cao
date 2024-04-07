@@ -32,7 +32,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.android_advance.shared_preference.AppSharedPreference
-import com.example.android_advance.ui.BottomNavigation.HomeNavigation
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
 import com.example.android_advance.ui.Home.HomeScreen
@@ -47,6 +46,7 @@ import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
+
 
 @Composable
 fun Navigation() {
@@ -103,7 +103,6 @@ fun Navigation() {
                 }
                 composable(route = Route.WelcomeScreen.route) {
                     if (appSharedPreference.accessToken == "" && appSharedPreference.refreshToken == "") {
-                        Log.e("RefreshToken", appSharedPreference.refreshToken)
                         bottomBarVisible.value = false
                         WelcomeScreen(navController)
                     } else {
