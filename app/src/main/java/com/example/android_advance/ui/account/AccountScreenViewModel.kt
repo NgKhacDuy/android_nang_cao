@@ -11,6 +11,7 @@ import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
+import com.example.android_advance.model.request.PasswordRequest
 import com.example.android_advance.model.request.updateUserInfoRequest
 import com.example.android_advance.model.request.userRequest
 import com.example.android_advance.model.response.UserDto
@@ -89,12 +90,15 @@ class AccountScreenViewModel@Inject constructor(@ApplicationContext private val 
         return liveData
     }
 
-    fun updateUserInfo(userId : String,name: String,phoneNumber: String): String {
+    fun updateUserInfo(name: String,phoneNumber: String): String {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
         var message = ""
         val userRequest = updateUserInfoRequest(name,phoneNumber)
-        val call = apiService?.updateUserInfo("Bearer ${appSharedPreference.accessToken}",userId,userRequest)
+        val call = userId?.let {
+            apiService?.updateUserInfo("Bearer ${appSharedPreference.accessToken}",
+                it,userRequest)
+        }
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
             override fun onResponse(
                 call: Call<ApiResponse.BaseApiResponse<Unit>>,
@@ -113,6 +117,38 @@ class AccountScreenViewModel@Inject constructor(@ApplicationContext private val 
 
             override fun onFailure(call: Call<ApiResponse.BaseApiResponse<Unit>>, t: Throwable) {
                 Log.e("USER UPDATE INFO ERROR", t.message.toString())
+            }
+        })
+        return message
+    }
+
+    fun updatePassword(password: String): String {
+        val apiClient: APIClient = APIClient(context)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
+        var message = ""
+        val passwordRequest = PasswordRequest(password)
+        val call = userId?.let {
+            apiService?.changePassword("Bearer ${appSharedPreference.accessToken}",
+                it,passwordRequest)
+        }
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
+            override fun onResponse(
+                call: Call<ApiResponse.BaseApiResponse<Unit>>,
+                response: Response<ApiResponse.BaseApiResponse<Unit>>
+            ) {
+                if (response.isSuccessful) {
+                    Log.e("PASSWORD CHANGE", response.body().toString())
+                    val userDtoData = response.body()?.data
+                    if (userDtoData != null) {
+                        message= userDtoData.toString()
+                    }
+                } else {
+                    Log.e("PASSWORD CHANGE", "error")
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse.BaseApiResponse<Unit>>, t: Throwable) {
+                Log.e("PASSWORD CHANGE ERROR", t.message.toString())
             }
         })
         return message

@@ -51,6 +51,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.compose.material3:material3-android:1.2.1")
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
@@ -106,6 +107,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
 //
     implementation("com.google.accompanist:accompanist-insets:0.22.0-rc")
 //
@@ -132,6 +134,8 @@ dependencies {
 // agora
     implementation("io.agora.rtc:full-sdk:3.5.0")
     implementation("com.github.AgoraIO-Community:Android-UIKit:v2.0.0")
+    implementation("io.agora.rtm:rtm-sdk:1.4.4")
+
 //
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")

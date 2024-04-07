@@ -1,6 +1,7 @@
 package com.example.android_advance.api
 
 import com.example.android_advance.model.request.FriendRequest
+import com.example.android_advance.model.request.PasswordRequest
 import com.example.android_advance.model.request.RefreshRequest
 import com.example.android_advance.model.request.SigninRequest
 import com.example.android_advance.model.request.SignupRequest
@@ -56,6 +57,13 @@ interface ApiInterface {
     fun getAgoraToken(
         @Path("name") name: String
     ): Call<ApiResponse.BaseApiResponse<AgoraTokenDto>>
+
+    @PATCH(apiConstant.userPatchPassword + "/{id}")
+    fun changePassword (
+        @Header("Authorization") authHeader: String,
+        @Path("id") id: String,
+        @Body passwordRequest: PasswordRequest
+    ): Call<ApiResponse.BaseApiResponse<Unit>>
 
     @PATCH(apiConstant.userPatchInfo + "/{id}")
     fun updateUserInfo (

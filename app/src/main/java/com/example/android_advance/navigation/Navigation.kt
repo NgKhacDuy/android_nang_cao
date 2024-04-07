@@ -41,6 +41,7 @@ import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
 import com.example.android_advance.ui.account.AccountScreen
+import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
@@ -147,6 +148,10 @@ fun Navigation() {
                 composable(route = Route.ManageAccountInfoScreen.route)
                 {
                     ManageAccountInfoScreen(navController)
+                }
+                composable(route = Route.ChangePasswordScreen.route)
+                {
+                    ChangePasswordScreen(navController = navController)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",

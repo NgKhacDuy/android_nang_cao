@@ -16,11 +16,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ContactPhone
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,15 +63,11 @@ fun AccountScreen(navController: NavController)
             Row(modifier = Modifier
                 .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start) {
-                Image(painter = painterResource(id = R.drawable.arrow_left_solid_black),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .height(IntrinsicSize.Max)
-                        .padding(start = 10.dp, top = 10.dp)
-                        .size(32.dp)
-                        .clickable {
-                            println("Button Clicked!")
-                        })
+                IconButton(onClick = {
+                    navController.popBackStack()
+                }) {
+                    Icon(Icons.Rounded.ArrowBack, contentDescription = null, modifier = Modifier.size(26.dp))
+                }
             }
             Column(verticalArrangement = Arrangement.spacedBy(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -89,10 +87,12 @@ fun AccountScreen(navController: NavController)
                 accountInfo.value?.name?.let { Text(text = it, fontSize = 20.sp) }
                 accountInfo.value?.phoneNumber?.let { Text(text = it, fontSize = 20.sp) }
                 Column {
-                    AccountItem(icon = Icons.Default.ManageAccounts, title = "change account info") {
+                    AccountItem(icon = Icons.Default.ManageAccounts, title = "Change account info") {
                         navController.navigate(Route.ManageAccountInfoScreen.route)
                     }
-
+                    AccountItem(icon = Icons.Default.Password, title = "Change account password") {
+                        navController.navigate(Route.ChangePasswordScreen.route)
+                    }
 //                    AccountItem(icon = Icons.Default.ContactPhone, title = "change phone number") {
 //
 //                    }

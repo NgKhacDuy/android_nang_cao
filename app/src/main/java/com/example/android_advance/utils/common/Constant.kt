@@ -24,11 +24,11 @@ class Constant {
         const val incomingCall_2 = "incoming_call_2"
         const val callHistoryScreen = "call_history_screen"
         const val videoScreen = "video_screen"
-
+        const val accountScreen = "account_screen"
+        const val manageAccountInfoScreen = "manage_account_info_screen"
+        const val changePasswordScreen = "change_password_screen"
         //        APP ID AGORA
         const val appIdAgora = "566c6e877ab94b699e6dddd9d230a124"
         const val agoraCert = "b16789a05451435ea16e6681842ab425"
-        const val accountScreen = "account_screen"
-        const val manageAccountInfoScreen = "manage_account_info_screen"
     }
 }
