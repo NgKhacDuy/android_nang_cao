@@ -36,12 +36,12 @@ import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
-import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
 import com.example.android_advance.ui.account.AccountScreen
 import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
+import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
@@ -120,7 +120,7 @@ fun Navigation() {
                     HomeScreen(navController)
                 }
                 composable(route = Route.CallScreen.route) {
-                    CallSreen()
+                    CallHistoryScreenPP(navController)
                 }
                 composable(route = Route.SettingScreen.route) {
                     SettingScreen(navController)
