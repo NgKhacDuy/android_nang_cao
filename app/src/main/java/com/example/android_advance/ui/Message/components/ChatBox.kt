@@ -101,7 +101,7 @@ fun ChatBox(
                     selectedImageBase64.add(it)
                 }
 
-                onSendChatClickListener("image", MessageEnum.IMAGE.type, selectedImageBase64.toList())
+                onSendChatClickListener("Hình ảnh", MessageEnum.IMAGE.type, selectedImageBase64.toList())
             }) // Call ImagePicker here when the dialog should be shown
     }
 }

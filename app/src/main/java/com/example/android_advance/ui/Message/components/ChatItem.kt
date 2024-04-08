@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.utils.common.ConvertDateTime
@@ -33,11 +34,14 @@ fun ChatItem(message: messageDto, isSender: Boolean) {
                             bottomStart = if (isSender) 48f else 0f,
                             bottomEnd = if (isSender) 0f else 48f
                         )
-                    )
+                    ).width(LocalConfiguration.current.screenWidthDp.dp / 2)
                     .background(Color(0xFFD0BCFF))
                     .padding(16.dp)
             ) {
-                Column(horizontalAlignment = Alignment.End) {
+                Column(
+                    horizontalAlignment = if (isSender) Alignment.End else Alignment.Start,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     androidx.compose.material.Text(
                         message.user?.name.toString(),
                         color = Color.Gray.copy(alpha = 0.9f)

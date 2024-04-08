@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.dsc.form_builder.FormState
 import com.dsc.form_builder.TextFieldState
 import com.dsc.form_builder.Validators
@@ -63,7 +64,15 @@ class SignUpViewModel @Inject constructor(@ApplicationContext private val contex
         return confirmationPass == formState.fields.find { it.name == "password" }?.value.toString()
     }
 
-    fun signUp(name: String, phoneNumber: String, password: String) {
+    private fun navigateToLogin(navController: NavController) {
+        navController.navigate(route = "home") {
+            popUpTo("auth") {
+                inclusive = true
+            }
+        }
+    }
+
+    fun signUp(name: String, phoneNumber: String, password: String, navController: NavController) {
         isLoading.value = true
         val apiClient: APIClient = APIClient(context)
         val userRequest = SignupRequest(name, password, phoneNumber)
@@ -79,11 +88,11 @@ class SignUpViewModel @Inject constructor(@ApplicationContext private val contex
                     infoDialog.value = InfoDialog(
                         fun() {
                             isShowDialog.value = false
-
+                            navigateToLogin(navController = navController)
                         },
                         fun() {
                             isShowDialog.value = false
-
+                            navigateToLogin(navController = navController)
                         },
                         "Đăng ký thành công",
                         "Bạn đã đăng ký tài khoản thành công",
