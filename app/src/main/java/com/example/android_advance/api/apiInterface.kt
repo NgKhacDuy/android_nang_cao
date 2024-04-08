@@ -1,16 +1,7 @@
 package com.example.android_advance.api
 
-import com.example.android_advance.model.request.FriendRequest
-import com.example.android_advance.model.request.PasswordRequest
-import com.example.android_advance.model.request.RefreshRequest
-import com.example.android_advance.model.request.SigninRequest
-import com.example.android_advance.model.request.SignupRequest
 import com.example.android_advance.model.response.*
-import com.example.android_advance.model.request.updateUserInfoRequest
-import com.example.android_advance.model.response.AgoraTokenDto
-import com.example.android_advance.model.response.FriendResponse
-import com.example.android_advance.model.response.SigninResponse
-import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.model.request.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -60,14 +51,14 @@ interface ApiInterface {
     ): Call<ApiResponse.BaseApiResponse<AgoraTokenDto>>
 
     @PATCH(apiConstant.userPatchPassword + "/{id}")
-    fun changePassword (
+    fun changePassword(
         @Header("Authorization") authHeader: String,
         @Path("id") id: String,
         @Body passwordRequest: PasswordRequest
     ): Call<ApiResponse.BaseApiResponse<Unit>>
 
     @PATCH(apiConstant.userPatchInfo + "/{id}")
-    fun updateUserInfo (
+    fun updateUserInfo(
         @Header("Authorization") authHeader: String,
         @Path("id") id: String,
         @Body userInfoRequest: updateUserInfoRequest
