@@ -39,6 +39,9 @@ import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
+import com.example.android_advance.ui.account.AccountScreen
+import com.example.android_advance.ui.account.ChangePasswordScreen
+import com.example.android_advance.ui.account.ManageAccountInfoScreen
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
@@ -138,6 +141,17 @@ fun Navigation() {
                         it.arguments?.getString("roomName") ?: return@composable
                     VideoScreen(roomName = roomName, navController)
                 }
+                composable(route = Route.AccountScreen.route) {
+                    AccountScreen(navController)
+                }
+                composable(route = Route.ManageAccountInfoScreen.route)
+                {
+                    ManageAccountInfoScreen(navController)
+                }
+                composable(route = Route.ChangePasswordScreen.route)
+                {
+                    ChangePasswordScreen(navController = navController)
+                }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",
                     arguments = listOf(
@@ -178,56 +192,6 @@ fun isHaveToken(context: Context): Boolean {
     val appSharedPreference = AppSharedPreference(context)
     return appSharedPreference.accessToken != "" && appSharedPreference.refreshToken != ""
 }
-//class MainActivity : ComponentActivity() {
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContent {
-//            NestedNavigationGraphsGuideTheme {
-//                val navController = rememberNavController()
-//                NavHost(navController = navController, startDestination = "home") {
-//                    composable("about") {
-//
-//                    }
-//                    navigation(
-//                        startDestination = "login",
-//                        route = "auth"
-//                    ) {
-//                        composable("login") {
-//                            val viewModel = it.sharedViewModel<SampleViewModel>(navController)
-//
-//                            Button(onClick = {
-//                                navController.navigate("calendar") {
-//                                    popUpTo("auth") {
-//                                        inclusive = true
-//                                    }
-//                                }
-//                            }) {
-//
-//                            }
-//                        }
-//                        composable("register") {
-//                            val viewModel = it.sharedViewModel<SampleViewModel>(navController)
-//                        }
-//                        composable("forgot_password") {
-//                            val viewModel = it.sharedViewModel<SampleViewModel>(navController)
-//                        }
-//                    }
-//                    navigation(
-//                        startDestination = "calendar_overview",
-//                        route = "calendar"
-//                    ) {
-//                        composable("calendar_overview") {
-//
-//                        }
-//                        composable("calendar_entry") {
-//
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
 
 @Composable
 inline fun <reified T : ViewModel> NavBackStackEntry.sharedViewModel(navController: NavController): T {

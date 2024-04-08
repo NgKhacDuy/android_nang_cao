@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.Home.HomeScreenViewModel
 import kotlinx.coroutines.launch
 
@@ -105,7 +106,9 @@ fun SettingScreen(navController: NavController) {
         SettingItem(
             icon = Icons.Default.AccountCircle,
             title = "Account",
-            onClick = {}
+            onClick = {
+                navController.navigate(route = Route.AccountScreen.route)
+            }
         )
         SettingItem(
             icon = Icons.Default.Chat,
