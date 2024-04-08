@@ -58,12 +58,6 @@ class appInterceptor @Inject constructor(
             } else {
                 deleteToken()
                 deleteSqlite()
-                val navController = NavController(context)
-                navController.navigate(route = "auth") {
-                    popUpTo("home") {
-                        inclusive = true
-                    }
-                }
             }
         }
         return originResponse

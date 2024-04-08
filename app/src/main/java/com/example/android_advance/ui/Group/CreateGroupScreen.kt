@@ -33,7 +33,6 @@ import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.Message.MessageViewModel
-import com.example.android_advance.ui.call_history.SearchCard
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 
@@ -91,7 +90,7 @@ fun CreateGroupScreen(navController: NavController) {
 
             OutlinedTextField(
                 value = inputValue,
-                onValueChange = { inputValue = it},
+                onValueChange = { inputValue = it },
                 label = { Text("Enter Group name") },
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                 modifier = Modifier
@@ -112,7 +111,7 @@ fun CreateGroupScreen(navController: NavController) {
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(start = 15.dp ,top = 16.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 15.dp, top = 16.dp, bottom = 8.dp)
             )
             Row(
                 modifier = Modifier.fillMaxWidth().padding(start = 7.dp),
@@ -135,6 +134,7 @@ fun CreateGroupScreen(navController: NavController) {
                     null -> {
                         // Show loading indicator or handle error
                     }
+
                     else -> {
                         user.name?.let {
                             Text(
@@ -155,7 +155,7 @@ fun CreateGroupScreen(navController: NavController) {
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                modifier = Modifier.padding(start = 15.dp ,top = 20.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 15.dp, top = 20.dp, bottom = 8.dp)
             )
 
             OutlinedTextField(
@@ -184,7 +184,7 @@ fun CreateGroupScreen(navController: NavController) {
             )
 
             friendState.value?.forEach { result ->
-                if(result?.status != "Waiting for Accept"){
+                if (result?.status != "Waiting for Accept") {
                     result?.user?.let { user ->
                         user.name?.let { userName ->
                             user.id?.let { userId ->
@@ -210,7 +210,7 @@ fun CreateGroupScreen(navController: NavController) {
                     if (createRoomSuccess) {
                         navController.popBackStack()
                     }
-                          },
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)
@@ -227,7 +227,7 @@ fun UserListItem(text: String, userId: String, viewModel: GroupScreenModel) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 7.dp ,bottom = 16.dp),
+            .padding(start = 7.dp, bottom = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Invited Members List
@@ -255,7 +255,7 @@ fun UserListItem(text: String, userId: String, viewModel: GroupScreenModel) {
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            if(isAdded.value){
+            if (isAdded.value) {
                 IconButton(
                     onClick = {
                         viewModel.removeFriendId(userId)

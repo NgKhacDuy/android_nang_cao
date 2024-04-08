@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
@@ -16,6 +17,7 @@ import com.example.android_advance.model.response.SearchDto
 import com.example.android_advance.model.response.SearchResponse
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.shared_preference.AppSharedPreference
+import com.example.android_advance.socketio.SocketManager
 import com.example.android_advance.ui.components.IconType
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -36,6 +38,13 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
     val isShowDialog = mutableStateOf(false)
     val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
     private val appSharedPreference = AppSharedPreference(context)
+    private var socketManager = SocketManager.getInstance(context)
+
+    fun navigateBack(navController: NavController) {
+        navController.popBackStack()
+        socketManager.disconnect()
+    }
+
     fun performSearch(keyword: String) {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -124,86 +133,72 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
     }
 
     fun decideFriend(idUser: String, choice: String) {
-        val apiClient: APIClient = APIClient(context)
-        val apiService = apiClient.client()?.create(ApiInterface::class.java)
-        val call = apiService?.performFriend("Bearer ${appSharedPreference.accessToken}", idUser, choice)
-        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
-            override fun onResponse(
-                call: Call<ApiResponse.BaseApiResponse<Unit>>,
-                response: Response<ApiResponse.BaseApiResponse<Unit>>
-            ) {
-                if (response.isSuccessful && choice == "Accept") {
-                    infoDialog.value = InfoDialog(
-                        fun() {
-                            isShowDialog.value = false
-                        },
-                        fun() {
-                            isShowDialog.value = false
-                        },
-                        "Kết bạn thành công",
-                        "Bạn đã kết bạn với người này",
-                        "OK",
-                        "Hủy",
-                        IconType.SUCCESS
-                    )
-                    isShowDialog.value = true
-                } else if (response.isSuccessful && choice == "Reject") {
-                    infoDialog.value = InfoDialog(
-                        fun() {
-                            isShowDialog.value = false
-                        },
-                        fun() {
-                            isShowDialog.value = false
-                        },
-                        "Từ chối thành công",
-                        "Bạn đã từ chối kết bạn với người này",
-                        "OK",
-                        "Hủy",
-                        IconType.SUCCESS
-                    )
-                    isShowDialog.value = true
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
-                    val message = errorJsonObject.get("message").asString
-                    infoDialog.value = InfoDialog(
-                        fun() {
-                            isShowDialog.value = false
+        try {
+            val apiClient: APIClient = APIClient(context)
+            val apiService = apiClient.client()?.create(ApiInterface::class.java)
+            val call = apiService?.performFriend("Bearer ${appSharedPreference.accessToken}", idUser, choice)
+            call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
+                override fun onResponse(
+                    call: Call<ApiResponse.BaseApiResponse<Unit>>,
+                    response: Response<ApiResponse.BaseApiResponse<Unit>>
+                ) {
+                    if (response.isSuccessful && choice == "Accept") {
+                        infoDialog.value = InfoDialog(
+                            fun() {
+                                isShowDialog.value = false
+                                _searchResult.postValue(null)
+                            },
+                            fun() {
+                                isShowDialog.value = false
+                                _searchResult.postValue(null)
+                            },
+                            "Kết bạn thành công",
+                            "Đã kết bạn thành công",
+                            "OK",
+                            "Hủy",
+                            IconType.SUCCESS
+                        )
+                        isShowDialog.value = true
+                    } else if (response.isSuccessful && choice == "Reject") {
+                        infoDialog.value = InfoDialog(
+                            fun() {
+                                isShowDialog.value = false
+                                _searchResult.postValue(null)
+                            },
+                            fun() {
+                                isShowDialog.value = false
+                                _searchResult.postValue(null)
+                            },
+                            "Từ chối thành công",
+                            "Đã từ chối thành công",
+                            "OK",
+                            "Hủy",
+                            IconType.SUCCESS
+                        )
+                        isShowDialog.value = true
+                    }
+                }
 
+                override fun onFailure(call: Call<ApiResponse.BaseApiResponse<Unit>>, t: Throwable) {
+                    infoDialog.value = InfoDialog(
+                        fun() {
+                            isShowDialog.value = false
                         },
                         fun() {
                             isShowDialog.value = false
-
                         },
                         "Kết bạn thất bại",
-                        message,
+                        "Đã có lỗi xảy ra, vui lòng thử lại",
                         "OK",
                         "Hủy",
                         IconType.ERROR
                     )
                     isShowDialog.value = true
+                    _searchResult.postValue(null)
                 }
-            }
-
-            override fun onFailure(call: Call<ApiResponse.BaseApiResponse<Unit>>, t: Throwable) {
-                infoDialog.value = InfoDialog(
-                    fun() {
-                        isShowDialog.value = false
-
-                    },
-                    fun() {
-                        isShowDialog.value = false
-
-                    },
-                    "Kết bạn thất bại",
-                    "Đã có lỗi xảy ra, vui lòng thử lại",
-                    "OK",
-                    "Hủy",
-                    IconType.ERROR
-                )
-                isShowDialog.value = true
-            }
-        })
-
+            })
+        } catch (e: Exception) {
+            Log.e("Error", e.message.toString())
+        }
     }
 }
