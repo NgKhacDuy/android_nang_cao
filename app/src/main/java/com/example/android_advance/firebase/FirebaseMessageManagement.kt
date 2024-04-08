@@ -10,6 +10,7 @@ import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.FriendResponse
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
@@ -22,7 +23,7 @@ import javax.inject.Inject
 
 
 class FirebaseMessageManagement: FirebaseMessagingService() {
-
+    private val firestore = FirebaseFirestore.getInstance()
     override fun onNewToken(token: String) {
         Log.e("NEW_TOKEN", token)
     }
@@ -53,8 +54,32 @@ class FirebaseMessageManagement: FirebaseMessagingService() {
         }
     }
 
-    fun findUserToken()
-    {
-
+    fun getAllIdInRoom(roomId: String, idList: ArrayList<String>, currentUserId: String) {
+        var tokenList= LinkedHashMap<String,String>()
+        firestore.document("roomList/$roomId").get()
+            .addOnSuccessListener { document1 ->
+                if (document1.exists()) {
+                    document1["idList"].let { data ->
+                        firestore.document("fcmTokens/$data").get()
+                            .addOnSuccessListener { document2 ->
+                                if (document2.exists()) {
+                                    tokenList.put(data.toString(), document2["token"].toString())
+                                } else {
+                                    // Document 2 does not exist
+                                }
+                            }
+                            .addOnFailureListener { exception ->
+                                // Error retrieving document 2
+                            }
+                    }
+                    Log.e("Token List",tokenList.size.toString())
+                } else {
+                    // Document 1 does not exist
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Error retrieving document 1
+            }
+        
     }
 }
