@@ -37,10 +37,6 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
             }
     }
 
-    fun refreshToken() {
-        appInterceptor.refreshTokenFunction()
-    }
-
     @OptIn(DelicateCoroutinesApi::class)
     fun connect() {
         GlobalScope.launch(Dispatchers.IO) {
@@ -69,7 +65,6 @@ class SocketManager @Inject constructor(@ApplicationContext private val context:
     fun on(event: String, callback: (args: Array<Any>) -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
             if (event == "Error") {
-                refreshToken()
                 socket.connect()
             }
             socket.on(event) { args ->

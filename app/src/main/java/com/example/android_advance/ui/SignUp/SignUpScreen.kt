@@ -74,7 +74,7 @@ fun SignUpScreen(navController: NavController) {
 
     fun validation() {
         if (formState.validate()) {
-            viewModel.signUp(nameState.value, sdtState.value, passwordState.value)
+            viewModel.signUp(nameState.value, sdtState.value, passwordState.value, navController)
         }
     }
     Box(
