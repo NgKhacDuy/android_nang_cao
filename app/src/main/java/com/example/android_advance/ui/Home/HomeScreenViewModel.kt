@@ -71,7 +71,6 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                             val listType = object : TypeToken<List<roomDto>>() {}.type
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
                             _onNewRoom.postValue(temp)
-                            isRefreshing.value = false
                         }
                     }
                 }

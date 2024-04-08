@@ -27,97 +27,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
 import com.example.android_advance.model.response.FriendsDto
-import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.ui.components.AlertDialogComponent
 import com.example.android_advance.ui.search.SearchScreenModel
+import com.example.android_advance.ui.search.component.ListSearch
+import com.example.android_advance.ui.search.component.SearchCard
 import kotlinx.coroutines.*
-
-@Composable
-fun SearchCard(
-    avatar: Int,
-    name: String,
-    latestMessage: String,
-    friend: ArrayList<FriendsDto>,
-    idUser: String,
-    viewModel: SearchScreenModel
-) {
-    var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
-    val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
-    Card(
-        modifier = Modifier
-            .size(width = screenWidth.dp, height = 55.dp)
-            .background(color = Color.Transparent)
-    ) {
-        Row(
-            modifier = Modifier
-                .background(color = Color.White)
-                .fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 5.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = avatar),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(
-                            50.dp
-                        )
-                        .clip(CircleShape)
-                )
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(start = 10.dp)
-                ) {
-                    Text(text = name, fontSize = 20.sp, fontFamily = poppinsFamily)
-                    Text(text = latestMessage, fontFamily = poppinsFamily, color = Color.Gray)
-                }
-            }
-            IconButton(onClick = {
-
-            }) {
-                if (friend.isEmpty()) {
-                    Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(24.dp).clickable() {
-                        viewModel.addFriend(idUser, name)
-                    })
-                } else {
-                    val idSender = friend.first().idSender
-                    if (friend.first().status == "Accepted") {
-                        Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(24.dp))
-                    } else if (viewModel.checkCurrentUser(idSender!!)) {
-                        Icon(Icons.Filled.HourglassTop, contentDescription = null, modifier = Modifier.size(24.dp))
-                    } else {
-                        Icon(
-                            Icons.Default.PersonAdd,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp).clickable {
-                                viewModel.performRequestFriend(idUser)
-                            })
-                    }
-
-                }
-
-            }
-
-        }
-    }
-}
 
 @Composable
 fun SearchScreenPP(navController: NavController) {
     val viewModel = hiltViewModel<SearchScreenModel>()
-    var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
+    val poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     var searchValue by remember { mutableStateOf("") }
     val debounceJob = remember { mutableStateOf<Job?>(null) }
-    val searchState = viewModel.searchResults.observeAsState()
-
     val trailingIconView = @Composable {
         IconButton(
             onClick = {
@@ -151,7 +73,7 @@ fun SearchScreenPP(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = {
-                    navController.popBackStack()
+                    viewModel.navigateBack(navController)
                 }) {
                     Icon(Icons.Rounded.ArrowBack, contentDescription = null, modifier = Modifier.size(26.dp))
                 }
@@ -181,7 +103,7 @@ fun SearchScreenPP(navController: NavController) {
                         if (newValue.isNotEmpty() && newValue.isNotBlank()) {
                             debounceJob.value?.cancel()
                             debounceJob.value = CoroutineScope(Dispatchers.Main).launch {
-                                delay(1000L)
+                                delay(500L)
                                 viewModel.performSearch(newValue)
                             }
                         }
@@ -208,35 +130,7 @@ fun SearchScreenPP(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
-                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        Text(
-                            text = "People or Group",
-                            fontFamily = poppinsFamily,
-                            fontSize = 18.sp,
-                            modifier = Modifier
-                                .padding(start = 20.dp)
-                                .align(Alignment.Start)
-                        )
-                        searchState.value?.forEach { result ->
-                            result.name?.let {
-                                SearchCard(
-                                    R.drawable.user_solid,
-                                    it,
-                                    "Today ",
-                                    result.friends,
-                                    result.id!!,
-                                    viewModel
-                                )
-                            }
-                            Divider(
-                                color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
-                                    .width((screenWidth / 4).dp)
-                                    .align(Alignment.End)
-                            )
-                        }
-                    }
-
+                    ListSearch(viewModel)
                 }
             }
         }

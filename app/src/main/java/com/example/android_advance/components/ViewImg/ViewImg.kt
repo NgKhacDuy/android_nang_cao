@@ -7,23 +7,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 
 @Composable
 fun ExpandedImage(imageUrl: String, onDismiss: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.8f)) // Semi-transparent background
-            .clickable(onClick = onDismiss) // Dismiss on click outside
-    ) {
+    Dialog(onDismissRequest = onDismiss) {
         AsyncImage(
             model = imageUrl,
             contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
-                .aspectRatio(1f) // Maintain aspect ratio
         )
     }
 }
