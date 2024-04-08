@@ -30,10 +30,11 @@ class appInterceptor @Inject constructor(
 
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response {
-        var originRequest = chain.request()
+        val originRequest = chain.request()
         var originResponse = chain.proceed(originRequest)
         val refreshRequest = RefreshRequest(refreshToken = appSharedPreference.refreshToken)
         if (originResponse.code == 401) {
+            originResponse.close()
             val body =
                 Gson().toJson(refreshRequest).toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
             val authRequest = chain.request().newBuilder()
@@ -43,7 +44,6 @@ class appInterceptor @Inject constructor(
                 .build()
             val tokenResponse = chain.proceed(authRequest)
             if (tokenResponse.code == 200) {
-                originResponse.close()
                 var json = JSONObject(tokenResponse.body?.string()!!)
                 val data = JSONObject(json.getString("data"))
                 val accessToken = data.getString("accessToken")

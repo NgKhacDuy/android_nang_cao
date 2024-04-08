@@ -4,10 +4,7 @@ import com.example.android_advance.model.request.FriendRequest
 import com.example.android_advance.model.request.RefreshRequest
 import com.example.android_advance.model.request.SigninRequest
 import com.example.android_advance.model.request.SignupRequest
-import com.example.android_advance.model.response.AgoraTokenDto
-import com.example.android_advance.model.response.FriendResponse
-import com.example.android_advance.model.response.SigninResponse
-import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.model.response.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -28,7 +25,7 @@ interface ApiInterface {
     fun Search(
         @Header("Authorization") authHeader: String,
         @Path("keyword") keyword: String
-    ): Call<ApiResponse.BaseApiResponse<List<UserDto>>>
+    ): Call<ApiResponse.BaseApiResponse<SearchDto>>
 
     @GET(apiConstant.userFriend)
     fun friend(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<List<FriendResponse>>>

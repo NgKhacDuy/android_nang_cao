@@ -12,6 +12,7 @@ import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.data_class.InfoDialog
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.request.FriendRequest
+import com.example.android_advance.model.response.SearchDto
 import com.example.android_advance.model.response.SearchResponse
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -39,13 +40,13 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
         val call = apiService?.Search("Bearer ${appSharedPreference.accessToken}", keyword)
-        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<List<UserDto>>> {
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<SearchDto>> {
             override fun onResponse(
-                call: Call<ApiResponse.BaseApiResponse<List<UserDto>>>,
-                response: Response<ApiResponse.BaseApiResponse<List<UserDto>>>
+                call: Call<ApiResponse.BaseApiResponse<SearchDto>>,
+                response: Response<ApiResponse.BaseApiResponse<SearchDto>>
             ) {
                 if (response.isSuccessful) {
-                    val searchResults = response.body()?.data?.map { userDto ->
+                    val searchResults = response.body()?.data?.listUserDto?.map { userDto ->
                         userDto.friends?.let {
                             SearchResponse(
                                 id = userDto.id,
@@ -64,7 +65,7 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
             }
 
             override fun onFailure(
-                call: Call<ApiResponse.BaseApiResponse<List<UserDto>>>,
+                call: Call<ApiResponse.BaseApiResponse<SearchDto>>,
                 t: Throwable
             ) {
                 Log.d("SearchError", t.message.toString())

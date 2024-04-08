@@ -120,22 +120,22 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
 
     fun getAddedFriendIds(): List<String> = addedFriendIds
 
-    fun createRoom(groupName: String) : Boolean {
+    fun createRoom(groupName: String): Boolean {
         val currentUserId = db.getUserId()
         currentUserId?.let { userId ->
             var createGroupSuccess = true
-            if(addedFriendIds.size < 3){
+            if (addedFriendIds.size < 3) {
                 Log.e("RoomCreation", "Vui lòng phải có ít nhất 3 thành viên trong nhóm.")
                 showToast("Vui lòng phải có ít nhất 3 thành viên trong nhóm")
                 createGroupSuccess = false
             }
-            if (groupName.isEmpty()){
+            if (groupName.isEmpty()) {
                 Log.e("RoomCreation", "Vui lòng nhập tên nhóm.")
                 showToast("Vui lòng nhập tên nhóm")
                 createGroupSuccess = false
             }
 
-            if (createGroupSuccess){
+            if (createGroupSuccess) {
                 val listUser = ArrayList(addedFriendIds)
                 listUser.add(userId)
                 val roomRequest = RoomRequest(listUser, groupName)
@@ -161,13 +161,13 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
         val call = apiService?.Search("Bearer ${appSharedPreference.accessToken}", keyword)
-        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<List<UserDto>>> {
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<SearchDto>> {
             override fun onResponse(
-                call: Call<ApiResponse.BaseApiResponse<List<UserDto>>>,
-                response: Response<ApiResponse.BaseApiResponse<List<UserDto>>>
+                call: Call<ApiResponse.BaseApiResponse<SearchDto>>,
+                response: Response<ApiResponse.BaseApiResponse<SearchDto>>
             ) {
                 if (response.isSuccessful) {
-                    val searchResults = response.body()?.data?.map { userDto ->
+                    val searchResults = response.body()?.data?.listUserDto?.map { userDto ->
                         userDto.friends?.let {
                             SearchResponse(
                                 id = userDto.id,
@@ -186,7 +186,7 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
             }
 
             override fun onFailure(
-                call: Call<ApiResponse.BaseApiResponse<List<UserDto>>>,
+                call: Call<ApiResponse.BaseApiResponse<SearchDto>>,
                 t: Throwable
             ) {
                 Log.d("SearchError", t.message.toString())
