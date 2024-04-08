@@ -11,6 +11,7 @@ import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
+import com.example.android_advance.firebase.FirebaseMessageManagement
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -37,7 +38,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
     private val _onNewRoom = MutableLiveData<List<roomDto>>()
 
-    private lateinit var db: DatabaseHelper
+    private var db: DatabaseHelper
 
     private var socketManager = SocketManager.getInstance(context)
     var isRefreshing = mutableStateOf(false)
@@ -56,7 +57,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         getUserInfo()
         getRoomForUser()
     }
-
+    val userId = db.getUserId()
 
     fun getRoomForUser() {
         try {
@@ -91,6 +92,8 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
             ) {
                 if (response.isSuccessful) {
                     response.body()?.data?.let { db.insertUser(it) }
+                    val firebaseMessage = FirebaseMessageManagement()
+                    firebaseMessage.sendTokenWithUserId(db.getUser().first().id!!)
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
