@@ -66,6 +66,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                 args.let { d ->
                     if (d.isNotEmpty()) {
                         val data = d[0]
+                        Log.e("DATA", data.toString())
                         if (data.toString().isNotEmpty()) {
                             val listType = object : TypeToken<List<roomDto>>() {}.type
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
