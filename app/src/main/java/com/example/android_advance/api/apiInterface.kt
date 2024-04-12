@@ -63,4 +63,9 @@ interface ApiInterface {
         @Path("id") id: String,
         @Body userInfoRequest: updateUserInfoRequest
     ): Call<ApiResponse.BaseApiResponse<Unit>>
+
+    @GET(apiConstant.friendRequest)
+    fun getFriendRequest(
+        @Header("Authorization") authHeader: String,
+    ): Call<ApiResponse.BaseApiResponse<List<FriendRequestDto>>?>
 }

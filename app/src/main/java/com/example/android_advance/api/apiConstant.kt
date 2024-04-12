@@ -15,6 +15,7 @@ class apiConstant {
         const val agora = "agora"
         const val userPatchPassword = "user/password"
         const val userPatchInfo = "user"
+        const val friendRequest = "user/friendrequest"
     }
 
 }

@@ -13,6 +13,7 @@ import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.data_class.InfoDialog
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.request.FriendRequest
+import com.example.android_advance.model.response.FriendRequestDto
 import com.example.android_advance.model.response.SearchDto
 import com.example.android_advance.model.response.SearchResponse
 import com.example.android_advance.model.response.UserDto
@@ -32,17 +33,60 @@ import javax.inject.Inject
 class SearchScreenModel @Inject constructor(@ApplicationContext private val context: Context) :
     ViewModel() {
     private val _searchResult = MutableLiveData<List<SearchResponse>?>()
+    private val _friendRequestResult = MutableLiveData<List<FriendRequestDto>?>()
     val search = mutableStateOf("")
     var db: DatabaseHelper = DatabaseHelper(context)
     val infoDialog = mutableStateOf(InfoDialog(fun() {}, fun() {}, "", "", "", ""))
     val isShowDialog = mutableStateOf(false)
     val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
+    val friendRequestResult: LiveData<List<FriendRequestDto>?> get() = _friendRequestResult
     private val appSharedPreference = AppSharedPreference(context)
     private var socketManager = SocketManager.getInstance(context)
+
+    init {
+        getFriendRequest()
+    }
 
     fun navigateBack(navController: NavController) {
         navController.popBackStack()
         socketManager.disconnect()
+    }
+
+    fun getFriendRequest() {
+        try {
+            val apiClient: APIClient = APIClient(context)
+            val apiService = apiClient.client()?.create(ApiInterface::class.java)
+            val call = apiService?.getFriendRequest("Bearer ${appSharedPreference.accessToken}")
+            call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<List<FriendRequestDto>>?> {
+                override fun onResponse(
+                    call: Call<ApiResponse.BaseApiResponse<List<FriendRequestDto>>?>,
+                    response: Response<ApiResponse.BaseApiResponse<List<FriendRequestDto>>?>
+                ) {
+                    if (response.isSuccessful) {
+                        val friendRequests = response.body()?.data?.map { friendRequestDto ->
+                            FriendRequestDto(
+                                id = friendRequestDto.id,
+                                idSender = friendRequestDto.idSender,
+                                idReceiver = friendRequestDto.idReceiver,
+                                status = friendRequestDto.status,
+                                user = friendRequestDto.user
+                            )
+                        }
+                        _friendRequestResult.postValue(friendRequests as List<FriendRequestDto>?)
+                    }
+                }
+
+                override fun onFailure(
+                    p0: Call<ApiResponse.BaseApiResponse<List<FriendRequestDto>>?>,
+                    p1: Throwable
+                ) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun performSearch(keyword: String) {
@@ -87,7 +131,8 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
         val addFriendRequest = FriendRequest(idUser)
-        val call = apiService?.addFriend("Bearer ${appSharedPreference.accessToken}", addFriendRequest)
+        val call =
+            apiService?.addFriend("Bearer ${appSharedPreference.accessToken}", addFriendRequest)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
             override fun onResponse(
                 call: Call<ApiResponse.BaseApiResponse<Unit>>,
@@ -136,7 +181,11 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
         try {
             val apiClient: APIClient = APIClient(context)
             val apiService = apiClient.client()?.create(ApiInterface::class.java)
-            val call = apiService?.performFriend("Bearer ${appSharedPreference.accessToken}", idUser, choice)
+            val call = apiService?.performFriend(
+                "Bearer ${appSharedPreference.accessToken}",
+                idUser,
+                choice
+            )
             call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
                 override fun onResponse(
                     call: Call<ApiResponse.BaseApiResponse<Unit>>,
@@ -179,7 +228,10 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
                     }
                 }
 
-                override fun onFailure(call: Call<ApiResponse.BaseApiResponse<Unit>>, t: Throwable) {
+                override fun onFailure(
+                    call: Call<ApiResponse.BaseApiResponse<Unit>>,
+                    t: Throwable
+                ) {
                     infoDialog.value = InfoDialog(
                         fun() {
                             isShowDialog.value = false
@@ -197,6 +249,7 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
                     _searchResult.postValue(null)
                 }
             })
+            getFriendRequest()
         } catch (e: Exception) {
             Log.e("Error", e.message.toString())
         }
