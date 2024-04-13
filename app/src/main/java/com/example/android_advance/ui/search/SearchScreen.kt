@@ -29,6 +29,8 @@ import com.example.android_advance.R
 import com.example.android_advance.model.response.FriendsDto
 import com.example.android_advance.ui.components.AlertDialogComponent
 import com.example.android_advance.ui.search.SearchScreenModel
+import com.example.android_advance.ui.search.component.ListRequest
+import com.example.android_advance.ui.search.component.ListRoom
 import com.example.android_advance.ui.search.component.ListSearch
 import com.example.android_advance.ui.search.component.SearchCard
 import kotlinx.coroutines.*
@@ -75,7 +77,11 @@ fun SearchScreenPP(navController: NavController) {
                 IconButton(onClick = {
                     viewModel.navigateBack(navController)
                 }) {
-                    Icon(Icons.Rounded.ArrowBack, contentDescription = null, modifier = Modifier.size(26.dp))
+                    Icon(
+                        Icons.Rounded.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(26.dp)
+                    )
                 }
                 OutlinedTextField(
                     modifier = Modifier
@@ -131,6 +137,8 @@ fun SearchScreenPP(navController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     ListSearch(viewModel)
+                    ListRoom(viewModel)
+                    ListRequest(viewModel)
                 }
             }
         }

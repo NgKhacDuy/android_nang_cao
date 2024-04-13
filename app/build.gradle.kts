@@ -5,13 +5,15 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
 }
-
 android {
     namespace = "com.example.android_advance"
     compileSdk = 34
 
     buildFeatures {
         compose = true
+    }
+    dexOptions {
+        incremental = true
     }
 
     defaultConfig {
@@ -66,6 +68,7 @@ dependencies {
     implementation("androidx.compose.material:material")
     // or skip Material Design and build directly on top of foundational components
     implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.foundation:foundation-layout")
     // or only import the main APIs for the underlying toolkit systems,
     // such as input and measurement/layout
     implementation("androidx.compose.ui:ui")
