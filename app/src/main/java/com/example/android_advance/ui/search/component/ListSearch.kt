@@ -25,23 +25,16 @@ fun ListSearch(viewModel: SearchScreenModel) {
     val searchState = viewModel.searchResults.observeAsState()
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(
-            text = "People",
-            fontFamily = poppinsFamily,
-            fontSize = 18.sp,
-            modifier = Modifier
-                .padding(start = 20.dp)
-                .align(Alignment.Start)
-        )
         searchState.value?.forEach { result ->
             result.name?.let {
                 SearchCard(
                     R.drawable.user_solid,
                     it,
-                    "Today ",
+                    "User",
                     result.friends,
                     result.id!!,
-                    viewModel
+                    viewModel,
+                    isGroupSearch = false
                 )
             }
             TabRowDefaults.Divider(

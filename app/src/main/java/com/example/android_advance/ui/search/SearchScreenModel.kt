@@ -17,6 +17,7 @@ import com.example.android_advance.model.response.FriendRequestDto
 import com.example.android_advance.model.response.SearchDto
 import com.example.android_advance.model.response.SearchResponse
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.socketio.SocketManager
 import com.example.android_advance.ui.components.IconType
@@ -34,12 +35,14 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
     ViewModel() {
     private val _searchResult = MutableLiveData<List<SearchResponse>?>()
     private val _friendRequestResult = MutableLiveData<List<FriendRequestDto>?>()
+    private val _roomResult = MutableLiveData<List<roomDto>?>()
     val search = mutableStateOf("")
     var db: DatabaseHelper = DatabaseHelper(context)
     val infoDialog = mutableStateOf(InfoDialog(fun() {}, fun() {}, "", "", "", ""))
     val isShowDialog = mutableStateOf(false)
     val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
     val friendRequestResult: LiveData<List<FriendRequestDto>?> get() = _friendRequestResult
+    val roomResult: LiveData<List<roomDto>?> get() = _roomResult
     private val appSharedPreference = AppSharedPreference(context)
     private var socketManager = SocketManager.getInstance(context)
 
@@ -112,6 +115,20 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
                             )
                         }
                     }
+
+                    val roomResult = response.body()?.data?.listRoomDto?.map { roomDto ->
+                        roomDto(
+                            id = roomDto.id,
+                            name = roomDto.name,
+                            listId = roomDto.listId,
+                            messages = roomDto.messages,
+                            isGroup = roomDto.isGroup,
+                            lastMessage = roomDto.lastMessage,
+                            partner = roomDto.partner,
+                            user = roomDto.user
+                        )
+                    }
+                    _roomResult.postValue(roomResult)
                     _searchResult.postValue(searchResults as List<SearchResponse>?)
                 }
                 Log.d("Search", response.body()?.data.toString())

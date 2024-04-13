@@ -300,7 +300,6 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
             modifier = Modifier
                 .offset(x = (-20).dp)
                 .padding(vertical = 16.dp)
-                .fillMaxWidth()
         ) {
             Image(
                 painter = painterResource(user.avatar),
@@ -338,8 +337,6 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
 
         Column(
         ) {
-
-
             Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal)
             Image(
                 painter = painterResource(

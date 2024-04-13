@@ -37,7 +37,8 @@ fun SearchCard(
     latestMessage: String,
     friend: ArrayList<FriendsDto>,
     idUser: String,
-    viewModel: SearchScreenModel
+    viewModel: SearchScreenModel,
+    isGroupSearch: Boolean
 ) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
@@ -77,32 +78,48 @@ fun SearchCard(
                     Text(text = latestMessage, fontFamily = poppinsFamily, color = Color.Gray)
                 }
             }
-            IconButton(onClick = {
+            if (!isGroupSearch) {
+                IconButton(onClick = {
 
-            }) {
-                if (friend.isEmpty()) {
-                    Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.size(24.dp).clickable() {
-                        viewModel.addFriend(idUser, name)
-                    })
-                } else {
-                    val idSender = friend.first().idSender
-                    if (friend.first().status == "Accepted") {
-                        Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(24.dp))
-                    } else if (viewModel.checkCurrentUser(idSender!!)) {
-                        Icon(Icons.Filled.HourglassTop, contentDescription = null, modifier = Modifier.size(24.dp))
-                    } else {
+                }) {
+                    if (friend.isEmpty()) {
                         Icon(
-                            Icons.Default.PersonAdd,
+                            Icons.Filled.Add,
                             contentDescription = null,
-                            modifier = Modifier.size(24.dp).clickable {
-                                viewModel.performRequestFriend(idUser)
-                            })
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable() {
+                                    viewModel.addFriend(idUser, name)
+                                })
+                    } else {
+                        val idSender = friend.first().idSender
+                        if (friend.first().status == "Accepted") {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else if (viewModel.checkCurrentUser(idSender!!)) {
+                            Icon(
+                                Icons.Filled.HourglassTop,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        } else {
+                            Icon(
+                                Icons.Default.PersonAdd,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clickable {
+                                        viewModel.performRequestFriend(idUser)
+                                    })
+                        }
+
                     }
 
                 }
-
             }
-
         }
     }
 }
