@@ -11,32 +11,30 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.android_advance.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.model.response.roomDto
+import com.example.android_advance.ui.Home.HomeScreenViewModel
+import com.example.android_advance.ui.Message.MessageViewModel
 
-// Giả sử bạn có một data class đại diện cho thành viên trong nhóm
 data class User(val name: String, val avatar: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListUserInGroup() {
-    // Dữ liệu mẫu bên trong hàm
-    val users = listOf(
-        User("Nguyễn Văn A", android.R.drawable.sym_def_app_icon),
-        User("Trần Thị B", android.R.drawable.sym_def_app_icon)
-    )
+fun ListUserInGroup(navController: NavController) {
+
+    val viewModel = hiltViewModel<HomeScreenViewModel>()
+    val roomUsersMap = viewModel.roomUsersMap
 
     var searchValue by remember { mutableStateOf("") }
 
@@ -47,10 +45,10 @@ fun ListUserInGroup() {
                 .padding(top = 25.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            androidx.compose.material.IconButton(onClick = {
-
+            IconButton(onClick = {
+                navController.popBackStack()
             }) {
-                androidx.compose.material3.Icon(
+                Icon(
                     Icons.Rounded.ArrowBack,
                     contentDescription = null,
                     modifier = Modifier.size(26.dp)
@@ -64,8 +62,7 @@ fun ListUserInGroup() {
                     .weight(5f)
                     .padding(start = 34.dp)
             )
-            Spacer(Modifier
-                .weight(1f))
+            Spacer(Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -102,31 +99,34 @@ fun ListUserInGroup() {
                 focusedBorderColor = Color.Blue,
                 unfocusedBorderColor = Color.Gray
             )
-
         )
         LazyColumn {
-            items(users) { user ->
-                UserItem(user)
+            roomUsersMap.forEach { (_, users) ->
+                items(users) { user ->
+                    UserItem(user)
+                }
             }
         }
     }
 }
 
 @Composable
-fun UserItem(user: User) {
+fun UserItem(user: UserDto) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Image(painter = painterResource(id = R.drawable.user), contentDescription = "User Avatar", modifier = Modifier.size(40.dp).padding(end = 8.dp))
-        Text(text = user.name)
+        Image(
+            painter = painterResource(id = R.drawable.user),
+            contentDescription = "User Avatar",
+            modifier = Modifier
+                .size(40.dp)
+                .padding(end = 8.dp)
+        )
+        Text(text = user.name ?: "Unknown User")
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewListUserInGroup() {
-    ListUserInGroup()
-}
+

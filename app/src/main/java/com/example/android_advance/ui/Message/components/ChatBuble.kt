@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
@@ -116,6 +117,16 @@ fun ChatScreen(
                     Icon(
                         Icons.Rounded.Call,
                         contentDescription = null,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+
+                IconButton(onClick = {
+                    navController.navigate(Route.listUserGroupScreen.route)
+                }) {
+                    Icon(
+                        Icons.Default.Menu,
+                        contentDescription = "Menu",
                         modifier = Modifier.size(28.dp)
                     )
                 }

@@ -29,6 +29,8 @@ sealed class Route(val route: String) {
     object ChangePasswordScreen : Route(Constant.changePasswordScreen)
     object ImagePicker : Route(Constant.ImagePicker)
 
+    object listUserGroupScreen : Route(Constant.ListUserInGroup)
+
     fun withArgs(vararg args: String): String {
         return buildString {
             append(route)

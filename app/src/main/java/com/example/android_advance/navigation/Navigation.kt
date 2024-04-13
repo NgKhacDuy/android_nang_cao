@@ -46,7 +46,7 @@ import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
-
+import com.example.android_advance.ui.Group.ListUserInGroup
 
 @Composable
 fun Navigation() {
@@ -151,6 +151,10 @@ fun Navigation() {
                 composable(route = Route.ChangePasswordScreen.route)
                 {
                     ChangePasswordScreen(navController = navController)
+                }
+                composable(route = Route.listUserGroupScreen.route)
+                {
+                    ListUserInGroup(navController = navController)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",

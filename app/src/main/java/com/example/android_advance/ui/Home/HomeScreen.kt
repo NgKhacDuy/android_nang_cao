@@ -246,7 +246,7 @@ fun HomeScreen(navController: NavController) {
                         items(it.size) {
                             val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                             val currentDate = sdf.format(Date())
-                            firebaseMessage.sendUserRoomToServer(roomState.value!![it].id,roomState.value!![it].listUsers)
+                            firebaseMessage.sendUserRoomToServer(roomState.value!![it].id,roomState.value!![it].listId)
                             User(
                                 R.drawable.person_avt,
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,

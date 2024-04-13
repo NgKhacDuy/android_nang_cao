@@ -47,6 +47,8 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         .setLenient()
         .create()
 
+    val roomUsersMap = mutableMapOf<String, MutableList<UserDto>>()
+
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
         getRoomForUser()
@@ -72,6 +74,15 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                             val listType = object : TypeToken<List<roomDto>>() {}.type
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
                             _onNewRoom.postValue(temp)
+
+                            temp.forEach { room ->
+                                val usersInRoom = room.user ?: emptyList()
+                                roomUsersMap[room.id ?: ""] = usersInRoom.toMutableList()
+
+                                usersInRoom.forEach { user ->
+                                    Log.d("LIST_USER", "User ID: ${user.id}, User Name: ${user.name}")
+                                }
+                            }
                         }
                     }
                 }
