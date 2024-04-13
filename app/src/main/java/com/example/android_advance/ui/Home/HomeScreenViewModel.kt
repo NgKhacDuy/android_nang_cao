@@ -20,14 +20,13 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.google.gson.stream.JsonReader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.StringReader
 import javax.inject.Inject
 
 
@@ -47,7 +46,9 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         .setLenient()
         .create()
 
-    val roomUsersMap = mutableMapOf<String, MutableList<UserDto>>()
+    val roomUsersMap = mutableMapOf<String, List<UserDto>>()
+    private val _userList = MutableLiveData<List<UserDto>>()
+    val userList: LiveData<List<UserDto>> get() = _userList
 
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
@@ -74,21 +75,44 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                             val listType = object : TypeToken<List<roomDto>>() {}.type
                             val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
                             _onNewRoom.postValue(temp)
-
-                            temp.forEach { room ->
-                                val usersInRoom = room.user ?: emptyList()
-                                roomUsersMap[room.id ?: ""] = usersInRoom.toMutableList()
-
-                                usersInRoom.forEach { user ->
-                                    Log.d("LIST_USER", "User ID: ${user.id}, User Name: ${user.name}")
-                                }
-                            }
                         }
                     }
                 }
             }
         } catch (e: Exception) {
             Log.e("EXCEPTION", e.message.toString())
+        }
+    }
+
+    fun updateUserList(newList: List<UserDto>) {
+        _userList.value = newList
+        Log.d("UserListUpdate", "Updated user list: $newList")
+        for (user in newList) {
+            Log.d("UserListUpdate", "User ID: ${user.id}, User Name: ${user.name}")
+        }
+    }
+
+    fun getRoomDetails(roomId: String) {
+        val room = onNewRoom.value?.find { it.id == roomId }
+        if (room != null) {
+            Log.d("Room Details", "Room ID: ${room.id}, Room Name: ${room.name}")
+            val userList = room.user
+            if (!userList.isNullOrEmpty()) {
+                Log.d("Room Details", "List of Users:")
+                for (user in userList) {
+                    Log.d("Room Details", "User ID: ${user.id}, User Name: ${user.name}")
+                }
+                updateUserList(userList)
+            } else {
+                Log.d("Room Details", "No users found in this room.")
+            }
+            val jsonObject = JSONObject().apply {
+                put("roomId", roomId)
+            }
+
+            socketManager.emit("rooms", jsonObject.toString())
+        } else {
+            Log.d("Room Details", "Room with ID $roomId not found!")
         }
     }
 

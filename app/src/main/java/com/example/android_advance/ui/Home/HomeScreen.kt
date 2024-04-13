@@ -279,7 +279,7 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun UserRow(user: User, navController: NavController, idRoom: String, partnerName: String) {
-
+    val viewModel = hiltViewModel<HomeScreenViewModel>()
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -287,6 +287,7 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
             .padding(start = 4.dp, end = 4.dp)
             .clickable {
                 navController.navigate(ChildRoute.MessageScreen.withArgs(user.idRoom, partnerName))
+                viewModel.getRoomDetails(idRoom)
             }
             .border(
                 border = BorderStroke(

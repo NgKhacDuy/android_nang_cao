@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
@@ -32,10 +33,8 @@ data class User(val name: String, val avatar: Int)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListUserInGroup(navController: NavController) {
-
     val viewModel = hiltViewModel<HomeScreenViewModel>()
-    val roomUsersMap = viewModel.roomUsersMap
-
+    val userList by viewModel.userList.observeAsState(emptyList())
     var searchValue by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -100,18 +99,17 @@ fun ListUserInGroup(navController: NavController) {
                 unfocusedBorderColor = Color.Gray
             )
         )
+
         LazyColumn {
-            roomUsersMap.forEach { (_, users) ->
-                items(users) { user ->
-                    UserItem(user)
-                }
+            items(userList) { user ->
+                UserItem(name = user.name ?: "Unknown User")
             }
         }
     }
 }
 
 @Composable
-fun UserItem(user: UserDto) {
+fun UserItem(name: String) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -125,7 +123,15 @@ fun UserItem(user: UserDto) {
                 .size(40.dp)
                 .padding(end = 8.dp)
         )
-        Text(text = user.name ?: "Unknown User")
+        Text(text = name)
+        Spacer(Modifier.weight(1f))
+        IconButton(onClick = { /* Handle delete user action */ }) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete User",
+                tint = Color.Red
+            )
+        }
     }
 }
 
