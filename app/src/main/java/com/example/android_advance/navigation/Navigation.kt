@@ -2,7 +2,6 @@ package com.example.android_advance.navigation
 
 import OptionsMenu
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -32,21 +31,24 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
-import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
 import com.example.android_advance.ui.account.AccountScreen
 import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
+import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 
 @Composable
@@ -121,7 +123,7 @@ fun Navigation() {
                     HomeScreen(navController)
                 }
                 composable(route = Route.CallScreen.route) {
-                    CallSreen()
+                    CallHistoryScreenPP(navController)
                 }
                 composable(route = Route.SettingScreen.route) {
                     SettingScreen(navController)
@@ -184,11 +186,59 @@ fun Navigation() {
                         }
                     }
                 }
-                composable(route = Route.OptionsMenuChat.route + "/{partnerName}") {
+                composable(route = Route.OptionsMenuChat.route + "/{partnerName}/{idRoom}/{modelList}") {
                         backStackEntry ->
                     val arguments = requireNotNull(backStackEntry.arguments)
-                    val partnerName = arguments.getString("partnerName") ?: "nothing"
-                    OptionsMenu(navController = navController, partnerName = partnerName)
+                    val partnerName = arguments.getString("partnerName") ?: "not partner Name found"
+                    val idRoom = arguments.getString("idRoom") ?: "no Id found"
+                    val modelList = arguments.getString("modelList")?:"not found model list"
+
+                    val gson = Gson()
+                    val modelType = object: TypeToken<List<messageDto>>(){}.type
+                    val model: List<messageDto> = gson.fromJson(modelList, modelType)
+
+
+
+                    OptionsMenu(navController = navController, partnerName = partnerName, idRoom = idRoom, model = model)
+                }
+//                 navigate to chatScreen of there a finding name
+                composable(
+                    route = Route.MessageScreen.route + "/{idRoom}/{namePartner}/{modelJson}",
+                    arguments = listOf(
+                        navArgument("idRoom") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("namePartner") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+
+                        navArgument("modelJson") {
+                            type = NavType.StringType
+                            nullable = true
+                        },
+                    )
+                ) {
+                    bottomBarVisible.value = false
+
+                    it.arguments?.getString("idRoom")
+                        ?.let { it1 ->
+                            MessageScreen(
+                                idRoom = it1,
+                                navController,
+                                it.arguments?.getString("namePartner")!!,
+                                it.arguments?.getString("modelJson")!!
+
+                            )
+                        }
+                    LaunchedEffect(Unit) {
+                        navController.addOnDestinationChangedListener { _, destination, _ ->
+                            if (destination.route != Route.MessageScreen.route) {
+                                bottomBarVisible.value = true
+                            }
+                        }
+                    }
                 }
             }
         }

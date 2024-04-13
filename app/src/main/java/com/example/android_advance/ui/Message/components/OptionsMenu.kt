@@ -1,25 +1,43 @@
+
+//noinspection UsingMaterialAndMaterial3Libraries
 import android.annotation.SuppressLint
-import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-//noinspection UsingMaterialAndMaterial3Libraries
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Abc
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Block
-import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.IosShare
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,14 +50,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import com.example.android_advance.model.response.messageDto
+import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.ui.Screen.SettingItem
-
+import com.google.gson.Gson
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun OptionsMenu(navController: NavController, partnerName: String) {
+fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String, model:List<messageDto> ? = null) {
 
     var showDialog by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
@@ -80,7 +100,9 @@ fun OptionsMenu(navController: NavController, partnerName: String) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+                ,
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -90,6 +112,12 @@ fun OptionsMenu(navController: NavController, partnerName: String) {
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+                model?.forEach{
+                    message -> (
+                            Text(text = "${message.content}")
+
+                            )
+                }
                 SettingItem(
                     icon = Icons.Default.Person,
                     title = "Partner Name: $partnerName",
@@ -111,7 +139,11 @@ fun OptionsMenu(navController: NavController, partnerName: String) {
                 SettingItem(
                     icon = Icons.Default.Search,
                     title = "Search Conversation",
-                    onClick = {}
+                    onClick = {
+                        val gson = Gson()
+                        val modelJson = gson.toJson(model)
+                        navController.navigate(ChildRoute.MessageScreen.withArgs(idRoom,partnerName,"4"))
+                    }
                 )
                 SettingItem(
                     icon = Icons.Default.Block,

@@ -17,7 +17,7 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MessageScreen(idRoom: String, navController: NavController, namePartner: String) {
+fun MessageScreen(idRoom: String, navController: NavController, namePartner: String, nameFinding:String? = null) {
     val viewModel = hiltViewModel<MessageViewModel>()
     viewModel.savedStateHandle.set("roomId", idRoom)
     val messageState = viewModel.onNewMessage.observeAsState()
@@ -39,7 +39,7 @@ fun MessageScreen(idRoom: String, navController: NavController, namePartner: Str
                 }, modifier = Modifier, onClickBack = {
                     viewModel.socketManager.disconnect()
                     navController.popBackStack()
-                }, viewModel.db, viewModel.partnerName, navController, idRoom)
+                }, viewModel.db, viewModel.partnerName, navController, idRoom, nameFinding = nameFinding)
             }
         }
     }

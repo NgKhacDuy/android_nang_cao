@@ -1,21 +1,29 @@
-import android.os.Message
+
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
 import androidx.compose.material.icons.rounded.Menu
-import androidx.compose.material.icons.rounded.Videocam
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,31 +31,19 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.android_advance.R
-import com.example.android_advance.components.ImagePicker.ImagePicker
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
-import com.example.android_advance.ui.BottomNavigation.ChildRoute
-import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.Message.components.ChatBox
 import com.example.android_advance.ui.Message.components.ChatItem
-import com.example.android_advance.ui.Message.components.ListImage
-import com.example.android_advance.utils.common.ConvertDateTime
-import com.example.android_advance.utils.common.MessageEnum
-import com.google.accompanist.flowlayout.FlowMainAxisAlignment
-import com.google.accompanist.flowlayout.SizeMode
+import com.google.gson.Gson
 
 @Composable
 fun ChatScreen(
@@ -58,7 +54,8 @@ fun ChatScreen(
     db: DatabaseHelper,
     partnerName: String,
     navController: NavController,
-    idRoom: String
+    idRoom: String,
+    nameFinding:String? = null
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (_, chatBox) = createRefs()
@@ -69,6 +66,19 @@ fun ChatScreen(
         LaunchedEffect(model.size) {
             listState.animateScrollToItem(model.lastIndex)
         }
+        suspend fun testf() {
+            listState.animateScrollToItem(3)
+
+        }
+        nameFinding?.let { name ->
+            Log.e("NameFinding", "Name finding: $name")
+            Log.e("model size la: ", "${model.size}")
+//            GlobalScope.launch {
+//                testf()
+//            }
+        }
+
+
         Row(
             modifier = Modifier
                 .fillMaxWidth(),
@@ -121,7 +131,9 @@ fun ChatScreen(
                     )
                 }
                 IconButton(onClick = {
-                    navController.navigate(Route.OptionsMenuChat.withArgs(partnerName))
+                    val gson = Gson()
+                    val modelJson = gson.toJson(model.toList())
+                    navController.navigate(Route.OptionsMenuChat.withArgs(partnerName, idRoom,modelJson ))
                 }) {
                     Icon(
                         Icons.Rounded.Menu,
