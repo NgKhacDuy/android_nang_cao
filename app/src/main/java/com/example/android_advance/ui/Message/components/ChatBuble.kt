@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
@@ -39,6 +40,7 @@ import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
+import com.example.android_advance.ui.Home.HomeScreenViewModel
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.Message.components.ChatBox
 import com.example.android_advance.ui.Message.components.ChatItem
@@ -60,6 +62,7 @@ fun ChatScreen(
     idRoom: String
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val viewModel = hiltViewModel<HomeScreenViewModel>()
         val (_, chatBox) = createRefs()
         val configuration = LocalConfiguration.current
         val screenHeight = configuration.screenHeightDp
@@ -116,6 +119,16 @@ fun ChatScreen(
                     Icon(
                         Icons.Rounded.Call,
                         contentDescription = null,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+
+                IconButton(onClick = {
+                    navController.navigate(Route.listUserGroupScreen.withArgs(idRoom))
+                }) {
+                    Icon(
+                        Icons.Default.Menu,
+                        contentDescription = "Menu",
                         modifier = Modifier.size(28.dp)
                     )
                 }

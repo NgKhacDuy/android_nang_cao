@@ -11,6 +11,7 @@ import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
+import com.example.android_advance.firebase.FirebaseMessageManagement
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.shared_preference.AppSharedPreference
@@ -19,14 +20,13 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.google.gson.stream.JsonReader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.StringReader
 import javax.inject.Inject
 
 
@@ -37,7 +37,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
     private val _onNewRoom = MutableLiveData<List<roomDto>>()
 
-    private lateinit var db: DatabaseHelper
+    private var db: DatabaseHelper
 
     private var socketManager = SocketManager.getInstance(context)
     var isRefreshing = mutableStateOf(false)
@@ -45,6 +45,9 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
     var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
+
+    var userList: List<UserDto> = emptyList()
+
 
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
@@ -56,7 +59,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         getUserInfo()
         getRoomForUser()
     }
-
+    val userId = db.getUserId()
 
     fun getRoomForUser() {
         try {
@@ -80,6 +83,44 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         }
     }
 
+    fun getRoomDetails(roomId: String) : List<UserDto> {
+        val room = _onNewRoom.value?.find { it.id == roomId }
+        if (room != null) {
+            Log.d("Room Details", "Room ID: ${room.id}, Room Name: ${room.name}")
+            val users = room.user
+            if (!users.isNullOrEmpty()) {
+                Log.d("Room Details", "List of Users:")
+                for (user in users) {
+                    Log.d("Room Details", "User ID: ${user.id}, User Name: ${user.name}")
+                }
+                this.userList = users
+                return users
+            } else {
+                Log.d("Room Details", "No users found in this room.")
+                this.userList = emptyList()
+            }
+            val jsonObject = JSONObject().apply {
+                put("roomId", roomId)
+            }
+
+            socketManager.emit("rooms", jsonObject.toString())
+        } else {
+            Log.d("Room Details", "Room with ID $roomId not found!")
+        }
+
+        if (userList.isEmpty()) {
+            Log.e("UserList", "User list is null or empty!")
+        } else {
+            Log.d("UserList", "User list contains the following users:")
+            for (user in userList) {
+                Log.d("UserList", "User ID: ${user.id}, User Name: ${user.name}")
+            }
+            return userList
+        }
+        return this.userList
+    }
+
+
     fun getUserInfo() {
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
@@ -91,6 +132,8 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
             ) {
                 if (response.isSuccessful) {
                     response.body()?.data?.let { db.insertUser(it) }
+                    val firebaseMessage = FirebaseMessageManagement()
+                    firebaseMessage.sendTokenWithUserId(db.getUser().first().id!!)
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)

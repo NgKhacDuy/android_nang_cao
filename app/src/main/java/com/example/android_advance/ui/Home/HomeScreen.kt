@@ -50,6 +50,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.compose.rememberNavController
 import com.example.android_advance.R
+import com.example.android_advance.database.DatabaseHelper
+import com.example.android_advance.firebase.FirebaseMessageManagement
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
@@ -75,6 +77,8 @@ fun HomeScreen(navController: NavController) {
         onRefresh = { viewModel.swipe() }
     )
     val convertDateTime: ConvertDateTime = ConvertDateTime()
+    val firebaseMessage = FirebaseMessageManagement()
+    val userId = viewModel.userId
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -242,6 +246,7 @@ fun HomeScreen(navController: NavController) {
                         items(it.size) {
                             val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                             val currentDate = sdf.format(Date())
+                            firebaseMessage.sendUserRoomToServer(roomState.value!![it].id,roomState.value!![it].listId)
                             User(
                                 R.drawable.person_avt,
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
@@ -275,7 +280,6 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun UserRow(user: User, navController: NavController, idRoom: String, partnerName: String) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()

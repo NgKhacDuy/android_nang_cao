@@ -3,24 +3,19 @@ package com.example.android_advance.ui.Message
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.*
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.request.MessageRequest
-import com.example.android_advance.model.request.RoomRequest
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.socketio.SocketManager
-import com.example.android_advance.ui.BottomNavigation.ChildRoute
-import com.example.android_advance.ui.Group.GroupScreenModel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,7 +31,6 @@ class MessageViewModel @Inject constructor(
         .create()
     var db: DatabaseHelper
     val socketManager = SocketManager.getInstance(context)
-
 
     init {
         getRoomForUser(roomId)
