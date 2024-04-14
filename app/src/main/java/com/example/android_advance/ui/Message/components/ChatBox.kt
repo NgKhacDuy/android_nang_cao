@@ -48,7 +48,9 @@ fun ChatBox(
             Icon(
                 imageVector = Icons.Filled.Image,
                 contentDescription = "Send_Picture",
-                modifier = Modifier.fillMaxSize().padding(8.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
             )
         }
         TextField(
@@ -84,7 +86,9 @@ fun ChatBox(
             Icon(
                 imageVector = Icons.Filled.Send,
                 contentDescription = "Send",
-                modifier = Modifier.fillMaxSize().padding(8.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
             )
         }
     }
@@ -100,8 +104,13 @@ fun ChatBox(
                 base64Image.forEach {
                     selectedImageBase64.add(it)
                 }
-
-                onSendChatClickListener("Hình ảnh", MessageEnum.IMAGE.type, selectedImageBase64.toList())
-            }) // Call ImagePicker here when the dialog should be shown
+                onSendChatClickListener(
+                    "Hình ảnh",
+                    MessageEnum.IMAGE.type,
+                    selectedImageBase64.toList()
+                )
+            },
+            isSelectMulti = true,
+        ) // Call ImagePicker here when the dialog should be shown
     }
 }
