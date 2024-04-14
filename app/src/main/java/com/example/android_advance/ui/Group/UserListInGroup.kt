@@ -33,10 +33,10 @@ data class User(val name: String, val avatar: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListUserInGroup(navController: NavController, idRoom : String) {
+fun UserListInGroup(navController: NavController, idRoom : String) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     Log.d("Roomid", idRoom)
-    val userList : List<UserDto> = viewModel.getRoomDetails(idRoom)
+    val userList : List<UserDto> = viewModel.RoomDetails(idRoom)
 
     var searchValue by remember { mutableStateOf("") }
 

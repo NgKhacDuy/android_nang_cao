@@ -83,7 +83,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         }
     }
 
-    fun getRoomDetails(roomId: String) : List<UserDto> {
+    fun RoomDetails(roomId: String) : List<UserDto> {
         val room = _onNewRoom.value?.find { it.id == roomId }
         if (room != null) {
             Log.d("Room Details", "Room ID: ${room.id}, Room Name: ${room.name}")
