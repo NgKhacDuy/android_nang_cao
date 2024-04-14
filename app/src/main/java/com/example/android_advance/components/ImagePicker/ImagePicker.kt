@@ -1,6 +1,7 @@
 package com.example.android_advance.components.ImagePicker
 
 
+import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
@@ -13,6 +14,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.android_advance.ui.videoCall.VideoViewModel
 import com.example.android_advance.utils.common.GetPath
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -25,6 +28,15 @@ fun ImagePicker(
     onImagesSelected: (List<String>) -> Unit,
     isSelectMulti: Boolean
 ) {
+    val viewModel = hiltViewModel<ImagePickerViewModel>()
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { perms ->
+            viewModel.onPermissionsResult(
+                acceptedStoragePermission = perms[Manifest.permission.READ_EXTERNAL_STORAGE] == true,
+            )
+        }
+    )
 
     fun getRealPathFromUri(context: Context, uri: Uri): String? {
         val projection =
@@ -88,6 +100,11 @@ fun ImagePicker(
     )
 
     LaunchedEffect(Unit) {
+        permissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+        )
         if (isSelectMulti) {
             mutiplePhotoPickerLauncher.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
