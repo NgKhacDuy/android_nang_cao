@@ -4,7 +4,7 @@ class apiConstant {
     companion object {
         const val baseApi = "https://android-nang-cao-backend.onrender.com/api/v1/"
 
-        //        const val baseApi = "http:localhost:3000/api/v1/"
+        //        const val baseApi = "http:192.168.100.2:3000/api/v1/"
         const val userSignUpApi = "user/signup"
         const val userSignInApi = "user/signin"
         const val userRefresh = "user/refresh"
@@ -15,6 +15,8 @@ class apiConstant {
         const val agora = "agora"
         const val userPatchPassword = "user/password"
         const val userPatchInfo = "user"
+        const val friendRequest = "user/friendrequest"
+        const val userImg = "user/image"
     }
 
 }

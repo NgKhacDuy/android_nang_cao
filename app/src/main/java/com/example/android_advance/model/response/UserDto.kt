@@ -9,7 +9,8 @@ class UserDto(
     @SerializedName("createAt") var createAt: String? = null,
     @SerializedName("updateAt") var updateAt: String? = null,
     @SerializedName("deletedAt") var deletedAt: String? = null,
-    @SerializedName("friends") var friends: ArrayList<FriendsDto>? = arrayListOf()
+    @SerializedName("friends") var friends: ArrayList<FriendsDto>? = arrayListOf(),
+    @SerializedName("avatar") var avatar: String? = ""
 ) {
 
 }

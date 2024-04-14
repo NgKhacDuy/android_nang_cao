@@ -250,7 +250,8 @@ fun HomeScreen(navController: NavController) {
                             User(
                                 R.drawable.person_avt,
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
-                                roomState.value?.get(it)?.lastMessage?.content ?: "Cuộc hội thoại đã được tạo",
+                                roomState.value?.get(it)?.lastMessage?.content
+                                    ?: "Cuộc hội thoại đã được tạo",
                                 convertDateTime.timeAgo(
                                     roomState.value!![it].lastMessage?.createAt ?: currentDate
                                 ),
@@ -328,15 +329,18 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                     user.name
                 }
                 Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = displayMessage, fontSize = 16.sp, fontWeight = FontWeight.Normal, maxLines = 1)
+                Text(
+                    text = displayMessage,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    maxLines = 1
+                )
             }
 
         }
 
         Column(
         ) {
-
-
             Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal)
             Image(
                 painter = painterResource(

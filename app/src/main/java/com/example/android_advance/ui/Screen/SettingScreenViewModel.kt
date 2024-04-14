@@ -2,33 +2,30 @@ package com.example.android_advance.ui.Screen
 
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
-import com.example.android_advance.model.request.SigninRequest
-import com.example.android_advance.model.response.SigninResponse
 import com.example.android_advance.model.response.UserDto
-import com.example.android_advance.navigation.Route
 import com.example.android_advance.shared_preference.AppSharedPreference
-import com.example.android_advance.ui.Home.HomeScreenViewModel
-import com.example.android_advance.ui.login.LoginScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 import javax.inject.Inject
 
+
 @HiltViewModel()
-class SettingScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
+class SettingScreenViewModel @Inject constructor(@ApplicationContext private val context: Context) :
+    ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
     private lateinit var db: DatabaseHelper
     private val _onNewUserInfo = MutableLiveData<UserDto?>()
@@ -39,6 +36,34 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
     init {
         db = DatabaseHelper(context)
         getUserInfo()
+    }
+
+    fun uploadImg(listImg: ArrayList<String>) {
+        Log.e("PATH", listImg[0])
+        val file: File = File(listImg[0])
+        val requestFile = file.asRequestBody(MultipartBody.FORM)
+        val body = MultipartBody.Part.createFormData("file", file.getName(), requestFile)
+        val apiClient: APIClient = APIClient(context)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
+        val call = apiService?.uploadImg("Bearer ${appSharedPreference.accessToken}", body)
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
+            override fun onResponse(
+                p0: Call<ApiResponse.BaseApiResponse<Unit>>,
+                p1: Response<ApiResponse.BaseApiResponse<Unit>>
+            ) {
+                if (p1.isSuccessful) {
+                    Log.e("IMG", "change img successfully")
+                    getUserInfo()
+                } else {
+                    Log.e("IMG", "change img failed")
+                }
+            }
+
+            override fun onFailure(p0: Call<ApiResponse.BaseApiResponse<Unit>>, p1: Throwable) {
+                Log.e("IMG", p1.message.toString())
+            }
+
+        })
     }
 
     fun getUserInfo() {
@@ -92,7 +117,8 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
         try {
-            val response = apiService?.signOut("Bearer ${appSharedPreference.accessToken}")?.execute()
+            val response =
+                apiService?.signOut("Bearer ${appSharedPreference.accessToken}")?.execute()
             if (response?.isSuccessful == true) {
                 isSignOutSuccess = true
             } else {

@@ -18,22 +18,30 @@ import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.example.android_advance.components.ImagePicker.ImagePicker
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.Home.HomeScreenViewModel
+import com.example.android_advance.utils.common.MessageEnum
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +51,8 @@ fun SettingScreen(navController: NavController) {
     val homeScreenViewModel = hiltViewModel<HomeScreenViewModel>()
     val userState = settingViewModel.onNewUserInfo.observeAsState()
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+    var showImagePickerDialog by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,22 +85,35 @@ fun SettingScreen(navController: NavController) {
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .padding(8.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
             when (val user = userState.value) {
                 null -> {
                     // Show loading indicator or handle error
                 }
 
                 else -> {
+                    AsyncImage(model = user.avatar,
+                        contentDescription = "avatar",
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary)
+                            .padding(8.dp)
+                            .clickable {
+                                showImagePickerDialog = true
+                            })
+//                    Icon(
+//                        imageVector = Icons.Default.Person,
+//                        contentDescription = null,
+//                        modifier = Modifier
+//                            .size(50.dp)
+//                            .clip(CircleShape)
+//                            .background(MaterialTheme.colorScheme.primary)
+//                            .padding(8.dp)
+//                            .clickable {
+//                                showImagePickerDialog = true
+//                            }
+//                    )
+                    Spacer(modifier = Modifier.width(16.dp))
                     user.name?.let {
                         Text(
                             text = it,
@@ -149,6 +172,23 @@ fun SettingScreen(navController: NavController) {
 
             }
         )
+    }
+    if (showImagePickerDialog) {
+        var selectedImageBase64: ArrayList<String> = arrayListOf()
+        ImagePicker(
+            onDismiss = {
+                showImagePickerDialog = false
+            },
+            context,
+            onImagesSelected = { base64Image ->
+                base64Image.forEach {
+                    selectedImageBase64.add(it)
+                }
+                settingViewModel.uploadImg(selectedImageBase64)
+
+            },
+            isSelectMulti = false,
+        ) // Call ImagePicker here when the dialog should be shown
     }
 }
 

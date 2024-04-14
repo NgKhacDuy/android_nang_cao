@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 
@@ -15,7 +16,8 @@ class APIClient @Inject constructor(private val context: Context) {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient =
-            OkHttpClient.Builder().addInterceptor(interceptor)
+            OkHttpClient.Builder().addInterceptor(interceptor).connectTimeout(100, TimeUnit.SECONDS)
+                .readTimeout(100, TimeUnit.SECONDS)
                 .addInterceptor(appInterceptor(context)).build()
         retrofit = Retrofit.Builder()
             .baseUrl(apiConstant.baseApi)
