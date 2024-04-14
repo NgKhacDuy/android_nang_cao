@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
+import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -18,7 +19,27 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 @Composable
-fun ImagePicker(onDismiss: () -> Unit, context: Context, onImagesSelected: (List<String>) -> Unit) {
+fun ImagePicker(
+    onDismiss: () -> Unit,
+    context: Context,
+    onImagesSelected: (List<String>) -> Unit,
+    isSelectMulti: Boolean
+) {
+
+    fun getRealPathFromUri(context: Context, uri: Uri): String? {
+        val projection =
+            arrayOf(MediaStore.Images.Media.DATA) // Replace with appropriate data column for your media type
+        val cursor = context.contentResolver.query(uri, projection, null, null, null)
+        return cursor?.use {
+            if (it.moveToFirst()) {
+                val columnIndex = it.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                it.getString(columnIndex)
+            } else {
+                null
+            }
+        }
+    }
+
     var selectedImageUris by remember {
         mutableStateOf<List<Uri>>(emptyList())
     }
@@ -26,6 +47,19 @@ fun ImagePicker(onDismiss: () -> Unit, context: Context, onImagesSelected: (List
     var selectedImageBase64 by remember {
         mutableStateOf<List<String>>(emptyList())
     }
+
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        onResult = { uri ->
+            if (!uri.isEmpty()) {
+                val pathFile = getRealPathFromUri(context, uri[0]) ?: ""
+                val listImg: ArrayList<String> = arrayListOf()
+                listImg.add(pathFile)
+                onImagesSelected(listImg)
+            }
+            onDismiss()
+        }
+    )
 
     val mutiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
@@ -54,9 +88,16 @@ fun ImagePicker(onDismiss: () -> Unit, context: Context, onImagesSelected: (List
     )
 
     LaunchedEffect(Unit) {
-        mutiplePhotoPickerLauncher.launch(
-            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        )
+        if (isSelectMulti) {
+            mutiplePhotoPickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        } else {
+            singlePhotoPickerLauncher.launch(
+                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+            )
+        }
+
     }
 }
 

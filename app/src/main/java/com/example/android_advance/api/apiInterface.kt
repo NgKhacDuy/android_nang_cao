@@ -2,6 +2,7 @@ package com.example.android_advance.api
 
 import com.example.android_advance.model.response.*
 import com.example.android_advance.model.request.*
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -68,4 +69,11 @@ interface ApiInterface {
     fun getFriendRequest(
         @Header("Authorization") authHeader: String,
     ): Call<ApiResponse.BaseApiResponse<List<FriendRequestDto>>?>
+
+    @Multipart
+    @POST(apiConstant.userImg)
+    fun uploadImg(
+        @Header("Authorization") authHeader: String,
+        @Part file: MultipartBody.Part
+    ): Call<ApiResponse.BaseApiResponse<Unit>>
 }
