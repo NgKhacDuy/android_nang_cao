@@ -40,6 +40,7 @@ import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
+import com.example.android_advance.ui.Home.HomeScreenViewModel
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.Message.components.ChatBox
 import com.example.android_advance.ui.Message.components.ChatItem
@@ -61,6 +62,7 @@ fun ChatScreen(
     idRoom: String
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
+        val viewModel = hiltViewModel<HomeScreenViewModel>()
         val (_, chatBox) = createRefs()
         val configuration = LocalConfiguration.current
         val screenHeight = configuration.screenHeightDp
@@ -122,7 +124,7 @@ fun ChatScreen(
                 }
 
                 IconButton(onClick = {
-                    navController.navigate(Route.listUserGroupScreen.route)
+                    navController.navigate(Route.listUserGroupScreen.withArgs(idRoom))
                 }) {
                     Icon(
                         Icons.Default.Menu,

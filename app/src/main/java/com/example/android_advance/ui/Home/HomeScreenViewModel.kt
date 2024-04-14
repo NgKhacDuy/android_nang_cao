@@ -46,9 +46,8 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         .setLenient()
         .create()
 
-    val roomUsersMap = mutableMapOf<String, List<UserDto>>()
-    private val _userList = MutableLiveData<List<UserDto>>()
-    val userList: LiveData<List<UserDto>> get() = _userList
+    var userList: List<UserDto> = emptyList()
+
 
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
@@ -84,27 +83,21 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         }
     }
 
-    fun updateUserList(newList: List<UserDto>) {
-        _userList.value = newList
-        Log.d("UserListUpdate", "Updated user list: $newList")
-        for (user in newList) {
-            Log.d("UserListUpdate", "User ID: ${user.id}, User Name: ${user.name}")
-        }
-    }
-
-    fun getRoomDetails(roomId: String) {
-        val room = onNewRoom.value?.find { it.id == roomId }
+    fun getRoomDetails(roomId: String) : List<UserDto> {
+        val room = _onNewRoom.value?.find { it.id == roomId }
         if (room != null) {
             Log.d("Room Details", "Room ID: ${room.id}, Room Name: ${room.name}")
-            val userList = room.user
-            if (!userList.isNullOrEmpty()) {
+            val users = room.user
+            if (!users.isNullOrEmpty()) {
                 Log.d("Room Details", "List of Users:")
-                for (user in userList) {
+                for (user in users) {
                     Log.d("Room Details", "User ID: ${user.id}, User Name: ${user.name}")
                 }
-                updateUserList(userList)
+                this.userList = users
+                return users
             } else {
                 Log.d("Room Details", "No users found in this room.")
+                this.userList = emptyList()
             }
             val jsonObject = JSONObject().apply {
                 put("roomId", roomId)
@@ -114,7 +107,19 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         } else {
             Log.d("Room Details", "Room with ID $roomId not found!")
         }
+
+        if (userList.isEmpty()) {
+            Log.e("UserList", "User list is null or empty!")
+        } else {
+            Log.d("UserList", "User list contains the following users:")
+            for (user in userList) {
+                Log.d("UserList", "User ID: ${user.id}, User Name: ${user.name}")
+            }
+            return userList
+        }
+        return this.userList
     }
+
 
     fun getUserInfo() {
         val apiClient: APIClient = APIClient(context)

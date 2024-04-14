@@ -31,6 +31,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
@@ -152,9 +153,15 @@ fun Navigation() {
                 {
                     ChangePasswordScreen(navController = navController)
                 }
-                composable(route = Route.listUserGroupScreen.route)
-                {
-                    ListUserInGroup(navController = navController)
+                composable(route = Route.listUserGroupScreen.route + "/{roomId}", arguments = listOf((
+                        navArgument("roomId") {
+                            type = NavType.StringType
+                            nullable = false
+                        }
+                        ))) {
+                    val roomId =
+                        it.arguments?.getString("roomId") ?: return@composable
+                    ListUserInGroup(navController, roomId)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",

@@ -1,5 +1,6 @@
 package com.example.android_advance.ui.Group
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,10 +33,20 @@ data class User(val name: String, val avatar: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListUserInGroup(navController: NavController) {
+fun ListUserInGroup(navController: NavController, idRoom : String) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
-    val userList by viewModel.userList.observeAsState(emptyList())
+    Log.d("Roomid", idRoom)
+    val userList : List<UserDto> = viewModel.getRoomDetails(idRoom)
+
     var searchValue by remember { mutableStateOf("") }
+
+    if (userList.isEmpty()) {
+        Log.d("UserList", "User list is empty!")
+    } else {
+        for (user in userList) {
+            Log.d("UserList", "User: ${user.name}, Avatar: ${user.id}")
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -102,7 +113,7 @@ fun ListUserInGroup(navController: NavController) {
 
         LazyColumn {
             items(userList) { user ->
-                UserItem(name = user.name ?: "Unknown User")
+                UserItem(user.name ?: "Unknown")
             }
         }
     }
