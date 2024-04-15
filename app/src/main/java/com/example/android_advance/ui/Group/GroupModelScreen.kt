@@ -27,7 +27,7 @@ import retrofit2.Response
 import kotlin.collections.ArrayList
 
 @HiltViewModel
-class GroupModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
+class GroupModelScreen @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
     private val addedFriendIds = mutableListOf<String>()
     var gson: Gson = GsonBuilder()
@@ -191,4 +191,3 @@ class GroupModel @Inject constructor(@ApplicationContext private val context: Co
         })
     }
 }
-

@@ -31,9 +31,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
-import com.example.android_advance.ui.Group.CreateGroup
+import com.example.android_advance.ui.Group.CreateGroupChat
+import com.example.android_advance.ui.Group.ListUserGroup
+
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.SettingScreen
@@ -46,7 +49,6 @@ import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
-import com.example.android_advance.ui.Group.UserListInGroup
 
 @Composable
 fun Navigation() {
@@ -129,7 +131,7 @@ fun Navigation() {
                     SearchScreenPP(navController = navController)
                 }
                 composable(route = Route.CreateGroupScreen.route) {
-                    CreateGroup(navController = navController)
+                    CreateGroupChat(navController = navController)
                 }
                 composable(route = Route.VideoScreen.route + "/{roomName}", arguments = listOf((
                         navArgument("roomName") {
@@ -160,7 +162,7 @@ fun Navigation() {
                         ))) {
                     val roomId =
                         it.arguments?.getString("roomId") ?: return@composable
-                    UserListInGroup(navController, roomId)
+                    ListUserGroup(navController = navController, idRoom = roomId)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",

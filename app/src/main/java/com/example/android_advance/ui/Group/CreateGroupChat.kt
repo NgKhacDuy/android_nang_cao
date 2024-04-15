@@ -38,8 +38,8 @@ import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateGroup(navController: NavController) {
-    val viewModel = hiltViewModel<GroupModel>()
+fun CreateGroupChat(navController: NavController) {
+    val viewModel = hiltViewModel<GroupModelScreen>()
     val userLiveData = viewModel.getUserInfo()
     val friendLiveData = viewModel.getFriendInfo()
     val userState: State<UserDto?> = userLiveData.observeAsState(initial = null)
@@ -222,7 +222,7 @@ fun CreateGroup(navController: NavController) {
 }
 
 @Composable
-fun UserListItem(text: String, userId: String, viewModel: GroupModel) {
+fun UserListItem(text: String, userId: String, viewModel: GroupModelScreen) {
     val isAdded = remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
