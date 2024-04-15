@@ -48,6 +48,7 @@ import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
 import com.example.android_advance.ui.Group.ListUserInGroup
+import com.example.android_advance.ui.splash_screen.SplashScreen
 
 @Composable
 fun Navigation() {
@@ -93,7 +94,7 @@ fun Navigation() {
             startDestination = "auth",
             modifier = Modifier.padding(paddingValues)
         ) {
-            navigation(startDestination = Route.WelcomeScreen.route, route = "auth") {
+            navigation(startDestination = Route.splashScreen.route, route = "auth") {
                 composable(route = Route.SignUpScreen.route) {
                     bottomBarVisible.value = false
                     SignUpScreen(navController)
@@ -113,6 +114,10 @@ fun Navigation() {
                             }
                         }
                     }
+                }
+                composable(route = Route.splashScreen.route) {
+                    bottomBarVisible.value = false
+                    SplashScreen(navController)
                 }
             }
             navigation(startDestination = Route.RoomScreen.route, route = "home") {
@@ -153,12 +158,13 @@ fun Navigation() {
                 {
                     ChangePasswordScreen(navController = navController)
                 }
-                composable(route = Route.listUserGroupScreen.route + "/{roomId}", arguments = listOf((
-                        navArgument("roomId") {
-                            type = NavType.StringType
-                            nullable = false
-                        }
-                        ))) {
+                composable(route = Route.listUserGroupScreen.route + "/{roomId}",
+                    arguments = listOf((
+                            navArgument("roomId") {
+                                type = NavType.StringType
+                                nullable = false
+                            }
+                            ))) {
                     val roomId =
                         it.arguments?.getString("roomId") ?: return@composable
                     ListUserInGroup(navController, roomId)
