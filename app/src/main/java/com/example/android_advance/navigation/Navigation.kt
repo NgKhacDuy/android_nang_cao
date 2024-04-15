@@ -47,10 +47,9 @@ import com.example.android_advance.ui.account.ManageAccountInfoScreen
 import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
+import com.example.android_advance.ui.splash_screen.SplashScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
-import com.example.android_advance.ui.Group.ListUserInGroup
-import com.example.android_advance.ui.splash_screen.SplashScreen
 
 @Composable
 fun Navigation() {
