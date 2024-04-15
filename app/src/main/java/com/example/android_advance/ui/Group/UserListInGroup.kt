@@ -48,6 +48,7 @@ fun UserListInGroup(navController: NavController, idRoom : String) {
         }
     }
 
+
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
