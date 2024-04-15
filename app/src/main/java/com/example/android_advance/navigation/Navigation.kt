@@ -54,7 +54,7 @@ import com.example.android_advance.ui.welcome.WelcomeScreen
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-    val bottomBarVisible = rememberSaveable { mutableStateOf(true) }
+    val bottomBarVisible = rememberSaveable { mutableStateOf(false) }
     val context = LocalContext.current
     val appSharedPreference = AppSharedPreference(context)
     Scaffold(
