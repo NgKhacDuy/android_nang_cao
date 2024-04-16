@@ -13,6 +13,7 @@ import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.data_class.InfoDialog
 import com.example.android_advance.model.request.SignupRequest
+import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.components.IconType
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -65,7 +66,7 @@ class SignUpViewModel @Inject constructor(@ApplicationContext private val contex
     }
 
     private fun navigateToLogin(navController: NavController) {
-        navController.navigate(route = "home") {
+        navController.navigate(route = Route.LoginScreen.route) {
             popUpTo("auth") {
                 inclusive = true
             }

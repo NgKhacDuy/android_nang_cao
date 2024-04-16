@@ -14,17 +14,17 @@ data class Navitem(
 
 val listOfNavItems: List<Navitem> = listOf(
     Navitem(
-        label = "Message Screen",
+        label = "Message",
         icon = Icons.Default.Message,
         route = ChildRoute.RoomScreen.route
     ),
     Navitem(
-        label = "Call Screen",
+        label = "Call",
         icon = Icons.Default.Call,
         route = ChildRoute.CallScreen.route
     ),
     Navitem(
-        label = "Setting Screen",
+        label = "Setting",
         icon = Icons.Default.Settings,
         route = ChildRoute.SettingScreen.route
     )

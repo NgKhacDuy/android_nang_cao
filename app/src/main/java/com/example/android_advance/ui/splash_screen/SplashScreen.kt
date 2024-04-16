@@ -51,7 +51,7 @@ fun SplashScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(
-                if (isSystemInDarkTheme()) Color.DarkGray else Color.White
+                Color.White
             ),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
