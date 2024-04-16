@@ -31,6 +31,8 @@ sealed class Route(val route: String) {
 
     object listUserGroupScreen : Route(Constant.ListUserInGroup)
 
+    object InviteMemberScreen : Route(Constant.InviteMember)
+
     fun withArgs(vararg args: String): String {
         return buildString {
             append(route)
