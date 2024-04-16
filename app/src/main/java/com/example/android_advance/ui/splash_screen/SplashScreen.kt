@@ -42,8 +42,8 @@ fun SplashScreen(navController: NavController) {
         androidx.compose.animation.core.Animatable(0f)
     }
     LaunchedEffect(key1 = true) {
-        alpha.animateTo(1f, animationSpec = tween(1000))
-        delay(2000)
+        alpha.animateTo(1f, animationSpec = tween(500))
+        delay(1700)
         navController.popBackStack()
         navController.navigate(Route.WelcomeScreen.route)
     }

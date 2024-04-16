@@ -147,7 +147,8 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:0.20.0")
 //    lottie
     implementation("com.airbnb.android:lottie-compose:5.2.0")
-
+// Lazy flow row/column
+    implementation("io.github.aghajari:LazyFlowLayout:1.1.0")
 }
 
 kapt {
