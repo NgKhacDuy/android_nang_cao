@@ -29,6 +29,7 @@ class Constant {
         const val changePasswordScreen = "change_password_screen"
         const val ImagePicker = "image_picker"
         const val ListUserInGroup = "list_user_in_group_screen"
+        const val InviteMember = "Invite_Member"
         const val SplashScreen = "splash_screen"
 
         //        APP ID AGORA

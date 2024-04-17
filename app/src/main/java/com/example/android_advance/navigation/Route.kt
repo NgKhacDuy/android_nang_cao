@@ -30,6 +30,7 @@ sealed class Route(val route: String) {
     object ImagePicker : Route(Constant.ImagePicker)
 
     object listUserGroupScreen : Route(Constant.ListUserInGroup)
+    object InviteMemberScreen : Route(Constant.InviteMember)
     object splashScreen : Route(Constant.SplashScreen)
 
     fun withArgs(vararg args: String): String {

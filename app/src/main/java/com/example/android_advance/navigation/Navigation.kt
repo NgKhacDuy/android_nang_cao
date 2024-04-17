@@ -1,5 +1,6 @@
 package com.example.android_advance.navigation
 
+import InviteMember
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
@@ -169,6 +170,9 @@ fun Navigation() {
                     val roomId =
                         it.arguments?.getString("roomId") ?: return@composable
                     ListUserGroup(navController = navController, idRoom = roomId)
+                }
+                composable(route = Route.InviteMemberScreen.route){
+                    InviteMember(navController = navController)
                 }
                 composable(
                     route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",
