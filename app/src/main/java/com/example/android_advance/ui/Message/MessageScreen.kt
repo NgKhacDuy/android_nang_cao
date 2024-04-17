@@ -39,7 +39,7 @@ fun MessageScreen(idRoom: String, navController: NavController, namePartner: Str
                 }, modifier = Modifier, onClickBack = {
                     viewModel.socketManager.disconnect()
                     navController.popBackStack()
-                }, viewModel.db, viewModel.partnerName, navController, idRoom, nameFinding = nameFinding)
+                }, viewModel.db, viewModel.partnerName, navController, idRoom)
             }
         }
     }

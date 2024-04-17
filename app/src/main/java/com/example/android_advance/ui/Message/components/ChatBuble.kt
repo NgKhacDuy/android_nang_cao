@@ -55,7 +55,6 @@ fun ChatScreen(
     partnerName: String,
     navController: NavController,
     idRoom: String,
-    nameFinding:String? = null
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (_, chatBox) = createRefs()
@@ -63,20 +62,33 @@ fun ChatScreen(
         val screenHeight = configuration.screenHeightDp
         val listState = rememberLazyListState()
         val focusRequester = remember { FocusRequester() }
+
+        val keyWordsReturn = navController.currentBackStackEntry?.savedStateHandle?.get<String>("key_words_return")
         LaunchedEffect(model.size) {
             listState.animateScrollToItem(model.lastIndex)
         }
-        suspend fun testf() {
-            listState.animateScrollToItem(3)
 
+        if (!keyWordsReturn.isNullOrBlank()){
+            LaunchedEffect(model) {
+                Log.e("key_words_return", "$keyWordsReturn")
+                Log.e("model size", "${model.size}")
+                keyWordsReturn.let {
+                    val indexMsg = model.indexOfLast { it.content == keyWordsReturn }
+                    if (indexMsg != -1) {
+                        listState.animateScrollToItem(indexMsg)
+
+                        Log.e("msg found ok", keyWordsReturn)
+
+                    } else {
+                        Log.e("error", "Message not found in model")
+                    }
+                }
+
+            }
         }
-        nameFinding?.let { name ->
-            Log.e("NameFinding", "Name finding: $name")
-            Log.e("model size la: ", "${model.size}")
-//            GlobalScope.launch {
-//                testf()
-//            }
-        }
+
+
+
 
 
         Row(
@@ -131,9 +143,8 @@ fun ChatScreen(
                     )
                 }
                 IconButton(onClick = {
-                    val gson = Gson()
-                    val modelJson = gson.toJson(model.toList())
-                    navController.navigate(Route.OptionsMenuChat.withArgs(partnerName, idRoom,modelJson ))
+
+                    navController.navigate(Route.OptionsMenuChat.withArgs(partnerName, idRoom ))
                 }) {
                     Icon(
                         Icons.Rounded.Menu,

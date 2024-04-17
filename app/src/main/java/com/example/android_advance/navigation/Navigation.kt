@@ -186,20 +186,15 @@ fun Navigation() {
                         }
                     }
                 }
-                composable(route = Route.OptionsMenuChat.route + "/{partnerName}/{idRoom}/{modelList}") {
+                composable(route = Route.OptionsMenuChat.route + "/{partnerName}/{idRoom}") {
                         backStackEntry ->
                     val arguments = requireNotNull(backStackEntry.arguments)
                     val partnerName = arguments.getString("partnerName") ?: "not partner Name found"
                     val idRoom = arguments.getString("idRoom") ?: "no Id found"
-                    val modelList = arguments.getString("modelList")?:"not found model list"
-
-                    val gson = Gson()
-                    val modelType = object: TypeToken<List<messageDto>>(){}.type
-                    val model: List<messageDto> = gson.fromJson(modelList, modelType)
 
 
 
-                    OptionsMenu(navController = navController, partnerName = partnerName, idRoom = idRoom, model = model)
+                    OptionsMenu(navController = navController, partnerName = partnerName, idRoom = idRoom)
                 }
 //                 navigate to chatScreen of there a finding name
                 composable(
