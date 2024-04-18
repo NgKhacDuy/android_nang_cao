@@ -28,6 +28,9 @@ sealed class Route(val route: String) {
     object ManageAccountInfoScreen : Route(Constant.manageAccountInfoScreen)
     object ChangePasswordScreen : Route(Constant.changePasswordScreen)
     object ImagePicker : Route(Constant.ImagePicker)
+    object ForgetPassword1:Route(Constant.forgetPassWord1)
+    object ForgetPassword2:Route(Constant.forgetPassWord2)
+    object ForgetPassword3:Route(Constant.forgetPassword3)
 
     object listUserGroupScreen : Route(Constant.ListUserInGroup)
 

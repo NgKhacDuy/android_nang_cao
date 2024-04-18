@@ -29,6 +29,9 @@ class Constant {
         const val changePasswordScreen = "change_password_screen"
         const val ImagePicker = "image_picker"
         const val ListUserInGroup = "list_user_in_group_screen"
+        const val forgetPassWord1="ForgetPassword1"
+        const val forgetPassWord2="forgetPassword2"
+        const val forgetPassword3="forgetPassword3"
 
         //        APP ID AGORA
         const val appIdAgora = "566c6e877ab94b699e6dddd9d230a124"
