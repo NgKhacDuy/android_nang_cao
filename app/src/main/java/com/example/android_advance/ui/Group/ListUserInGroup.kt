@@ -5,9 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -35,10 +33,10 @@ data class User(val name: String, val avatar: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListUserGroup(navController: NavController, idRoom : String) {
+fun ListUserInGroup(navController: NavController, idRoom : String) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     Log.d("Roomid", idRoom)
-    val userList : List<UserDto> = viewModel.getDetailsRoom(idRoom)
+    val userList : List<UserDto> = viewModel.getRoomDetails(idRoom)
 
     var searchValue by remember { mutableStateOf("") }
 
@@ -49,7 +47,6 @@ fun ListUserGroup(navController: NavController, idRoom : String) {
             Log.d("UserList", "User: ${user.name}, Avatar: ${user.id}")
         }
     }
-
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -114,9 +111,8 @@ fun ListUserGroup(navController: NavController, idRoom : String) {
             )
         )
 
-        val scrollState = rememberScrollState()
-        Column(modifier = Modifier.verticalScroll(scrollState)) {
-            userList.forEach { user ->
+        LazyColumn {
+            items(userList) { user ->
                 UserItem(user.name ?: "Unknown")
             }
         }
