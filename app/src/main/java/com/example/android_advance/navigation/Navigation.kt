@@ -45,6 +45,7 @@ import com.example.android_advance.ui.account.ManageAccountInfoScreen
 import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
+import com.example.android_advance.ui.splash.SplashScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
 import com.google.gson.Gson
@@ -95,7 +96,11 @@ fun Navigation() {
             startDestination = "auth",
             modifier = Modifier.padding(paddingValues)
         ) {
-            navigation(startDestination = Route.WelcomeScreen.route, route = "auth") {
+            navigation(startDestination = Route.SplashScreen.route, route = "auth") {
+                composable(route = Route.SplashScreen.route) {
+                    bottomBarVisible.value = false
+                    SplashScreen(navController)
+                }
                 composable(route = Route.SignUpScreen.route) {
                     bottomBarVisible.value = false
                     SignUpScreen(navController)

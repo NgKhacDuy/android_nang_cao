@@ -51,8 +51,8 @@ class SearchScreenModel @Inject constructor(@ApplicationContext private val cont
     }
 
     fun navigateBack(navController: NavController) {
-        navController.popBackStack()
         socketManager.disconnect()
+        navController.popBackStack()
     }
 
     fun getFriendRequest() {
