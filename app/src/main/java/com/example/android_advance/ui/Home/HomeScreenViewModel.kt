@@ -36,12 +36,14 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
     private val appSharedPreference = AppSharedPreference(context)
 
     private val _onNewRoom = MutableLiveData<List<roomDto>>()
+    private val _onNewUser = MutableLiveData<UserDto>()
 
     private lateinit var db: DatabaseHelper
 
     private var socketManager = SocketManager.getInstance(context)
     var isRefreshing = mutableStateOf(false)
     val onNewRoom: LiveData<List<roomDto>> get() = _onNewRoom
+    val onNewUser: LiveData<UserDto> get() = _onNewUser
     var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
@@ -49,6 +51,10 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
         getRoomForUser()
+    }
+
+    fun getUserFromSqlite(): UserDto {
+        return db.getUser()[0]
     }
 
     init {
@@ -90,7 +96,10 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                 response: Response<ApiResponse.BaseApiResponse<UserDto>>
             ) {
                 if (response.isSuccessful) {
-                    response.body()?.data?.let { db.insertUser(it) }
+                    response.body()?.data?.let {
+                        db.insertUser(it)
+                        _onNewUser.postValue(it)
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)

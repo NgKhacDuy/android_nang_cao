@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material.icons.rounded.Videocam
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -80,7 +81,11 @@ fun ChatScreen(
                 IconButton(onClick = {
                     onClickBack()
                 }) {
-                    Icon(Icons.Rounded.ArrowBack, contentDescription = null, modifier = Modifier.size(26.dp))
+                    Icon(
+                        Icons.Rounded.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(26.dp)
+                    )
                 }
                 Image(
                     painter = painterResource(
@@ -115,6 +120,16 @@ fun ChatScreen(
                 }) {
                     Icon(
                         Icons.Rounded.Call,
+                        contentDescription = null,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                IconButton(onClick = {
+//                    navController.navigate(Route.VideoScreen.withArgs(idRoom))
+                    // TODO() add navigate to menu item
+                }) {
+                    Icon(
+                        Icons.Rounded.Menu,
                         contentDescription = null,
                         modifier = Modifier.size(28.dp)
                     )

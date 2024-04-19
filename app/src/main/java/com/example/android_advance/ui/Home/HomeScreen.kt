@@ -36,8 +36,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +51,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.android_advance.R
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
@@ -57,24 +60,27 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 data class User(
-    val avatar: Int, // Resource ID for the user's avatar
+    val avatar: String, // Resource ID for the user's avatar
     val name: String? = "",
     val lastMessage: String,
     val lastActive: String,
     val messageCount: Int,
-    val idRoom: String
+    val idRoom: String,
 )
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     val roomState = viewModel.onNewRoom.observeAsState()
+    val userState = viewModel.onNewUser.observeAsState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = viewModel.isRefreshing.value,
         onRefresh = { viewModel.swipe() }
     )
     val convertDateTime: ConvertDateTime = ConvertDateTime()
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -84,16 +90,14 @@ fun HomeScreen(navController: NavController) {
                 .fillMaxHeight(0.25f)
         ) {
             Box(
-
-
+                modifier = Modifier
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(Color(0xFF020204), Color(0xFF4156a6))
+                        )
+                    )
+                    .height((screenHeight * 0.3f).dp)
             ) {
-                // Content for the background image
-                Image(
-                    painter = painterResource(id = R.drawable.welcome),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-
-                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -133,15 +137,30 @@ fun HomeScreen(navController: NavController) {
                             .background(Color.White) // Set the background color
                             .padding(8.dp)
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.person_avt),
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(), // Make the image fill the Box
-                            contentScale = ContentScale.Crop
-                        )
+                        when (userState.value?.avatar.isNullOrEmpty()) {
+                            true -> {
+                                Image(
+                                    painter = painterResource(R.drawable.user),
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxSize(), // Make the image fill the Box
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            false -> {
+                                val user = viewModel.getUserFromSqlite()
+                                AsyncImage(
+                                    model = user.avatar,
+                                    contentDescription = "avatar",
+                                    modifier = Modifier
+
+                                        .size(35.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
                     }
-
-
                 }
 
 
@@ -243,7 +262,7 @@ fun HomeScreen(navController: NavController) {
                             val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                             val currentDate = sdf.format(Date())
                             User(
-                                R.drawable.person_avt,
+                                roomState.value!![it].partner?.avatar ?: "",
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
                                 roomState.value?.get(it)?.lastMessage?.content
                                     ?: "Cuộc hội thoại đã được tạo",
@@ -301,15 +320,24 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                 .offset(x = (-20).dp)
                 .padding(vertical = 16.dp)
         ) {
-            Image(
-                painter = painterResource(user.avatar),
-                contentDescription = null,
-                modifier = Modifier
+            if (user.avatar.isEmpty())
+                Image(
+                    painter = painterResource(R.drawable.user_solid),
+                    contentDescription = null,
+                    modifier = Modifier
 
-                    .size(35.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+                        .size(35.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            else {
+                AsyncImage(
+                    model = user.avatar, contentDescription = "avatar", modifier = Modifier
+
+                        .size(35.dp)
+                        .clip(CircleShape), contentScale = ContentScale.Crop
+                )
+            }
             Column(
                 modifier = Modifier.padding(start = 12.dp)
             ) {

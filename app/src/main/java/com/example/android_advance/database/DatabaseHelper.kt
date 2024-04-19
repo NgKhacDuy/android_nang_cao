@@ -6,7 +6,8 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.android_advance.model.response.UserDto
 
-class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseHelper(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_NAME = "zola.db"
@@ -16,11 +17,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_NAME = "name"
         private const val COLUMN_PHONENUMBER = "phoneNumber"
         private const val COLUMN_FRIENDS = "friends"
+        private const val COLUMN_AVATAR = "avatar"
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
         val createUserQuery =
-            "CREATE TABLE $TABLE_USER ($COLUMN_ID TEXT PRIMARY KEY, $COLUMN_NAME TEXT, $COLUMN_PHONENUMBER TEXT)"
+            "CREATE TABLE $TABLE_USER ($COLUMN_ID TEXT PRIMARY KEY, $COLUMN_NAME TEXT, $COLUMN_PHONENUMBER TEXT, $COLUMN_AVATAR TEXT)"
         db?.execSQL(createUserQuery)
     }
 
@@ -77,6 +79,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 put(COLUMN_ID, userDto.id)
                 put(COLUMN_NAME, userDto.name)
                 put(COLUMN_PHONENUMBER, userDto.phoneNumber)
+                put(COLUMN_AVATAR, userDto.avatar)
             }
             db.insert(TABLE_USER, null, values)
         }
@@ -85,8 +88,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.close()
     }
 
-    fun deleteUser()
-    {
+    fun deleteUser() {
         val db = writableDatabase
         db.delete(TABLE_USER, null, null)
         db.close()
