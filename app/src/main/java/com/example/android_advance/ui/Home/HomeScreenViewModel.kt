@@ -46,7 +46,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         .setLenient()
         .create()
 
-    var userListInGroup: List<UserDto> = emptyList()
+    var userList: List<UserDto> = emptyList()
 
 
     fun swipe() = viewModelScope.launch {
@@ -83,7 +83,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         }
     }
 
-    fun getDetailsRoom(roomId: String) : List<UserDto> {
+    fun getRoomDetails(roomId: String) : List<UserDto> {
         val room = _onNewRoom.value?.find { it.id == roomId }
         if (room != null) {
             Log.d("Room Details", "Room ID: ${room.id}, Room Name: ${room.name}")
@@ -93,11 +93,11 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                 for (user in users) {
                     Log.d("Room Details", "User ID: ${user.id}, User Name: ${user.name}")
                 }
-                this.userListInGroup = users
+                this.userList = users
                 return users
             } else {
                 Log.d("Room Details", "No users found in this room.")
-                this.userListInGroup = emptyList()
+                this.userList = emptyList()
             }
             val jsonObject = JSONObject().apply {
                 put("roomId", roomId)
@@ -108,54 +108,18 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
             Log.d("Room Details", "Room with ID $roomId not found!")
         }
 
-        if (userListInGroup.isEmpty()) {
+        if (userList.isEmpty()) {
             Log.e("UserList", "User list is null or empty!")
         } else {
             Log.d("UserList", "User list contains the following users:")
-            for (user in userListInGroup) {
+            for (user in userList) {
                 Log.d("UserList", "User ID: ${user.id}, User Name: ${user.name}")
             }
-            return userListInGroup
+            return userList
         }
-        return this.userListInGroup
+        return this.userList
     }
 
-    fun getInfoRoom(roomId: String) : List<UserDto> {
-        val room = _onNewRoom.value?.find { it.id == roomId }
-        if (room != null) {
-            Log.d("Room Details", "Room ID: ${room.id}, Room Name: ${room.name}")
-            val users = room.user
-            if (!users.isNullOrEmpty()) {
-                Log.d("Room Details", "List of Users:")
-                for (user in users) {
-                    Log.d("Room Details", "User ID: ${user.id}, User Name: ${user.name}")
-                }
-                this.userListInGroup = users
-                return users
-            } else {
-                Log.d("Room Details", "No users found in this room.")
-                this.userListInGroup = emptyList()
-            }
-            val jsonObject = JSONObject().apply {
-                put("roomId", roomId)
-            }
-
-            socketManager.emit("rooms", jsonObject.toString())
-        } else {
-            Log.d("Room Details", "Room with ID $roomId not found!")
-        }
-
-        if (userListInGroup.isEmpty()) {
-            Log.e("UserList", "User list is null or empty!")
-        } else {
-            Log.d("UserList", "User list contains the following users:")
-            for (user in userListInGroup) {
-                Log.d("UserList", "User ID: ${user.id}, User Name: ${user.name}")
-            }
-            return userListInGroup
-        }
-        return this.userListInGroup
-    }
 
     fun getUserInfo() {
         val apiClient: APIClient = APIClient(context)
