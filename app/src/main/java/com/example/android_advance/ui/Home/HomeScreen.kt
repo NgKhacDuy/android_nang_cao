@@ -2,6 +2,7 @@ package com.example.android_advance.ui.Home
 
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -261,8 +262,10 @@ fun HomeScreen(navController: NavController) {
                         items(it.size) {
                             val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                             val currentDate = sdf.format(Date())
+                            val avatar =
+                                if (roomState.value!![it].partner!!.avatar.isNullOrBlank()) "image" else roomState.value!![it].partner!!.avatar!!
                             User(
-                                roomState.value!![it].partner?.avatar ?: "",
+                                avatar,
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
                                 roomState.value?.get(it)?.lastMessage?.content
                                     ?: "Cuộc hội thoại đã được tạo",
@@ -275,7 +278,8 @@ fun HomeScreen(navController: NavController) {
                                 .let { it2 ->
                                     UserRow(
                                         it2, navController, it2.idRoom,
-                                        roomState.value!![it].partner?.name ?: it2.name!!
+                                        roomState.value!![it].partner?.name ?: it2.name!!,
+                                        roomState.value!![it].isGroup!!
                                     )
 
                                 }
@@ -293,15 +297,28 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun UserRow(user: User, navController: NavController, idRoom: String, partnerName: String) {
-
+fun UserRow(
+    user: User,
+    navController: NavController,
+    idRoom: String,
+    partnerName: String,
+    isGroup: Boolean
+) {
+    Log.e("avatar", user.avatar)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .padding(start = 4.dp, end = 4.dp)
             .clickable {
-                navController.navigate(ChildRoute.MessageScreen.withArgs(user.idRoom, partnerName))
+                navController.navigate(
+                    Route.MessageScreen.withArgs(
+                        user.idRoom,
+                        partnerName,
+                        isGroup.toString(),
+                        user.avatar
+                    )
+                )
             }
             .border(
                 border = BorderStroke(
@@ -320,7 +337,7 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                 .offset(x = (-20).dp)
                 .padding(vertical = 16.dp)
         ) {
-            if (user.avatar.isEmpty())
+            if (user.avatar == "image")
                 Image(
                     painter = painterResource(R.drawable.user_solid),
                     contentDescription = null,

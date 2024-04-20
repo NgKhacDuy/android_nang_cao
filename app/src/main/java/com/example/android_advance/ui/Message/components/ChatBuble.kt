@@ -58,7 +58,9 @@ fun ChatScreen(
     db: DatabaseHelper,
     partnerName: String,
     navController: NavController,
-    idRoom: String
+    idRoom: String,
+    isGroup: Boolean,
+    avatar: String
 ) {
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (_, chatBox) = createRefs()
@@ -87,16 +89,25 @@ fun ChatScreen(
                         modifier = Modifier.size(26.dp)
                     )
                 }
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.person_avt
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                if (avatar == "image") {
+                    Image(
+                        painter = painterResource(
+                            id = R.drawable.user
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    AsyncImage(
+                        model = avatar, contentDescription = "avatar", modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Column(
                     modifier = Modifier.offset(x = 25.dp)
                 ) {
@@ -125,7 +136,7 @@ fun ChatScreen(
                     )
                 }
                 IconButton(onClick = {
-//                    navController.navigate(Route.VideoScreen.withArgs(idRoom))
+                    navController.navigate(Route.MenuOption.withArgs(isGroup.toString(), avatar))
                     // TODO() add navigate to menu item
                 }) {
                     Icon(
