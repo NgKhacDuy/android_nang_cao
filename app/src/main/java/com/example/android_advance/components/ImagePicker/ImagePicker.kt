@@ -62,7 +62,7 @@ fun ImagePicker(
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uri ->
-            if (!uri.isEmpty()) {
+            if (uri.isNotEmpty()) {
                 val pathFile = getRealPathFromUri(context, uri[0]) ?: ""
                 val listImg: ArrayList<String> = arrayListOf()
                 listImg.add(pathFile)

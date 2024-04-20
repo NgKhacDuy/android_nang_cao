@@ -13,6 +13,8 @@ import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
+import com.example.android_advance.redux.Increment
+import com.example.android_advance.redux.Store
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.socketio.SocketManager
 import com.google.gson.Gson
@@ -36,19 +38,27 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
     private val appSharedPreference = AppSharedPreference(context)
 
     private val _onNewRoom = MutableLiveData<List<roomDto>>()
+    private val _onNewUser = MutableLiveData<UserDto>()
 
     private lateinit var db: DatabaseHelper
 
     private var socketManager = SocketManager.getInstance(context)
     var isRefreshing = mutableStateOf(false)
     val onNewRoom: LiveData<List<roomDto>> get() = _onNewRoom
+    val onNewUser: LiveData<UserDto> get() = _onNewUser
     var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
 
+    var store = Store.getStore()
+
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
         getRoomForUser()
+    }
+
+    fun getUserFromSqlite(): UserDto {
+        return db.getUser()[0]
     }
 
     init {
@@ -90,7 +100,10 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                 response: Response<ApiResponse.BaseApiResponse<UserDto>>
             ) {
                 if (response.isSuccessful) {
-                    response.body()?.data?.let { db.insertUser(it) }
+                    response.body()?.data?.let {
+                        db.insertUser(it)
+                        _onNewUser.postValue(it)
+                    }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
@@ -107,5 +120,9 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
     fun disconnectSocket() {
         socketManager.disconnect()
+    }
+
+    fun storeRoomDto(roomDto: roomDto) {
+        store!!.dispatch(Increment(roomDto))
     }
 }

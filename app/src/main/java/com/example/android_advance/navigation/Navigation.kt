@@ -44,6 +44,7 @@ import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.login.LoginScreen
+import com.example.android_advance.ui.menu_option.MenuOption
 import com.example.android_advance.ui.splash.SplashScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
@@ -158,7 +159,7 @@ fun Navigation() {
                     ChangePasswordScreen(navController = navController)
                 }
                 composable(
-                    route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",
+                    route = Route.MessageScreen.route + "/{idRoom}/{namePartner}/{isGroup}/{avatar}",
                     arguments = listOf(
                         navArgument("idRoom") {
                             type = NavType.StringType
@@ -168,18 +169,24 @@ fun Navigation() {
                             type = NavType.StringType
                             nullable = false
                         },
+                        navArgument("isGroup") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("avatar") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
                     )
                 ) {
                     bottomBarVisible.value = false
-
-                    it.arguments?.getString("idRoom")
-                        ?.let { it1 ->
-                            MessageScreen(
-                                idRoom = it1,
-                                navController,
-                                it.arguments?.getString("namePartner")!!
-                            )
-                        }
+                    MessageScreen(
+                        idRoom = it.arguments?.getString("idRoom")!!,
+                        navController = navController,
+                        namePartner = it.arguments?.getString("namePartner")!!,
+                        isGroup = it.arguments?.getString("isGroup")!!.toBoolean(),
+                        avatar = it.arguments?.getString("avatar") ?: "image"
+                    )
                     LaunchedEffect(Unit) {
                         navController.addOnDestinationChangedListener { _, destination, _ ->
                             if (destination.route != Route.MessageScreen.route) {
@@ -188,6 +195,25 @@ fun Navigation() {
                         }
                     }
                 }
+                composable(
+                    route = Route.MenuOption.route + "/{isGroup}/{avatar}", arguments = listOf(
+                        navArgument("isGroup") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("avatar") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                    )
+                ) {
+                    MenuOption(
+                        navController = navController,
+                        (it.arguments?.getString("isGroup") ?: "false").toBoolean(),
+                        it.arguments?.getString("avatar") ?: ""
+                    )
+                }
+
             }
         }
     }

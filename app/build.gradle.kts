@@ -147,6 +147,9 @@ dependencies {
     implementation("com.google.accompanist:accompanist-flowlayout:0.20.0")
 //    lottie
     implementation("com.airbnb.android:lottie-compose:5.2.0")
+//    redux
+    implementation("org.reduxkotlin:redux-kotlin-threadsafe-jvm:0.5.5")
+
 
 }
 
