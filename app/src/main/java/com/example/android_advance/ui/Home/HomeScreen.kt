@@ -54,6 +54,7 @@ import androidx.navigation.Navigator
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.android_advance.R
+import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
@@ -279,7 +280,9 @@ fun HomeScreen(navController: NavController) {
                                     UserRow(
                                         it2, navController, it2.idRoom,
                                         roomState.value!![it].partner?.name ?: it2.name!!,
-                                        roomState.value!![it].isGroup!!
+                                        roomState.value!![it].isGroup!!,
+                                        viewModel,
+                                        roomState.value!![it]
                                     )
 
                                 }
@@ -302,7 +305,9 @@ fun UserRow(
     navController: NavController,
     idRoom: String,
     partnerName: String,
-    isGroup: Boolean
+    isGroup: Boolean,
+    viewModel: HomeScreenViewModel,
+    roomDto: roomDto
 ) {
     Log.e("avatar", user.avatar)
     Row(
@@ -311,6 +316,7 @@ fun UserRow(
             .padding(vertical = 8.dp)
             .padding(start = 4.dp, end = 4.dp)
             .clickable {
+                viewModel.storeRoomDto(roomDto)
                 navController.navigate(
                     Route.MessageScreen.withArgs(
                         user.idRoom,

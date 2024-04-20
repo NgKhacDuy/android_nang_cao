@@ -1,5 +1,7 @@
 package com.example.android_advance.ui.menu_option
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
@@ -12,9 +14,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.android_advance.redux.Store
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
+@OptIn(DelicateCoroutinesApi::class)
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun MenuOption(navController: NavController, isGroup: Boolean, avatar: String) {
+    val store = Store.getStore()
+    val roomDto = store?.state?.roomDto
+    Log.e("room", roomDto?.id.toString())
     Column {
         IconButton(onClick = { navController.popBackStack() }) {
             Icon(
@@ -23,7 +34,7 @@ fun MenuOption(navController: NavController, isGroup: Boolean, avatar: String) {
                 modifier = Modifier.size(26.dp)
             )
         }
-        
+
         IconButton(onClick = { }) {
             Icon(
                 Icons.Rounded.VideoCall,

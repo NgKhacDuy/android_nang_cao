@@ -13,6 +13,8 @@ import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
+import com.example.android_advance.redux.Increment
+import com.example.android_advance.redux.Store
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.socketio.SocketManager
 import com.google.gson.Gson
@@ -47,6 +49,8 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
     var gson: Gson = GsonBuilder()
         .setLenient()
         .create()
+
+    var store = Store.getStore()
 
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
@@ -116,5 +120,9 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
     fun disconnectSocket() {
         socketManager.disconnect()
+    }
+
+    fun storeRoomDto(roomDto: roomDto) {
+        store!!.dispatch(Increment(roomDto))
     }
 }
