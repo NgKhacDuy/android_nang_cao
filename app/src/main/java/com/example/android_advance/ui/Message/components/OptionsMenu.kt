@@ -1,10 +1,21 @@
 
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -27,17 +38,31 @@ import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.airbnb.lottie.model.content.CircleShape
+import com.example.android_advance.R
+import com.example.android_advance.components.ViewImg.ExpandedImage
+import com.example.android_advance.model.response.messageDto
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.Message.MessageViewModel
+import com.example.android_advance.ui.Message.components.ChatItem
 import com.example.android_advance.ui.Screen.SettingItem
 
 
@@ -49,6 +74,27 @@ fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String
     var searchDialogShown by remember { mutableStateOf(false) }
     var returnKeyword by remember { mutableStateOf("") }
     var request_key by remember { mutableStateOf("") }
+
+    val viewModel = hiltViewModel<MessageViewModel>()
+    viewModel.savedStateHandle.set("roomId", idRoom)
+    val messageState = viewModel.onNewMessage.observeAsState()
+
+    messageState.value?.let {messages ->
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        items(messages.size) { item ->
+            ChatItem(messages[item], true)
+        }
+    }
+
+
+
+}
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,7 +104,7 @@ fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String
                 navigationIcon = {
                     IconButton(
                         onClick = {
-//                            navController.popBackStack()
+                            navController.popBackStack()
                         },
                         modifier = Modifier.padding(start = 12.dp)
                     ) {
@@ -76,7 +122,7 @@ fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
-                    .verticalScroll(rememberScrollState()),
+//                    .verticalScroll(rememberScrollState()),
 //                verticalArrangement = Arrangement.Top,
 //                horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -102,18 +148,14 @@ fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String
                         onClick = {
                             searchDialogShown = true
                             request_key = "search_key"
-
-//                            navController.popBackStack()
-//                            val popBackString = "duyhuynh"
-//                            val previousBackEntry = navController.previousBackStackEntry
-//                            previousBackEntry?.savedStateHandle?.set("key_words_return", popBackString)
-//                            navController.popBackStack()
                         }
                     )
                     SettingItem(
                         icon = Icons.Default.Group,
                         title = "Create Group with $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
-                        onClick = {}
+                        onClick = {
+                            navController.navigate(Route.CreateGroupScreen.route)
+                        }
                     )
                     SettingItem(
                         icon = Icons.Default.Block,
@@ -122,9 +164,15 @@ fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String
                     )
                     SettingItem(
                         icon = Icons.Default.IosShare,
-                        title = "Share contact",
+                        title = "Share $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
                         onClick = {}
                     )
+//                    DisplayImages()
+                    messageState.value?.let {messages ->
+                        DisplayImages(messages)
+                    }
+
+                    
                 }
             }
         }
@@ -168,6 +216,8 @@ fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String
 
     }
 }
+
+
 
 
 
@@ -233,4 +283,50 @@ fun SearchDialog(
         },
         properties = DialogProperties(dismissOnClickOutside = false)
     )
+}
+@Composable
+fun DisplayImages(messages: List<messageDto>) {
+    val imageMessages = messages.filter{it.image.isNotEmpty()}
+    val imageUrls = imageMessages.flatMap {it.image.map { image -> image.url}}
+    var isSelected = remember { mutableStateOf(false) }
+    var indexSelected = remember { mutableIntStateOf(0) }
+
+    LazyColumn {
+        items(imageUrls.chunked(4)){rowImage ->
+            Row (
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ){
+                for (imageUrl in rowImage){
+                    imageUrl.let {
+                        AsyncImage(
+                            model = it,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(2.dp, Color.Gray)
+                                .weight(1f)
+                                .clickable {
+                                    isSelected.value = true
+                                    indexSelected.value = imageUrls.indexOf(it)
+                                }
+
+                        )
+
+
+                    }
+                }
+            }
+
+        }
+    }
+    if (isSelected.value) {
+        imageUrls[indexSelected.intValue]?.let {
+            ExpandedImage(it) {
+                isSelected.value = false
+            }
+        }
+    }
+
+
 }

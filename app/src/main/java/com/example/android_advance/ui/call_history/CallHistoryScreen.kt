@@ -60,7 +60,7 @@ fun CallHistoryFavCard() {
                 painter = painterResource(id = R.drawable.user_solid),
                 contentDescription = null,
                 modifier = Modifier.size(
-                    65.dp
+                    40.dp
                 )
             )
             Text(text = "name", fontFamily = poppinsFamily)
@@ -203,7 +203,7 @@ fun CallHistoryScreenPP(navController: NavController) {
                             })
                 }
                 Text(
-                    text = "Calls",
+                    text = "Contacts",
                     fontSize = 22.sp,
                     color = Color.White,
                     fontFamily = poppinsFamily

@@ -1,4 +1,5 @@
 
+import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,11 +38,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.R
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.Message.components.ChatBox
 import com.example.android_advance.ui.Message.components.ChatItem
 import com.google.gson.Gson
@@ -56,6 +60,9 @@ fun ChatScreen(
     navController: NavController,
     idRoom: String,
 ) {
+
+
+
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (_, chatBox) = createRefs()
         val configuration = LocalConfiguration.current
@@ -64,32 +71,6 @@ fun ChatScreen(
         val focusRequester = remember { FocusRequester() }
 
         val keyWordsReturn = navController.currentBackStackEntry?.savedStateHandle?.get<String>("key_words_return")
-        LaunchedEffect(model.size) {
-            listState.animateScrollToItem(model.lastIndex)
-        }
-
-        if (!keyWordsReturn.isNullOrBlank()){
-            LaunchedEffect(model) {
-                Log.e("key_words_return", "$keyWordsReturn")
-                Log.e("model size", "${model.size}")
-                keyWordsReturn.let {
-                    val indexMsg = model.indexOfLast { it.content == keyWordsReturn }
-                    if (indexMsg != -1) {
-                        listState.animateScrollToItem(indexMsg)
-
-                        Log.e("msg found ok", keyWordsReturn)
-
-                    } else {
-                        Log.e("error", "Message not found in model")
-                    }
-                }
-
-            }
-        }
-
-
-
-
 
         Row(
             modifier = Modifier
@@ -145,6 +126,7 @@ fun ChatScreen(
                 IconButton(onClick = {
 
                     navController.navigate(Route.OptionsMenuChat.withArgs(partnerName, idRoom ))
+
                 }) {
                     Icon(
                         Icons.Rounded.Menu,
@@ -168,6 +150,29 @@ fun ChatScreen(
                         ChatItem(model[item], db.getUser().first().id == model[item].senderId)
                     }
                 }
+                if (!keyWordsReturn.isNullOrBlank()){
+                    LaunchedEffect(model) {
+                        Log.e("key_words_return", "$keyWordsReturn")
+                        Log.e("model size", "${model.size}")
+                        keyWordsReturn.let {
+                            val indexMsg = model.indexOfLast { it.content == keyWordsReturn }
+                            if (indexMsg != -1) {
+                                listState.animateScrollToItem(indexMsg)
+
+                                Log.e("msg found ok", keyWordsReturn)
+
+                            } else {
+                                Log.e("error", "Message not found in model")
+                            }
+                        }
+
+                    }
+                }else{
+                    LaunchedEffect(model.size) {
+                        listState.animateScrollToItem(model.lastIndex)
+                    }
+                }
+
             } else {
                 Column(
                     modifier = Modifier

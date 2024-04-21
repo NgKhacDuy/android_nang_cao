@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,6 +53,7 @@ import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.max
 
 data class User(
     val avatar: Int, // Resource ID for the user's avatar
@@ -286,17 +288,16 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                     width = 1.dp,
                     color = Color.Black,
                 ),
-//                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp)
                 shape = RoundedCornerShape(40.dp)
 
             ), // Adjust padding as needed
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier
-                .offset(x = (-20).dp)
                 .padding(vertical = 16.dp)
+                .padding(start = 40.dp)
         ) {
             Image(
                 painter = painterResource(user.avatar),
@@ -310,8 +311,8 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
             Column(
                 modifier = Modifier.padding(start = 12.dp)
             ) {
-                val displayMessage = if (user.lastMessage.length > 13) {
-                    "${user.lastMessage.take(13)}..."
+                val displayMessage = if (user.lastMessage.length > 15) {
+                    "${user.lastMessage.take(15)}..."
                 } else {
                     user.lastMessage
                 }
@@ -321,7 +322,7 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                 } else {
                     user.name
                 }
-                Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.widthIn(max = 150.dp), maxLines = 1 )
                 Text(
                     text = displayMessage,
                     fontSize = 16.sp,
@@ -332,18 +333,10 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
 
         }
 
-        Column(
+        Row(
+            modifier = Modifier.padding(end = 20.dp)
         ) {
-            Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal)
-            Image(
-                painter = painterResource(
-                    id = user.messageCount
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(20.dp)
-                    .align(Alignment.End)
-            )
+            Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal,modifier = Modifier.widthIn(min = 100.dp))
 
         }
     }

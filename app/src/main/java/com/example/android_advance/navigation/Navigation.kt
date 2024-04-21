@@ -44,6 +44,7 @@ import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
 import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
+import com.example.android_advance.ui.contacts.ContactScreen
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.splash.SplashScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
@@ -198,7 +199,6 @@ fun Navigation() {
                     val idRoom = arguments.getString("idRoom") ?: "no Id found"
 
 
-
                     OptionsMenu(navController = navController, partnerName = partnerName, idRoom = idRoom)
                 }
 //                 navigate to chatScreen of there a finding name
@@ -239,6 +239,10 @@ fun Navigation() {
                             }
                         }
                     }
+                }
+
+                composable(route = Route.ContactScreen.route){
+                    ContactScreen(navController = navController)
                 }
             }
         }

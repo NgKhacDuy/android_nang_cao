@@ -31,6 +31,7 @@ class Constant {
         const val changePasswordScreen = "change_password_screen"
         const val ImagePicker = "image_picker"
         const val splashScreen = "splash_screen"
+        const val contactScreen= "contact_screen"
 
         //        APP ID AGORA
         const val appIdAgora = "566c6e877ab94b699e6dddd9d230a124"
