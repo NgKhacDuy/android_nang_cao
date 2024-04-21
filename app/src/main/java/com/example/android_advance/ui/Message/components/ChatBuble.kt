@@ -1,5 +1,4 @@
-
-import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +17,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Call
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Videocam
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,6 +62,9 @@ fun ChatScreen(
     partnerName: String,
     navController: NavController,
     idRoom: String,
+    idRoom: String,
+    isGroup: Boolean,
+    avatar: String
 ) {
 
 
@@ -84,18 +90,31 @@ fun ChatScreen(
                 IconButton(onClick = {
                     onClickBack()
                 }) {
-                    Icon(Icons.Rounded.ArrowBack, contentDescription = null, modifier = Modifier.size(26.dp))
+                    Icon(
+                        Icons.Rounded.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.size(26.dp)
+                    )
                 }
-                Image(
-                    painter = painterResource(
-                        id = R.drawable.person_avt
-                    ),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(45.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                if (avatar == "image") {
+                    Image(
+                        painter = painterResource(
+                            id = R.drawable.user
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    AsyncImage(
+                        model = avatar, contentDescription = "avatar", modifier = Modifier
+                            .size(45.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
                 Column(
                     modifier = Modifier.offset(x = 25.dp)
                 ) {
@@ -124,9 +143,8 @@ fun ChatScreen(
                     )
                 }
                 IconButton(onClick = {
-
-                    navController.navigate(Route.OptionsMenuChat.withArgs(partnerName, idRoom ))
-
+                    navController.navigate(Route.MenuOption.withArgs(isGroup.toString(), avatar))
+                    // TODO() add navigate to menu item
                 }) {
                     Icon(
                         Icons.Rounded.Menu,

@@ -6,6 +6,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,15 +42,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigator
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.android_advance.R
+import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
@@ -56,24 +66,27 @@ import java.util.Date
 import kotlin.math.max
 
 data class User(
-    val avatar: Int, // Resource ID for the user's avatar
+    val avatar: String, // Resource ID for the user's avatar
     val name: String? = "",
     val lastMessage: String,
     val lastActive: String,
     val messageCount: Int,
-    val idRoom: String
+    val idRoom: String,
 )
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navController: NavController) {
     val viewModel = hiltViewModel<HomeScreenViewModel>()
     val roomState = viewModel.onNewRoom.observeAsState()
+    val userState = viewModel.onNewUser.observeAsState()
     val pullRefreshState = rememberPullRefreshState(
         refreshing = viewModel.isRefreshing.value,
         onRefresh = { viewModel.swipe() }
     )
     val convertDateTime: ConvertDateTime = ConvertDateTime()
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
     Box(
         modifier = Modifier
             .fillMaxSize(),
@@ -83,16 +96,14 @@ fun HomeScreen(navController: NavController) {
                 .fillMaxHeight(0.25f)
         ) {
             Box(
-
-
+                modifier = Modifier
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(Color(0xFF020204), Color(0xFF4156a6))
+                        )
+                    )
+                    .height((screenHeight * 0.3f).dp)
             ) {
-                // Content for the background image
-                Image(
-                    painter = painterResource(id = R.drawable.welcome),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-
-                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -132,15 +143,30 @@ fun HomeScreen(navController: NavController) {
                             .background(Color.White) // Set the background color
                             .padding(8.dp)
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.person_avt),
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(), // Make the image fill the Box
-                            contentScale = ContentScale.Crop
-                        )
+                        when (userState.value?.avatar.isNullOrEmpty()) {
+                            true -> {
+                                Image(
+                                    painter = painterResource(R.drawable.user),
+                                    contentDescription = null,
+                                    modifier = Modifier.fillMaxSize(), // Make the image fill the Box
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+
+                            false -> {
+                                val user = viewModel.getUserFromSqlite()
+                                AsyncImage(
+                                    model = user.avatar,
+                                    contentDescription = "avatar",
+                                    modifier = Modifier
+
+                                        .size(35.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
                     }
-
-
                 }
 
 
@@ -241,6 +267,8 @@ fun HomeScreen(navController: NavController) {
                         items(it.size) {
                             val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                             val currentDate = sdf.format(Date())
+                            val avatar =
+                                if (roomState.value!![it].partner!!.avatar.isNullOrBlank()) "image" else roomState.value!![it].partner!!.avatar!!
                             User(
                                 R.drawable.person_avt,
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
@@ -255,7 +283,10 @@ fun HomeScreen(navController: NavController) {
                                 .let { it2 ->
                                     UserRow(
                                         it2, navController, it2.idRoom,
-                                        roomState.value!![it].partner?.name ?: it2.name!!
+                                        roomState.value!![it].partner?.name ?: it2.name!!,
+                                        roomState.value!![it].isGroup!!,
+                                        viewModel,
+                                        roomState.value!![it]
                                     )
 
                                 }
@@ -273,21 +304,38 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun UserRow(user: User, navController: NavController, idRoom: String, partnerName: String) {
-
+fun UserRow(
+    user: User,
+    navController: NavController,
+    idRoom: String,
+    partnerName: String,
+    isGroup: Boolean,
+    viewModel: HomeScreenViewModel,
+    roomDto: roomDto
+) {
+    Log.e("avatar", user.avatar)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .padding(start = 4.dp, end = 4.dp)
             .clickable {
-                navController.navigate(ChildRoute.MessageScreen.withArgs(user.idRoom, partnerName))
+                viewModel.storeRoomDto(roomDto)
+                navController.navigate(
+                    Route.MessageScreen.withArgs(
+                        user.idRoom,
+                        partnerName,
+                        isGroup.toString(),
+                        user.avatar
+                    )
+                )
             }
             .border(
                 border = BorderStroke(
                     width = 1.dp,
                     color = Color.Black,
                 ),
+//                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp)
                 shape = RoundedCornerShape(40.dp)
 
             ), // Adjust padding as needed
@@ -299,15 +347,24 @@ fun UserRow(user: User, navController: NavController, idRoom: String, partnerNam
                 .padding(vertical = 16.dp)
                 .padding(start = 40.dp)
         ) {
-            Image(
-                painter = painterResource(user.avatar),
-                contentDescription = null,
-                modifier = Modifier
+            if (user.avatar == "image")
+                Image(
+                    painter = painterResource(R.drawable.user_solid),
+                    contentDescription = null,
+                    modifier = Modifier
 
-                    .size(35.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
+                        .size(35.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
+                )
+            else {
+                AsyncImage(
+                    model = user.avatar, contentDescription = "avatar", modifier = Modifier
+
+                        .size(35.dp)
+                        .clip(CircleShape), contentScale = ContentScale.Crop
+                )
+            }
             Column(
                 modifier = Modifier.padding(start = 12.dp)
             ) {

@@ -17,7 +17,13 @@ import androidx.navigation.NavController
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun MessageScreen(idRoom: String, navController: NavController, namePartner: String, nameFinding:String? = null) {
+fun MessageScreen(
+    idRoom: String,
+    navController: NavController,
+    namePartner: String,
+    isGroup: Boolean,
+    avatar: String
+) {
     val viewModel = hiltViewModel<MessageViewModel>()
     viewModel.savedStateHandle.set("roomId", idRoom)
     val messageState = viewModel.onNewMessage.observeAsState()
@@ -26,20 +32,39 @@ fun MessageScreen(idRoom: String, navController: NavController, namePartner: Str
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White).imePadding(),
+            .background(Color.White)
+            .imePadding(),
 
         ) {
         Column(
 
         ) {
+            when (messageState.value?.isEmpty()) {
+                true -> {}
+                false -> {
+                    messageState.value?.let { it ->
+                        ChatScreen(
+                            model = it,
+                            onSendChatClickListener = { content, type, image ->
+                                viewModel.sendMessage(content, type, image)
+                            },
+                            modifier = Modifier,
+                            onClickBack = {
+                                viewModel.socketManager.disconnect()
+                                navController.popBackStack()
+                            },
+                            viewModel.db,
+                            viewModel.partnerName,
+                            navController,
+                            idRoom,
+                            isGroup,
+                            avatar
+                        )
+                    }
+                }
 
-            messageState.value?.let { it ->
-                ChatScreen(model = it, onSendChatClickListener = { content, type, image ->
-                    viewModel.sendMessage(content, type, image)
-                }, modifier = Modifier, onClickBack = {
-                    viewModel.socketManager.disconnect()
-                    navController.popBackStack()
-                }, viewModel.db, viewModel.partnerName, navController, idRoom)
+                null -> {
+                }
             }
         }
     }

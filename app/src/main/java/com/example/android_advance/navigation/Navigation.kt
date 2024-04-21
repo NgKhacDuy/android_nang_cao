@@ -2,6 +2,7 @@ package com.example.android_advance.navigation
 
 import OptionsMenu
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -46,11 +47,10 @@ import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
 import com.example.android_advance.ui.contacts.ContactScreen
 import com.example.android_advance.ui.login.LoginScreen
+import com.example.android_advance.ui.menu_option.MenuOption
 import com.example.android_advance.ui.splash.SplashScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 
 
 @Composable
@@ -172,18 +172,24 @@ fun Navigation() {
                             type = NavType.StringType
                             nullable = false
                         },
+                        navArgument("isGroup") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("avatar") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
                     )
                 ) {
                     bottomBarVisible.value = false
-
-                    it.arguments?.getString("idRoom")
-                        ?.let { it1 ->
-                            MessageScreen(
-                                idRoom = it1,
-                                navController,
-                                it.arguments?.getString("namePartner")!!
-                            )
-                        }
+                    MessageScreen(
+                        idRoom = it.arguments?.getString("idRoom")!!,
+                        navController = navController,
+                        namePartner = it.arguments?.getString("namePartner")!!,
+                        isGroup = it.arguments?.getString("isGroup")!!.toBoolean(),
+                        avatar = it.arguments?.getString("avatar") ?: "image"
+                    )
                     LaunchedEffect(Unit) {
                         navController.addOnDestinationChangedListener { _, destination, _ ->
                             if (destination.route != Route.MessageScreen.route) {
@@ -192,58 +198,25 @@ fun Navigation() {
                         }
                     }
                 }
-                composable(route = Route.OptionsMenuChat.route + "/{partnerName}/{idRoom}") {
-                        backStackEntry ->
-                    val arguments = requireNotNull(backStackEntry.arguments)
-                    val partnerName = arguments.getString("partnerName") ?: "not partner Name found"
-                    val idRoom = arguments.getString("idRoom") ?: "no Id found"
-
-
-                    OptionsMenu(navController = navController, partnerName = partnerName, idRoom = idRoom)
-                }
-//                 navigate to chatScreen of there a finding name
                 composable(
-                    route = Route.MessageScreen.route + "/{idRoom}/{namePartner}/{modelJson}",
-                    arguments = listOf(
-                        navArgument("idRoom") {
+                    route = Route.MenuOption.route + "/{isGroup}/{avatar}", arguments = listOf(
+                        navArgument("isGroup") {
                             type = NavType.StringType
                             nullable = false
                         },
-                        navArgument("namePartner") {
+                        navArgument("avatar") {
                             type = NavType.StringType
                             nullable = false
-                        },
-
-                        navArgument("modelJson") {
-                            type = NavType.StringType
-                            nullable = true
                         },
                     )
                 ) {
-                    bottomBarVisible.value = false
-
-                    it.arguments?.getString("idRoom")
-                        ?.let { it1 ->
-                            MessageScreen(
-                                idRoom = it1,
-                                navController,
-                                it.arguments?.getString("namePartner")!!,
-                                it.arguments?.getString("modelJson")!!
-
-                            )
-                        }
-                    LaunchedEffect(Unit) {
-                        navController.addOnDestinationChangedListener { _, destination, _ ->
-                            if (destination.route != Route.MessageScreen.route) {
-                                bottomBarVisible.value = true
-                            }
-                        }
-                    }
+                    MenuOption(
+                        navController = navController,
+                        (it.arguments?.getString("isGroup") ?: "false").toBoolean(),
+                        it.arguments?.getString("avatar") ?: ""
+                    )
                 }
 
-                composable(route = Route.ContactScreen.route){
-                    ContactScreen(navController = navController)
-                }
             }
         }
     }

@@ -30,6 +30,8 @@ class MessageViewModel @Inject constructor(
     ViewModel() {
     val roomId = savedStateHandle.get<String>("idRoom") ?: ""
     val partnerName = savedStateHandle.get<String>("namePartner") ?: ""
+    var tempIsGroup = savedStateHandle.get<String>("isGroup") ?: "false"
+    val isGroup = tempIsGroup.toBoolean()
 
     var gson: Gson = GsonBuilder()
         .setLenient()
@@ -72,7 +74,15 @@ class MessageViewModel @Inject constructor(
             Log.e("Type", typeMessage)
             socketManager.emit(
                 "message",
-                gson.toJson(db.getUser().first().id?.let { MessageRequest(it, content, roomId, typeMessage, image) })
+                gson.toJson(db.getUser().first().id?.let {
+                    MessageRequest(
+                        it,
+                        content,
+                        roomId,
+                        typeMessage,
+                        image
+                    )
+                })
             )
         }
         socketManager.on("message") { args ->
