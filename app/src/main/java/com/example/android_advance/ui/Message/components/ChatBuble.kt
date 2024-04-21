@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.android_advance.R
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.messageDto
@@ -61,7 +62,6 @@ fun ChatScreen(
     db: DatabaseHelper,
     partnerName: String,
     navController: NavController,
-    idRoom: String,
     idRoom: String,
     isGroup: Boolean,
     avatar: String
@@ -143,7 +143,8 @@ fun ChatScreen(
                     )
                 }
                 IconButton(onClick = {
-                    navController.navigate(Route.MenuOption.withArgs(isGroup.toString(), avatar))
+//                    navController.navigate(Route.MenuOption.withArgs(isGroup.toString(), avatar))
+                    navController.navigate(Route.OptionsMenuChat.withArgs(idRoom,partnerName))
                     // TODO() add navigate to menu item
                 }) {
                     Icon(

@@ -270,7 +270,7 @@ fun HomeScreen(navController: NavController) {
                             val avatar =
                                 if (roomState.value!![it].partner!!.avatar.isNullOrBlank()) "image" else roomState.value!![it].partner!!.avatar!!
                             User(
-                                R.drawable.person_avt,
+                                avatar,
                                 if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
                                 roomState.value?.get(it)?.lastMessage?.content
                                     ?: "Cuộc hội thoại đã được tạo",

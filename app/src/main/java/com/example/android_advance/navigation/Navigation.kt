@@ -162,7 +162,7 @@ fun Navigation() {
                     ChangePasswordScreen(navController = navController)
                 }
                 composable(
-                    route = Route.MessageScreen.route + "/{idRoom}/{namePartner}",
+                    route = Route.MessageScreen.route + "/{idRoom}/{namePartner}/{isGroup}/{avatar}",
                     arguments = listOf(
                         navArgument("idRoom") {
                             type = NavType.StringType
@@ -214,6 +214,27 @@ fun Navigation() {
                         navController = navController,
                         (it.arguments?.getString("isGroup") ?: "false").toBoolean(),
                         it.arguments?.getString("avatar") ?: ""
+                    )
+                }
+
+                // this is the main option menu
+                composable(
+                    route = Route.OptionsMenuChat.route + "/{idRoom}/{partnerName}", arguments = listOf(
+                        navArgument("idRoom") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("partnerName") {
+                            type = NavType.StringType
+                            nullable = false
+                        }
+
+                    )
+                ) {
+                    OptionsMenu(
+                        navController = navController,
+                        (it.arguments?.getString("idRoom") ?: "no id room"),
+                        it.arguments?.getString("partnerName") ?: "no partner name"
                     )
                 }
 

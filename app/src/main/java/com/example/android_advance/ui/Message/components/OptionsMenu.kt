@@ -69,7 +69,7 @@ import com.example.android_advance.ui.Screen.SettingItem
 //@Preview
 @Composable
 //fun OptionsMenu() {
-fun OptionsMenu(navController: NavController, partnerName: String, idRoom:String) {
+fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String) {
 //    var partnerName by remember { mutableStateOf("duyhuynhlam") }
     var searchDialogShown by remember { mutableStateOf(false) }
     var returnKeyword by remember { mutableStateOf("") }
