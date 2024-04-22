@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 fun MenuOption(navController: NavController, isGroup: Boolean, avatar: String) {
     val store = Store.getStore()
     val roomDto = store?.state?.roomDto
-    Log.e("room", roomDto?.id.toString())
     Column {
         IconButton(onClick = { navController.popBackStack() }) {
             Icon(
