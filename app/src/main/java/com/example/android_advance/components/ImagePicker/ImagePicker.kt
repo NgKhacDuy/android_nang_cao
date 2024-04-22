@@ -61,13 +61,28 @@ fun ImagePicker(
     }
 
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
-            if (uri.isNotEmpty()) {
-                val pathFile = getRealPathFromUri(context, uri[0]) ?: ""
-                val listImg: ArrayList<String> = arrayListOf()
-                listImg.add(pathFile)
-                onImagesSelected(listImg)
+            if (uri != null) {
+                selectedImageUris = listOf(uri)
+                selectedImageUris.forEach(
+                    action = {
+                        val inputStream = context.contentResolver.openInputStream(it)
+                        val byteArrayOutputStream = ByteArrayOutputStream()
+                        inputStream?.use { input ->
+                            byteArrayOutputStream.use { output ->
+                                input.copyTo(output)
+                            }
+                        }
+                        val byteArray = byteArrayOutputStream.toByteArray()
+
+                        // Encode the image data as Base64
+                        val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                        selectedImageBase64 = selectedImageBase64 + base64Image
+
+                    }
+                )
+                onImagesSelected(selectedImageBase64)
             }
             onDismiss()
         }
@@ -76,25 +91,27 @@ fun ImagePicker(
     val mutiplePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia(),
         onResult = { uris ->
-            selectedImageUris = uris
-            selectedImageUris.forEach(
-                action = {
-                    val inputStream = context.contentResolver.openInputStream(it)
-                    val byteArrayOutputStream = ByteArrayOutputStream()
-                    inputStream?.use { input ->
-                        byteArrayOutputStream.use { output ->
-                            input.copyTo(output)
+            if (uris.isNotEmpty()) {
+                selectedImageUris = uris
+                selectedImageUris.forEach(
+                    action = {
+                        val inputStream = context.contentResolver.openInputStream(it)
+                        val byteArrayOutputStream = ByteArrayOutputStream()
+                        inputStream?.use { input ->
+                            byteArrayOutputStream.use { output ->
+                                input.copyTo(output)
+                            }
                         }
+                        val byteArray = byteArrayOutputStream.toByteArray()
+
+                        // Encode the image data as Base64
+                        val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
+                        selectedImageBase64 = selectedImageBase64 + base64Image
+
                     }
-                    val byteArray = byteArrayOutputStream.toByteArray()
-
-                    // Encode the image data as Base64
-                    val base64Image = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                    selectedImageBase64 = selectedImageBase64 + base64Image
-
-                }
-            )
-            onImagesSelected(selectedImageBase64) // Invoke the callback with the selected images' Base64 strings
+                )
+                onImagesSelected(selectedImageBase64)
+            }
             onDismiss()
         }
     )

@@ -16,7 +16,7 @@ class APIClient @Inject constructor(private val context: Context) {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient =
-            OkHttpClient.Builder().addInterceptor(interceptor).connectTimeout(100, TimeUnit.SECONDS)
+            OkHttpClient.Builder().connectTimeout(100, TimeUnit.SECONDS)
                 .readTimeout(100, TimeUnit.SECONDS)
                 .addInterceptor(appInterceptor(context)).build()
         retrofit = Retrofit.Builder()

@@ -1,5 +1,7 @@
+import android.content.Context
 import android.os.Message
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -64,7 +66,8 @@ fun ChatScreen(
     navController: NavController,
     idRoom: String,
     isGroup: Boolean,
-    avatar: String
+    avatar: String,
+    context: Context
 ) {
 
 
@@ -172,12 +175,25 @@ fun ChatScreen(
                 if (!keyWordsReturn.isNullOrBlank()) {
                     LaunchedEffect(model) {
                         keyWordsReturn.let {
-                            val indexMsg = model.indexOfLast { it.content == keyWordsReturn }
+                            val indexMsg =
+                                model.indexOfLast {
+                                    it.content!!.contains(
+                                        keyWordsReturn,
+                                        ignoreCase = false
+                                    )
+                                }
                             if (indexMsg != -1) {
                                 listState.animateScrollToItem(indexMsg)
-
+                                Toast.makeText(context, "Tìm được tin nhắn", Toast.LENGTH_SHORT)
+                                    .show()
 
                             } else {
+                                Toast.makeText(
+                                    context,
+                                    "Không tìm thấy tin nhắn",
+                                    Toast.LENGTH_SHORT
+                                )
+                                    .show()
                                 Log.e("error", "Message not found in model")
                             }
                         }
