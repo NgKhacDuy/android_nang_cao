@@ -124,10 +124,10 @@ class forgetPasswordViewModel @Inject constructor(@ApplicationContext private va
             }
         })
     }
-    fun generateOtp(
+    fun generateOtp(phoneNumber:String,
         callback: (String) -> Unit
     ) {
-        val call = apiService?.generateOtpForResetPassword()
+        val call = apiService?.generateOtpForResetPassword(phoneNumber)
 
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<String>> {
             override fun onResponse(

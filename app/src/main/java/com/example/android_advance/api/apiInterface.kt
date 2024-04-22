@@ -83,8 +83,9 @@ interface ApiInterface {
     fun isPhoneNumberExist(
         @Path("phoneNumber") phoneNumber: String,
     ): Call<ApiResponse.BaseApiResponse<String>>
-    @GET(apiConstant.generateOtp)
+    @GET(apiConstant.generateOtp + "/{phoneNumber}")
     fun generateOtpForResetPassword(
+        @Path("phoneNumber") phoneNumber: String,
     ): Call<ApiResponse.BaseApiResponse<String>>
     //
     @PATCH(apiConstant.resetPassword + "/{id}")

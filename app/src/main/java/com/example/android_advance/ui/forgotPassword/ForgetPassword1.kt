@@ -131,7 +131,7 @@ fun EnterNumberScreen(navController: NavController) {
                         if (userId.isNotEmpty()) {
                             Log.d("test", "User ID: $userId")
                             var sendOtp=""
-                            viewModel.generateOtp { otpgenCode ->
+                            viewModel.generateOtp(phoneNumber) { otpgenCode ->
                                 // Perform actions with the userId value
                                 if (otpgenCode.isNotEmpty()) {
                                     Log.d("Otp code ", "Otp: $otpgenCode")
