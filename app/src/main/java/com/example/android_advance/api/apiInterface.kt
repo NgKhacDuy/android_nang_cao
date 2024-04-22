@@ -70,10 +70,9 @@ interface ApiInterface {
         @Header("Authorization") authHeader: String,
     ): Call<ApiResponse.BaseApiResponse<List<FriendRequestDto>>?>
 
-    @Multipart
     @POST(apiConstant.userImg)
     fun uploadImg(
         @Header("Authorization") authHeader: String,
-        @Part file: MultipartBody.Part
+        @Body avatarRequest: AvatarRequest
     ): Call<ApiResponse.BaseApiResponse<Unit>>
 }

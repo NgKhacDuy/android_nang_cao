@@ -57,7 +57,8 @@ fun MessageScreen(
                             navController,
                             viewModel.roomId,
                             viewModel.isGroup!!,
-                            viewModel.roomDto?.partner?.avatar ?: ""
+                            viewModel.roomDto?.partner?.avatar ?: "",
+                            viewModel.context
                         )
                     }
                 }
