@@ -1,5 +1,6 @@
 package com.example.android_advance.navigation
 
+import OptionsMenu
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,18 +32,20 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
-import com.example.android_advance.ui.Screen.CallSreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
 import com.example.android_advance.ui.account.AccountScreen
 import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
+import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
+import com.example.android_advance.ui.contacts.ContactScreen
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.menu_option.MenuOption
 import com.example.android_advance.ui.splash.SplashScreen
@@ -126,7 +129,7 @@ fun Navigation() {
                     HomeScreen(navController)
                 }
                 composable(route = Route.CallScreen.route) {
-                    CallSreen()
+                    CallHistoryScreenPP(navController)
                 }
                 composable(route = Route.SettingScreen.route) {
                     SettingScreen(navController)
@@ -211,6 +214,27 @@ fun Navigation() {
                         navController = navController,
                         (it.arguments?.getString("isGroup") ?: "false").toBoolean(),
                         it.arguments?.getString("avatar") ?: ""
+                    )
+                }
+
+                // this is the main option menu
+                composable(
+                    route = Route.OptionsMenuChat.route + "/{idRoom}/{partnerName}", arguments = listOf(
+                        navArgument("idRoom") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("partnerName") {
+                            type = NavType.StringType
+                            nullable = false
+                        }
+
+                    )
+                ) {
+                    OptionsMenu(
+                        navController = navController,
+                        (it.arguments?.getString("idRoom") ?: "no id room"),
+                        it.arguments?.getString("partnerName") ?: "no partner name"
                     )
                 }
 

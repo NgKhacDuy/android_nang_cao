@@ -1,6 +1,11 @@
 package com.example.android_advance.ui.Home
 
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.*
@@ -16,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +30,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Group
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -43,8 +48,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,7 +62,8 @@ import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import kotlin.math.max
 
 data class User(
     val avatar: String, // Resource ID for the user's avatar
@@ -335,13 +339,13 @@ fun UserRow(
                 shape = RoundedCornerShape(40.dp)
 
             ), // Adjust padding as needed
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
             modifier = Modifier
-                .offset(x = (-20).dp)
                 .padding(vertical = 16.dp)
+                .padding(start = 40.dp)
         ) {
             if (user.avatar == "image")
                 Image(
@@ -364,8 +368,8 @@ fun UserRow(
             Column(
                 modifier = Modifier.padding(start = 12.dp)
             ) {
-                val displayMessage = if (user.lastMessage.length > 13) {
-                    "${user.lastMessage.take(13)}..."
+                val displayMessage = if (user.lastMessage.length > 15) {
+                    "${user.lastMessage.take(15)}..."
                 } else {
                     user.lastMessage
                 }
@@ -375,7 +379,7 @@ fun UserRow(
                 } else {
                     user.name
                 }
-                Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.widthIn(max = 150.dp), maxLines = 1 )
                 Text(
                     text = displayMessage,
                     fontSize = 16.sp,
@@ -386,18 +390,10 @@ fun UserRow(
 
         }
 
-        Column(
+        Row(
+            modifier = Modifier.padding(end = 20.dp)
         ) {
-            Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal)
-            Image(
-                painter = painterResource(
-                    id = user.messageCount
-                ),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(20.dp)
-                    .align(Alignment.End)
-            )
+            Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal,modifier = Modifier.widthIn(min = 100.dp))
 
         }
     }

@@ -136,7 +136,9 @@ fun SettingScreen(navController: NavController) {
         SettingItem(
             icon = Icons.Default.Chat,
             title = "Chat",
-            onClick = {}
+            onClick = {
+                navController.navigate(Route.ContactScreen.route)
+            }
         )
         SettingItem(
             icon = Icons.Default.Notifications,

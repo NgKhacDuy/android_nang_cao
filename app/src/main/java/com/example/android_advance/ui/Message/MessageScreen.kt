@@ -66,7 +66,6 @@ fun MessageScreen(
                 null -> {
                 }
             }
-
         }
     }
 }

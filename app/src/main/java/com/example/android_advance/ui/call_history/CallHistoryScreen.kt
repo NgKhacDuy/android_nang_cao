@@ -37,7 +37,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -61,7 +60,7 @@ fun CallHistoryFavCard() {
                 painter = painterResource(id = R.drawable.user_solid),
                 contentDescription = null,
                 modifier = Modifier.size(
-                    65.dp
+                    40.dp
                 )
             )
             Text(text = "name", fontFamily = poppinsFamily)
@@ -204,7 +203,7 @@ fun CallHistoryScreenPP(navController: NavController) {
                             })
                 }
                 Text(
-                    text = "Calls",
+                    text = "Contacts",
                     fontSize = 22.sp,
                     color = Color.White,
                     fontFamily = poppinsFamily
