@@ -1,5 +1,6 @@
 package com.example.android_advance.navigation
 
+import InviteMember
 import OptionsMenu
 import android.content.Context
 import android.util.Log
@@ -36,6 +37,7 @@ import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
+import com.example.android_advance.ui.Group.ListUserGroup
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.SettingScreen
@@ -193,6 +195,14 @@ fun Navigation() {
                         (it.arguments?.getString("isGroup") ?: "false").toBoolean(),
                         it.arguments?.getString("avatar") ?: ""
                     )
+                }
+
+                composable(Route.ListUserInGroup.route){
+                    ListUserGroup(navController = navController)
+                }
+
+                composable(Route.InviteMemberScreen.route){
+                    InviteMember(navController = navController)
                 }
 
                 // this is the main option menu
