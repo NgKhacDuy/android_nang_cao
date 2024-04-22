@@ -33,6 +33,7 @@ sealed class Route(val route: String) {
     object SplashScreen : Route(Constant.splashScreen)
     object MenuOption : Route(Constant.menuOption)
     object ListUserInGroup : Route(Constant.listUserInGroup)
+    object InviteMemberScreen : Route(Constant.InviteMember)
     object ContactScreen : Route(Constant.contactScreen)
 
 

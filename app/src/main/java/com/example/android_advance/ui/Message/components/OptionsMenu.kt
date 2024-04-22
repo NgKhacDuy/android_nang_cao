@@ -160,7 +160,9 @@ fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String)
                     SettingItem(
                         icon = Icons.Default.Block,
                         title = "Block $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
-                        onClick = {}
+                        onClick = {
+                            navController.navigate(Route.ListUserInGroup.route)
+                        }
                     )
                     SettingItem(
                         icon = Icons.Default.IosShare,

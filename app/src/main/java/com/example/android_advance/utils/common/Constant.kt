@@ -34,6 +34,7 @@ class Constant {
         const val contactScreen= "contact_screen"
         const val menuOption = "menu_option"
         const val listUserInGroup = "list_user_in_group"
+        const val InviteMember = "Invite_Member"
 
         //        APP ID AGORA
         const val appIdAgora = "566c6e877ab94b699e6dddd9d230a124"
