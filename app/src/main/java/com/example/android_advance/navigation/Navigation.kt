@@ -162,33 +162,11 @@ fun Navigation() {
                     ChangePasswordScreen(navController = navController)
                 }
                 composable(
-                    route = Route.MessageScreen.route + "/{idRoom}/{namePartner}/{isGroup}/{avatar}",
-                    arguments = listOf(
-                        navArgument("idRoom") {
-                            type = NavType.StringType
-                            nullable = false
-                        },
-                        navArgument("namePartner") {
-                            type = NavType.StringType
-                            nullable = false
-                        },
-                        navArgument("isGroup") {
-                            type = NavType.StringType
-                            nullable = false
-                        },
-                        navArgument("avatar") {
-                            type = NavType.StringType
-                            nullable = false
-                        },
-                    )
+                    route = Route.MessageScreen.route,
                 ) {
                     bottomBarVisible.value = false
                     MessageScreen(
-                        idRoom = it.arguments?.getString("idRoom")!!,
                         navController = navController,
-                        namePartner = it.arguments?.getString("namePartner")!!,
-                        isGroup = it.arguments?.getString("isGroup")!!.toBoolean(),
-                        avatar = it.arguments?.getString("avatar") ?: "image"
                     )
                     LaunchedEffect(Unit) {
                         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -219,7 +197,8 @@ fun Navigation() {
 
                 // this is the main option menu
                 composable(
-                    route = Route.OptionsMenuChat.route + "/{idRoom}/{partnerName}", arguments = listOf(
+                    route = Route.OptionsMenuChat.route + "/{idRoom}/{partnerName}",
+                    arguments = listOf(
                         navArgument("idRoom") {
                             type = NavType.StringType
                             nullable = false

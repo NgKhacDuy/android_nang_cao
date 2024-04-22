@@ -39,7 +39,6 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
     }
 
     fun uploadImg(listImg: ArrayList<String>) {
-        Log.e("PATH", listImg[0])
         val file: File = File(listImg[0])
         val requestFile = file.asRequestBody(MultipartBody.FORM)
         val body = MultipartBody.Part.createFormData("file", file.getName(), requestFile)

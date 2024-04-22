@@ -12,6 +12,7 @@ import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.request.MessageRequest
 import com.example.android_advance.model.request.RoomRequest
 import com.example.android_advance.model.response.messageDto
+import com.example.android_advance.redux.Store
 import com.example.android_advance.socketio.SocketManager
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.ui.Group.GroupScreenModel
@@ -28,10 +29,11 @@ class MessageViewModel @Inject constructor(
     @ApplicationContext val context: Context, val savedStateHandle: SavedStateHandle
 ) :
     ViewModel() {
-    val roomId = savedStateHandle.get<String>("idRoom") ?: ""
-    val partnerName = savedStateHandle.get<String>("namePartner") ?: ""
-    var tempIsGroup = savedStateHandle.get<String>("isGroup") ?: "false"
-    val isGroup = tempIsGroup.toBoolean()
+    val store = Store.getStore()
+    val roomDto = store?.state?.roomDto
+    val roomId = roomDto?.id!!
+    val partnerName = roomDto?.partner?.name ?: roomDto?.name
+    val isGroup = roomDto?.isGroup
 
     var gson: Gson = GsonBuilder()
         .setLenient()
@@ -71,7 +73,6 @@ class MessageViewModel @Inject constructor(
 
     fun sendMessage(content: String, typeMessage: String, image: List<String>) {
         if (content.isNotEmpty()) {
-            Log.e("Type", typeMessage)
             socketManager.emit(
                 "message",
                 gson.toJson(db.getUser().first().id?.let {

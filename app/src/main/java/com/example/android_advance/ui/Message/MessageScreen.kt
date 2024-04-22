@@ -18,14 +18,13 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MessageScreen(
-    idRoom: String,
+//    idRoom: String,
     navController: NavController,
-    namePartner: String,
-    isGroup: Boolean,
-    avatar: String
+//    namePartner: String,
+//    isGroup: Boolean,
+//    avatar: String
 ) {
     val viewModel = hiltViewModel<MessageViewModel>()
-    viewModel.savedStateHandle.set("roomId", idRoom)
     val messageState = viewModel.onNewMessage.observeAsState()
 
 
@@ -39,7 +38,7 @@ fun MessageScreen(
         Column(
 
         ) {
-            when (messageState.value?.isEmpty()) {
+            when (messageState.value == null) {
                 true -> {}
                 false -> {
                     messageState.value?.let { it ->
@@ -54,11 +53,11 @@ fun MessageScreen(
                                 navController.popBackStack()
                             },
                             viewModel.db,
-                            viewModel.partnerName,
+                            viewModel.partnerName!!,
                             navController,
-                            idRoom,
-                            isGroup,
-                            avatar
+                            viewModel.roomId,
+                            viewModel.isGroup!!,
+                            viewModel.roomDto?.partner?.avatar ?: ""
                         )
                     }
                 }

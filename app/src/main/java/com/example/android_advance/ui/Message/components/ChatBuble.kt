@@ -68,7 +68,6 @@ fun ChatScreen(
 ) {
 
 
-
     ConstraintLayout(modifier = modifier.fillMaxSize()) {
         val (_, chatBox) = createRefs()
         val configuration = LocalConfiguration.current
@@ -76,7 +75,8 @@ fun ChatScreen(
         val listState = rememberLazyListState()
         val focusRequester = remember { FocusRequester() }
 
-        val keyWordsReturn = navController.currentBackStackEntry?.savedStateHandle?.get<String>("key_words_return")
+        val keyWordsReturn =
+            navController.currentBackStackEntry?.savedStateHandle?.get<String>("key_words_return")
 
         Row(
             modifier = Modifier
@@ -144,7 +144,7 @@ fun ChatScreen(
                 }
                 IconButton(onClick = {
 //                    navController.navigate(Route.MenuOption.withArgs(isGroup.toString(), avatar))
-                    navController.navigate(Route.OptionsMenuChat.withArgs(idRoom,partnerName))
+                    navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName))
                     // TODO() add navigate to menu item
                 }) {
                     Icon(
@@ -169,16 +169,13 @@ fun ChatScreen(
                         ChatItem(model[item], db.getUser().first().id == model[item].senderId)
                     }
                 }
-                if (!keyWordsReturn.isNullOrBlank()){
+                if (!keyWordsReturn.isNullOrBlank()) {
                     LaunchedEffect(model) {
-                        Log.e("key_words_return", "$keyWordsReturn")
-                        Log.e("model size", "${model.size}")
                         keyWordsReturn.let {
                             val indexMsg = model.indexOfLast { it.content == keyWordsReturn }
                             if (indexMsg != -1) {
                                 listState.animateScrollToItem(indexMsg)
 
-                                Log.e("msg found ok", keyWordsReturn)
 
                             } else {
                                 Log.e("error", "Message not found in model")
@@ -186,7 +183,7 @@ fun ChatScreen(
                         }
 
                     }
-                }else{
+                } else {
                     LaunchedEffect(model.size) {
                         listState.animateScrollToItem(model.lastIndex)
                     }

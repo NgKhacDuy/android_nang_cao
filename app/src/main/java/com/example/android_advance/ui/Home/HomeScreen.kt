@@ -313,7 +313,6 @@ fun UserRow(
     viewModel: HomeScreenViewModel,
     roomDto: roomDto
 ) {
-    Log.e("avatar", user.avatar)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -322,12 +321,7 @@ fun UserRow(
             .clickable {
                 viewModel.storeRoomDto(roomDto)
                 navController.navigate(
-                    Route.MessageScreen.withArgs(
-                        user.idRoom,
-                        partnerName,
-                        isGroup.toString(),
-                        user.avatar
-                    )
+                    Route.MessageScreen.route
                 )
             }
             .border(
@@ -379,7 +373,13 @@ fun UserRow(
                 } else {
                     user.name
                 }
-                Text(text = nameRoom, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.widthIn(max = 150.dp), maxLines = 1 )
+                Text(
+                    text = nameRoom,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.widthIn(max = 150.dp),
+                    maxLines = 1
+                )
                 Text(
                     text = displayMessage,
                     fontSize = 16.sp,
@@ -393,7 +393,12 @@ fun UserRow(
         Row(
             modifier = Modifier.padding(end = 20.dp)
         ) {
-            Text(text = user.lastActive, fontSize = 16.sp, fontWeight = FontWeight.Normal,modifier = Modifier.widthIn(min = 100.dp))
+            Text(
+                text = user.lastActive,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Normal,
+                modifier = Modifier.widthIn(min = 100.dp)
+            )
 
         }
     }
