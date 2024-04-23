@@ -9,6 +9,7 @@ class SearchResponse(
     @SerializedName("createAt") var createAt: String?,
     @SerializedName("updateAt") var updateAt: String?,
     @SerializedName("deletedAt") var deletedAt: String? = null,
-    @SerializedName("friends") var friends: ArrayList<FriendsDto>
+    @SerializedName("friends") var friends: ArrayList<FriendsDto>,
+    @SerializedName("avatar") var avatar: String?
 ) {
 }
