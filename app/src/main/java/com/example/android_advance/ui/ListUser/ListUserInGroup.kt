@@ -1,11 +1,16 @@
-package com.example.android_advance.ui.Group
+package com.example.android_advance.ui.ListUser
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -18,7 +23,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -30,22 +37,29 @@ import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.Home.HomeScreenViewModel
+import com.example.android_advance.ui.ListUser.component.UserItem
 import com.example.android_advance.ui.Message.MessageViewModel
+import com.example.android_advance.ui.login.components.GradientButtonNoRipple
 
 data class User(val name: String, val avatar: Int)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListUserGroup(navController: NavController) {
-
+    val viewModel = hiltViewModel<ListUserViewModel>()
     var searchValue by remember { mutableStateOf("") }
-
+    val configuration = LocalConfiguration.current
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+    val gradientColor = listOf(Color(0xFF1b2f83), Color(0xFF25c7ca))
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 25.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
             IconButton(onClick = {
                 navController.popBackStack()
@@ -67,20 +81,23 @@ fun ListUserGroup(navController: NavController) {
             Spacer(Modifier.weight(1f))
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                navController.navigate(Route.InviteMemberScreen.route)
-            },
+        GradientButtonNoRipple(
+            text = "Invite Member",
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Gray,
-                contentColor = Color.White
-            )
-        ) {
-            Text("Invite Members")
-        }
+                .padding(horizontal = 16.dp)
+                .height(40.dp)
+                .background(
+                    brush = Brush.linearGradient(colors = gradientColor),
+                    shape = RoundedCornerShape(16.dp)
+                )
+                .clickable(
+                    indication = null, // Assign null to disable the ripple effect
+                    interactionSource = interactionSource,
+                ) {
+                    navController.navigate(Route.InviteMemberScreen.route)
+                },
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             "List Members",
@@ -94,47 +111,29 @@ fun ListUserGroup(navController: NavController) {
                 searchValue = newValue
             },
             label = { androidx.compose.material3.Text("Search") },
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
             singleLine = true,
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Blue,
-                unfocusedBorderColor = Color.Gray
-            )
+                unfocusedBorderColor = Color.Gray,
+            ),
         )
 
-        val scrollState = rememberScrollState()
-        Column(modifier = Modifier.verticalScroll(scrollState)) {
+        LazyColumn {
+            items(viewModel.roomDto?.user?.size ?: 0) { it ->
+                val user = viewModel.roomDto!!.user!!
+                val listId = viewModel.roomDto.listId
+                UserItem(
+                    user = user[it],
+                    isOwner = user[it].id == listId.first(),
+                    viewModel,
+                    listId
+                )
+            }
 
-        }
-    }
-}
-
-@Composable
-fun UserItem(name: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.user),
-            contentDescription = "User Avatar",
-            modifier = Modifier
-                .size(40.dp)
-                .padding(end = 8.dp)
-        )
-        Text(text = name)
-        Spacer(Modifier.weight(1f))
-        IconButton(onClick = { /* Handle delete user action */ }) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Delete User",
-                tint = Color.Red
-            )
         }
     }
 }
