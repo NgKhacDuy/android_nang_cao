@@ -9,6 +9,7 @@ import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
+import com.example.android_advance.model.request.AvatarRequest
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,12 +40,10 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
     }
 
     fun uploadImg(listImg: ArrayList<String>) {
-        val file: File = File(listImg[0])
-        val requestFile = file.asRequestBody(MultipartBody.FORM)
-        val body = MultipartBody.Part.createFormData("file", file.getName(), requestFile)
+        val avatarRequest = AvatarRequest(avatar = listImg.first())
         val apiClient: APIClient = APIClient(context)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
-        val call = apiService?.uploadImg("Bearer ${appSharedPreference.accessToken}", body)
+        val call = apiService?.uploadImg("Bearer ${appSharedPreference.accessToken}", avatarRequest)
         call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
             override fun onResponse(
                 p0: Call<ApiResponse.BaseApiResponse<Unit>>,

@@ -1,4 +1,3 @@
-
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -61,6 +60,7 @@ import com.example.android_advance.R
 import com.example.android_advance.components.ViewImg.ExpandedImage
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
+import com.example.android_advance.redux.Store
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.Message.components.ChatItem
 import com.example.android_advance.ui.Screen.SettingItem
@@ -69,7 +69,7 @@ import com.example.android_advance.ui.Screen.SettingItem
 //@Preview
 @Composable
 //fun OptionsMenu() {
-fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String) {
+fun OptionsMenu(navController: NavController, idRoom: String, partnerName: String) {
 //    var partnerName by remember { mutableStateOf("duyhuynhlam") }
     var searchDialogShown by remember { mutableStateOf(false) }
     var returnKeyword by remember { mutableStateOf("") }
@@ -79,20 +79,19 @@ fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String)
     viewModel.savedStateHandle.set("roomId", idRoom)
     val messageState = viewModel.onNewMessage.observeAsState()
 
-    messageState.value?.let {messages ->
+    messageState.value?.let { messages ->
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-    ) {
-        items(messages.size) { item ->
-            ChatItem(messages[item], true)
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            items(messages.size) { item ->
+                ChatItem(messages[item], true)
+            }
         }
+
+
     }
-
-
-
-}
 
 
     Scaffold(
@@ -133,14 +132,16 @@ fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String)
                         title = "Partner name: $partnerName${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
                         onClick = {}
                     )
-                    SettingItem(
-                        icon = Icons.Default.PersonAdd,
-                        title = "NickName:"  ,
-                        onClick = {
-                            searchDialogShown = true
-                            request_key = "nickname"
-                        }
-                    )
+                    if (!viewModel.roomDto?.isGroup!!) {
+                        SettingItem(
+                            icon = Icons.Default.PersonAdd,
+                            title = "NickName:",
+                            onClick = {
+                                searchDialogShown = true
+                                request_key = "nickname"
+                            }
+                        )
+                    }
 
                     SettingItem(
                         icon = Icons.Default.Search,
@@ -150,38 +151,46 @@ fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String)
                             request_key = "search_key"
                         }
                     )
-                    SettingItem(
-                        icon = Icons.Default.Group,
-                        title = "Create Group with $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
-                        onClick = {
-                            navController.navigate(Route.CreateGroupScreen.route)
-                        }
-                    )
-                    SettingItem(
-                        icon = Icons.Default.Block,
-                        title = "Block $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
-                        onClick = {
-                            navController.navigate(Route.ListUserInGroup.route)
-                        }
-                    )
-                    SettingItem(
-                        icon = Icons.Default.IosShare,
-                        title = "Share $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
-                        onClick = {}
-                    )
+                    if (!viewModel.roomDto.isGroup!!) {
+                        SettingItem(
+                            icon = Icons.Default.Group,
+                            title = "Create Group with $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
+                            onClick = {
+                                navController.navigate(Route.CreateGroupScreen.route)
+                            }
+                        )
+                    }
+
+                    if (viewModel.roomDto.isGroup!!) {
+                        SettingItem(
+                            icon = Icons.Default.Group,
+                            title = "Members",
+                            onClick = {
+                                navController.navigate(Route.ListUserInGroup.route)
+                            }
+                        )
+                    }
+                    if (!viewModel.roomDto.isGroup!!) {
+                        SettingItem(
+                            icon = Icons.Default.Block,
+                            title = "Block $partnerName ${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
+                            onClick = {
+                            }
+                        )
+                    }
 //                    DisplayImages()
-                    messageState.value?.let {messages ->
+                    messageState.value?.let { messages ->
                         DisplayImages(messages)
                     }
 
-                    
+
                 }
             }
         }
     )
 
     if (searchDialogShown) {
-        if (request_key == "nickname"){
+        if (request_key == "nickname") {
             SearchDialog(
                 onDismissRequest = {
                     // Handle dialog dismiss if needed
@@ -197,8 +206,7 @@ fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String)
                 },
                 request = "Nickname"
             )
-        }
-        else if (request_key == "search_key"){
+        } else if (request_key == "search_key") {
             SearchDialog(
                 onDismissRequest = {
                     // Handle dialog dismiss if needed
@@ -220,14 +228,11 @@ fun OptionsMenu(navController: NavController, idRoom:String,partnerName: String)
 }
 
 
-
-
-
 @Composable
 fun SearchDialog(
     onDismissRequest: () -> Unit,
     onSearch: (String) -> Unit,
-    request:String
+    request: String
 ) {
     var returnKeyword by remember { mutableStateOf("") }
 //    var requestTitle by remember{ mutableStateOf("") }
@@ -286,20 +291,21 @@ fun SearchDialog(
         properties = DialogProperties(dismissOnClickOutside = false)
     )
 }
+
 @Composable
 fun DisplayImages(messages: List<messageDto>) {
-    val imageMessages = messages.filter{it.image.isNotEmpty()}
-    val imageUrls = imageMessages.flatMap {it.image.map { image -> image.url}}
+    val imageMessages = messages.filter { it.image.isNotEmpty() }
+    val imageUrls = imageMessages.flatMap { it.image.map { image -> image.url } }
     var isSelected = remember { mutableStateOf(false) }
     var indexSelected = remember { mutableIntStateOf(0) }
 
     LazyColumn {
-        items(imageUrls.chunked(4)){rowImage ->
-            Row (
+        items(imageUrls.chunked(4)) { rowImage ->
+            Row(
                 modifier = Modifier.padding(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ){
-                for (imageUrl in rowImage){
+            ) {
+                for (imageUrl in rowImage) {
                     imageUrl.let {
                         AsyncImage(
                             model = it,

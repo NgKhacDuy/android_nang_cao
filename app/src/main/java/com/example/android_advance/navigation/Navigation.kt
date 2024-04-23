@@ -3,7 +3,6 @@ package com.example.android_advance.navigation
 import InviteMember
 import OptionsMenu
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -33,11 +32,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
-import com.example.android_advance.ui.Group.ListUserGroup
+import com.example.android_advance.ui.ListUser.ListUserGroup
 import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.SettingScreen
@@ -47,7 +45,6 @@ import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
 import com.example.android_advance.ui.call_history.CallHistoryScreenPP
 import com.example.android_advance.ui.call_history.SearchScreenPP
-import com.example.android_advance.ui.contacts.ContactScreen
 import com.example.android_advance.ui.login.LoginScreen
 import com.example.android_advance.ui.menu_option.MenuOption
 import com.example.android_advance.ui.splash.SplashScreen
@@ -197,11 +194,11 @@ fun Navigation() {
                     )
                 }
 
-                composable(Route.ListUserInGroup.route){
+                composable(Route.ListUserInGroup.route) {
                     ListUserGroup(navController = navController)
                 }
 
-                composable(Route.InviteMemberScreen.route){
+                composable(Route.InviteMemberScreen.route) {
                     InviteMember(navController = navController)
                 }
 
