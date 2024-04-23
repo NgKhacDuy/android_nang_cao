@@ -92,10 +92,11 @@ fun InviteMember(navController: NavController) {
                 UsersItem(name = user)
             }
         }
+        Spacer(modifier = Modifier.weight(1f))
 
         FloatingActionButton(
             onClick = { /* Handle add user action */ },
-            backgroundColor = Color.LightGray,
+            backgroundColor = Color(0xFF1FA2FF),
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.End)

@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.android_advance.redux.RemoveRoomDto
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -49,6 +50,7 @@ fun MessageScreen(
                             },
                             modifier = Modifier,
                             onClickBack = {
+                                viewModel.store!!.dispatch(RemoveRoomDto())
                                 viewModel.socketManager.disconnect()
                                 navController.popBackStack()
                             },
