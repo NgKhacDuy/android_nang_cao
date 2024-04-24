@@ -7,10 +7,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.android_advance.connectivity.ConnectivityObserver
+import com.example.android_advance.connectivity.LostConnectivityScreen
+import com.example.android_advance.connectivity.NetworkConnectivityObserver
 import com.example.android_advance.navigation.Navigation
 import com.example.android_advance.voice_to_text.VoiceToTextParser
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,8 +27,10 @@ class MainActivity : ComponentActivity() {
     val voiceToTextParser by lazy {
         VoiceToTextParser(application)
     }
+    private lateinit var connectivityObserver: ConnectivityObserver
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        connectivityObserver = NetworkConnectivityObserver(applicationContext)
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
                 Color.Transparent.toArgb(),
@@ -30,7 +38,17 @@ class MainActivity : ComponentActivity() {
             )
         )
         setContent {
-            Navigation(voiceToTextParser)
+            val status by connectivityObserver.observe().collectAsState(
+                initial = ConnectivityObserver.Status.Unavailable
+            )
+            AnimatedContent(targetState = status, label = "") { targetState ->
+                if(targetState==ConnectivityObserver.Status.Available)
+                {
+                    Navigation(voiceToTextParser)
+                } else {
+                    LostConnectivityScreen()
+                }
+            }
 //            Text(text = "hiii")
         }
         if (!hasPermissions()) {
