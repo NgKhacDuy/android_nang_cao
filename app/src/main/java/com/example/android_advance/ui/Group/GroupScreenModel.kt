@@ -176,7 +176,8 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
                                 createAt = userDto.createAt,
                                 updateAt = userDto.updateAt,
                                 deletedAt = userDto.deletedAt,
-                                friends = it
+                                friends = it,
+                                avatar = userDto.avatar
                             )
                         }
                     }
@@ -191,7 +192,6 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
             ) {
                 Log.d("SearchError", t.message.toString())
             }
-
         })
     }
 }
