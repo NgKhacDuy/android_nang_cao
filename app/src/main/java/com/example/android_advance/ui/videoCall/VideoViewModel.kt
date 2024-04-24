@@ -20,6 +20,7 @@ import retrofit2.Response
 import javax.inject.Inject
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.android_advance.agora.media.RtcTokenBuilder2
+import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.utils.common.Constant
 
 @HiltViewModel()
@@ -40,6 +41,9 @@ class VideoViewModel @Inject public constructor(
 
     private val _isLeaveChannel = mutableStateOf(false)
     val isLeaveChannel: State<Boolean> = _isLeaveChannel
+
+    private val db: DatabaseHelper = DatabaseHelper(context)
+    val userId = db.getUserId()
 
     init {
         getToken()

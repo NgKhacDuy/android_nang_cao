@@ -50,6 +50,7 @@ import com.dsc.form_builder.TextFieldState
 import com.example.android_advance.ui.components.AlertDialogComponent
 import com.example.android_advance.ui.components.CenteredProgressIndicator
 import com.example.android_advance.ui.login.components.GradientButtonNoRipple
+import com.example.android_advance.navigation.Route
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -211,6 +212,8 @@ fun LoginScreen(navController: NavController) {
                         )
                         .clickable {
 //                        TODO add navigation to forgot password
+                            navController.navigate(Route.ForgetPassword1.route)
+
                         }
                 )
             }

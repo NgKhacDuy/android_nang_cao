@@ -2,10 +2,7 @@ package com.example.android_advance.ui.forgotPassword
 
 
 
-import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
@@ -34,17 +32,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.android_advance.navigation.Route
 
 
 /*
 *User will input Otp in this screen
 * */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VerifyOTPScreen() {
+fun VerifyOTPScreen(navController: NavController,userId:String,sendOtp:String) {
+    val viewModel = hiltViewModel<forgetPasswordViewModel>()
     var otpCode by remember { mutableStateOf("") }
-    var otpError by remember { mutableStateOf(false) }
+
+    var serverOtp by remember { mutableStateOf("") }
+   Log.d("Sent otp = ",sendOtp)
+
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -110,18 +115,13 @@ fun VerifyOTPScreen() {
             }
 
 
-            if (otpError) {
-                Text(
-                    text = "Please enter a valid OTP",
-                    color = Color.Red,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-            }
+
 
             Spacer(modifier = Modifier.height(32.dp))
             VerifyOTPButton(
+                navController=navController,
                 enabled = allFieldsFilled,
-                otpCode=otpCode
+                otpCode=otpCode,serverOtp=sendOtp,userId=userId
             )
 
             Spacer(modifier = Modifier.height(64.dp))
@@ -145,10 +145,26 @@ fun OtpTextField(text: String, onTextChanged: (String) -> Unit) {
 
 
 @Composable
-fun VerifyOTPButton(enabled: Boolean,otpCode:String) {
+fun VerifyOTPButton(navController: NavController,enabled: Boolean,otpCode:String,serverOtp:String,userId:String) {
+    var otpError by remember { mutableStateOf(false) }
+    if (otpError) {
+        Text(
+            text = "Please enter a valid OTP",
+            color = Color.Red,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+    }
     Button(
         onClick = { /* Handle button click */
             Log.d("OptScreen", "Submitted Otp: $otpCode")
+            if(serverOtp==otpCode){
+                otpError=false
+                navController.navigate(Route.ForgetPassword3.withArgs(userId))
+
+            }
+            else{
+                otpError=true
+            }
         },
         enabled = enabled,
         modifier = Modifier.fillMaxWidth()
