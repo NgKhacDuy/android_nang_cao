@@ -76,7 +76,7 @@ fun UserItem(
 
                 Column {
 
-                    if (user.id != viewModel.userDto.id) {
+                    if (viewModel.roomDto?.isOwner == true && user.id != viewModel.userDto.id) {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(
                                 Icons.Default.PersonRemove,

@@ -17,6 +17,7 @@ class apiConstant {
         const val userPatchInfo = "user"
         const val friendRequest = "user/friendrequest"
         const val userImg = "user/image"
+        const val userContact = "user/friend"
     }
 
 }
