@@ -75,4 +75,7 @@ interface ApiInterface {
         @Header("Authorization") authHeader: String,
         @Body avatarRequest: AvatarRequest
     ): Call<ApiResponse.BaseApiResponse<Unit>>
+
+    @GET(apiConstant.userContact)
+    fun getContact(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<ContactDto>>
 }

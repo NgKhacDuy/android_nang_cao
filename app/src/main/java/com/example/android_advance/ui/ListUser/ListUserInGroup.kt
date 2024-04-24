@@ -105,22 +105,22 @@ fun ListUserGroup(navController: NavController) {
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        androidx.compose.material3.OutlinedTextField(
-            value = searchValue,
-            onValueChange = { newValue ->
-                searchValue = newValue
-            },
-            label = { androidx.compose.material3.Text("Search") },
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Blue,
-                unfocusedBorderColor = Color.Gray,
-            ),
-        )
+//        androidx.compose.material3.OutlinedTextField(
+//            value = searchValue,
+//            onValueChange = { newValue ->
+//                searchValue = newValue
+//            },
+//            label = { androidx.compose.material3.Text("Search") },
+//            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(16.dp),
+//            singleLine = true,
+//            colors = TextFieldDefaults.outlinedTextFieldColors(
+//                focusedBorderColor = Color.Blue,
+//                unfocusedBorderColor = Color.Gray,
+//            ),
+//        )
 
         LazyColumn {
             items(viewModel.roomDto?.user?.size ?: 0) { it ->
