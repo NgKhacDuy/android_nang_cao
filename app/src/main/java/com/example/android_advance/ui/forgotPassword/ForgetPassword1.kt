@@ -17,6 +17,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -32,20 +37,53 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.ui.BottomNavigation.ChildRoute
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /*
 *User will input phone number in this screen
 * */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnterNumberScreen() {
+fun EnterNumberScreen(navController: NavController) {
+    val viewModel = hiltViewModel<forgetPasswordViewModel>()
     var phoneNumber by remember { mutableStateOf("") }
     var phoneNumberError by remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize()
     ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+        ){
+            androidx.compose.material3.IconButton(onClick = {
+                navController.popBackStack()
+            }) {
+                Icon(
+                    Icons.Rounded.ArrowBack,
+                    contentDescription = null,
+                    modifier = Modifier.size(26.dp)
+                )
+            }
+
+        }
         Column(
             modifier = Modifier
                 .padding(16.dp)
@@ -84,9 +122,31 @@ fun EnterNumberScreen() {
             SubmitButton(
                 enabled = phoneNumber.length == 10 ,// Enable button only if length is 10
                 onClick = { submittedPhoneNumber ->
-                    // Handle button click here
-                    // You can perform logic checks and call backend APIs with the submittedPhoneNumber
                     Log.d("ForgotPasswordScreen", "Submitted phone number: $phoneNumber")
+
+                    //viewModel.performPhoneNumberExistenceCheck2(phoneNumber)
+                    //Log.d("temporay", viewModel.temporay)
+                    viewModel.checkPhoneNumberExistence2(phoneNumber) { userId ->
+                        // Perform actions with the userId value
+                        if (userId.isNotEmpty()) {
+                            Log.d("test", "User ID: $userId")
+                            var sendOtp=""
+                            viewModel.generateOtp(phoneNumber) { otpgenCode ->
+                                // Perform actions with the userId value
+                                if (otpgenCode.isNotEmpty()) {
+                                    Log.d("Otp code ", "Otp: $otpgenCode")
+                                    sendOtp = otpgenCode
+                                    navController.navigate(Route.ForgetPassword2.withArgs(userId,sendOtp))
+                                } else {
+                                    Log.d("test", "error.")
+                                }
+                            }
+
+                        } else {
+                            Log.d("test", "User ID not found.")
+                        }
+                    }
+
                 }
             )
             Spacer(modifier = Modifier.height(64.dp)) // Add additional space after the button
@@ -139,7 +199,8 @@ fun SubmitButton(enabled:Boolean,onClick:(String)->Unit) {
         modifier = Modifier
             .padding(vertical = 16.dp)
             .fillMaxWidth()
-            .height(48.dp).clickable(enabled){
+            .height(48.dp)
+            .clickable(enabled) {
                 onClick("phone number")
             },
         contentAlignment = Alignment.Center

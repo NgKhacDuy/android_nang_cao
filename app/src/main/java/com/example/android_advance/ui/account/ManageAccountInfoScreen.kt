@@ -150,32 +150,6 @@ fun ManageAccountInfoScreen(navController: NavController)
                     }
                 }
             )
-            OutlinedTextField(value = nameState.value,
-                onValueChange = { nameState.change(it) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done),
-                label = { Text(text = "Enter your name")},
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    focusedLabelColor = Color(0xFF3D4A7A),
-                    unfocusedLabelColor = Color(0xFF3D4A7A),
-                    focusedIndicatorColor = Color(0xFFCDD1D0),
-                ),
-                supportingText = {
-                    if (nameState.hasError) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = nameState.errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            textAlign = TextAlign.End
-
-                        )
-                    }
-                }
-            )
             Button(onClick = { handleUpdate()
             navController.navigate(route = Route.SettingScreen.route)
             accountViewModel.updateUserSqlite()
