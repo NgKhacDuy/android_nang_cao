@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.android_advance.redux.RemoveRoomDto
+import com.example.android_advance.voice_to_text.VoiceToTextParser
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -24,6 +25,7 @@ fun MessageScreen(
 //    namePartner: String,
 //    isGroup: Boolean,
 //    avatar: String
+    voiceToTextParser: VoiceToTextParser
 ) {
     val viewModel = hiltViewModel<MessageViewModel>()
     val messageState = viewModel.onNewMessage.observeAsState()
@@ -60,7 +62,8 @@ fun MessageScreen(
                             viewModel.roomId,
                             viewModel.isGroup!!,
                             viewModel.roomDto?.partner?.avatar ?: "",
-                            viewModel.context
+                            viewModel.context,
+                            voiceToTextParser
                         )
                     }
                 }

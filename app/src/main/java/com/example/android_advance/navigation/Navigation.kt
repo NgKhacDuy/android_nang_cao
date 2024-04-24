@@ -51,13 +51,14 @@ import com.example.android_advance.ui.menu_option.MenuOption
 import com.example.android_advance.ui.splash.SplashScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
+import com.example.android_advance.voice_to_text.VoiceToTextParser
 import com.example.android_advance.ui.forgotPassword.EnterNumberScreen
 import com.example.android_advance.ui.forgotPassword.ResetPasswordScreen
 import com.example.android_advance.ui.forgotPassword.VerifyOTPScreen
 
 
 @Composable
-fun Navigation() {
+fun Navigation(voiceToTextParser: VoiceToTextParser) {
     val navController = rememberNavController()
     val bottomBarVisible = rememberSaveable { mutableStateOf(true) }
     val context = LocalContext.current
@@ -207,6 +208,7 @@ fun Navigation() {
                     bottomBarVisible.value = false
                     MessageScreen(
                         navController = navController,
+                        voiceToTextParser
                     )
                     LaunchedEffect(Unit) {
                         navController.addOnDestinationChangedListener { _, destination, _ ->
