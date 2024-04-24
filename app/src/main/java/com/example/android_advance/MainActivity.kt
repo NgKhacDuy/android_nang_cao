@@ -12,11 +12,15 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.android_advance.navigation.Navigation
+import com.example.android_advance.voice_to_text.VoiceToTextParser
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val REQUEST_CODE_PERMISSIONS = 100
+    val voiceToTextParser by lazy {
+        VoiceToTextParser(application)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
@@ -26,7 +30,7 @@ class MainActivity : ComponentActivity() {
             )
         )
         setContent {
-            Navigation()
+            Navigation(voiceToTextParser)
 //            Text(text = "hiii")
         }
         if (!hasPermissions()) {

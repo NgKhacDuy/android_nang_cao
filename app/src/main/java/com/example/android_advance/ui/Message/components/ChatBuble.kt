@@ -53,6 +53,7 @@ import com.example.android_advance.navigation.Route
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.Message.components.ChatBox
 import com.example.android_advance.ui.Message.components.ChatItem
+import com.example.android_advance.voice_to_text.VoiceToTextParser
 import com.google.gson.Gson
 
 @Composable
@@ -67,7 +68,8 @@ fun ChatScreen(
     idRoom: String,
     isGroup: Boolean,
     avatar: String,
-    context: Context
+    context: Context,
+    voiceToTextParser: VoiceToTextParser
 ) {
 
 
@@ -220,7 +222,8 @@ fun ChatScreen(
             ChatBox(
                 onSendChatClickListener,
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                voiceToTextParser
 //                    .padding(bottom = 16.dp) // Add padding to ensure it's not touching the bottom edge
             )
         }
