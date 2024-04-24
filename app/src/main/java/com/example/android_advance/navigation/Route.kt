@@ -29,9 +29,9 @@ sealed class Route(val route: String) {
     object ManageAccountInfoScreen : Route(Constant.manageAccountInfoScreen)
     object ChangePasswordScreen : Route(Constant.changePasswordScreen)
     object ImagePicker : Route(Constant.ImagePicker)
-    object ForgetPassword1:Route(Constant.forgetPassWord1)
-    object ForgetPassword2:Route(Constant.forgetPassWord2)
-    object ForgetPassword3:Route(Constant.forgetPassword3)
+    object ForgetPassword1 : Route(Constant.forgetPassWord1)
+    object ForgetPassword2 : Route(Constant.forgetPassWord2)
+    object ForgetPassword3 : Route(Constant.forgetPassword3)
     object SplashScreen : Route(Constant.splashScreen)
     object MenuOption : Route(Constant.menuOption)
     object ListUserInGroup : Route(Constant.listUserInGroup)
@@ -39,7 +39,7 @@ sealed class Route(val route: String) {
     object ContactScreen : Route(Constant.contactScreen)
 
 
-    object listUserGroupScreen : Route(Constant.ListUserInGroup)
+    object listUserGroupScreen : Route(Constant.listUserInGroup)
 
     fun withArgs(vararg args: String): String {
         return buildString {

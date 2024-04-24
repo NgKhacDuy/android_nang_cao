@@ -51,7 +51,6 @@ import com.example.android_advance.ui.menu_option.MenuOption
 import com.example.android_advance.ui.splash.SplashScreen
 import com.example.android_advance.ui.videoCall.VideoScreen
 import com.example.android_advance.ui.welcome.WelcomeScreen
-import com.example.android_advance.ui.Group.ListUserInGroup
 import com.example.android_advance.ui.forgotPassword.EnterNumberScreen
 import com.example.android_advance.ui.forgotPassword.ResetPasswordScreen
 import com.example.android_advance.ui.forgotPassword.VerifyOTPScreen
@@ -165,16 +164,6 @@ fun Navigation() {
                 {
                     ChangePasswordScreen(navController = navController)
                 }
-                composable(route = Route.listUserGroupScreen.route + "/{roomId}", arguments = listOf((
-                        navArgument("roomId") {
-                            type = NavType.StringType
-                            nullable = false
-                        }
-                        ))) {
-                    val roomId =
-                        it.arguments?.getString("roomId") ?: return@composable
-                    ListUserInGroup(navController, roomId)
-                }
                 //
 
                 composable(route = Route.ForgetPassword1.route)
@@ -190,9 +179,10 @@ fun Navigation() {
                 {
                     val userId =
                         it.arguments?.getString("userId") ?: return@composable
-                    ResetPasswordScreen(navController = navController,userId=userId)
+                    ResetPasswordScreen(navController = navController, userId = userId)
                 }
-                composable(route = Route.ForgetPassword2.route + "/{userId}/{sendOtp}",
+                composable(
+                    route = Route.ForgetPassword2.route + "/{userId}/{sendOtp}",
                     arguments = listOf(
                         navArgument("userId") {
                             type = NavType.StringType
@@ -202,12 +192,13 @@ fun Navigation() {
                             type = NavType.StringType
                             nullable = false
                         },
-                        )) {
+                    )
+                ) {
                     val userId =
                         it.arguments?.getString("userId") ?: return@composable
                     val sendOtp =
                         it.arguments?.getString("sendOtp") ?: return@composable
-                    VerifyOTPScreen(navController, userId,sendOtp)
+                    VerifyOTPScreen(navController, userId, sendOtp)
                 }
                 //
                 composable(
