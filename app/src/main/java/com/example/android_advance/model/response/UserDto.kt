@@ -2,7 +2,7 @@ package com.example.android_advance.model.response
 
 import com.google.gson.annotations.SerializedName
 
-class UserDto(
+data class UserDto(
     @SerializedName("id") var id: String? = null,
     @SerializedName("name") var name: String? = null,
     @SerializedName("phoneNumber") var phoneNumber: String? = null,

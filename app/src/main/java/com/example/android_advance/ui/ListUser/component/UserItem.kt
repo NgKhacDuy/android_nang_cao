@@ -1,6 +1,5 @@
 package com.example.android_advance.ui.ListUser.component
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,13 +10,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.PersonRemove
-import androidx.compose.material.icons.filled.SupervisorAccount
 import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -68,16 +64,14 @@ fun UserItem(
                 ) {
                     Text(text = user.name!!)
                     if (isOwner) {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            Icon(Icons.Default.VerifiedUser, contentDescription = null)
-                        }
+                        Icon(Icons.Default.VerifiedUser, contentDescription = null)
                     }
                 }
 
                 Column {
 
                     if (viewModel.roomDto?.isOwner == true && user.id != viewModel.userDto.id) {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(onClick = { viewModel.removeUser(user) }) {
                             Icon(
                                 Icons.Default.PersonRemove,
                                 contentDescription = null,

@@ -22,6 +22,26 @@ object ReducerSingleton {
                 state.copy(userDto = action.payload)
             }
 
+            is AddUserToListGroup -> {
+                val updatedUserList = state.roomDto.user ?: ArrayList()
+                val updatedUserListId = state.roomDto.listId ?: ArrayList()
+                updatedUserListId.addAll(action.payload.map { it.id!! })
+                updatedUserList.addAll(action.payload)
+                state.copy(
+                    roomDto = state.roomDto.copy(
+                        user = updatedUserList,
+                        listId = updatedUserListId
+                    )
+                )
+            }
+
+            is RemoveUserOutOfGroupAction -> {
+                val updatedUserList = state.roomDto.user ?: ArrayList()
+                updatedUserList.remove(action.payload)
+                state.copy(roomDto = state.roomDto.copy(user = updatedUserList))
+            }
+
+
             else -> {
                 state
             }

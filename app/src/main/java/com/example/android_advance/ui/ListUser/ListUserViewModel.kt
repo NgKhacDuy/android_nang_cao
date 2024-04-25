@@ -9,10 +9,18 @@ import androidx.lifecycle.ViewModel
 import com.example.android_advance.api.APIClient
 import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
+import com.example.android_advance.model.request.AddUserToGroupRequest
+import com.example.android_advance.model.request.RemoveUserOutOfGroup
 import com.example.android_advance.model.response.SearchDto
-import com.example.android_advance.model.response.SearchResponse
+import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.model.response.roomDto
+import com.example.android_advance.redux.AddUserToListGroup
+import com.example.android_advance.redux.RemoveUserOutOfGroupAction
 import com.example.android_advance.redux.Store
 import com.example.android_advance.shared_preference.AppSharedPreference
+import com.example.android_advance.socketio.SocketManager
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.Call
@@ -21,29 +29,65 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class ListUserViewModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
+class ListUserViewModel @Inject constructor(@ApplicationContext private val context: Context) :
+    ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
     val store = Store.getStore()
     val roomDto = store?.state?.roomDto
     val userDto = store?.state?.userDto!!
 
     private val addedFriendIds = mutableListOf<String>()
-    private val _searchResult = MutableLiveData<List<SearchResponse>?>()
+    private val addedListUser = mutableListOf<UserDto>()
+    private val _searchResult = MutableLiveData<List<UserDto>?>()
     val search = mutableStateOf("")
-    val searchResults: LiveData<List<SearchResponse>?> get() = _searchResult
+    val searchResults: LiveData<List<UserDto>?> get() = _searchResult
 
-    fun addFriendId(userId: String) {
-        addedFriendIds.add(userId)
-        Log.d("Temporary Friend IDs", "Added friend with ID: $userId")
-        Log.d("Temporary Friend IDs", "Current list of friend IDs: $addedFriendIds")
+    var gson: Gson = GsonBuilder()
+        .setLenient()
+        .create()
+    val socketManager = SocketManager.getInstance(context)
+
+    init {
+        socketManager.connect()
     }
 
-    fun removeFriendId(userId: String) {
-        if (addedFriendIds.remove(userId)) {
-            Log.d("RemovedFriendId", "Removed friend with ID: $userId")
-        } else {
-            Log.d("RemovedFriendId", "Friend with ID $userId not found in the list")
+    fun addUserToGroup() {
+        try {
+            if (addedFriendIds.isNotEmpty()) {
+                val addedFriendIdsArrayList = ArrayList<String>(addedFriendIds)
+                val addUserToGroupRequest = AddUserToGroupRequest(
+                    idRoom = roomDto?.id!!,
+                    idUser = addedFriendIdsArrayList
+                )
+                socketManager.emit("add_user_to_group", gson.toJson(addUserToGroupRequest))
+                store!!.dispatch(AddUserToListGroup(ArrayList(addedListUser)))
+            }
+        } catch (e: Exception) {
+            Log.e("AddUserToGroup", e.message.toString())
         }
+    }
+
+    fun removeUser(user: UserDto) {
+        try {
+            val removeUserOutOfGroupRequest = RemoveUserOutOfGroup(
+                idRoom = roomDto?.id!!,
+                idUser = user.id!!
+            )
+            socketManager.emit("remove_user", gson.toJson(removeUserOutOfGroupRequest))
+            store!!.dispatch(RemoveUserOutOfGroupAction(user))
+        } catch (e: Exception) {
+            Log.e("RemoveUserOutOfGroup", e.message.toString())
+        }
+    }
+
+    fun addFriendId(user: UserDto) {
+        addedFriendIds.add(user.id!!)
+        addedListUser.add(user)
+    }
+
+    fun removeFriendId(user: UserDto) {
+        addedFriendIds.remove(user.id!!)
+        addedListUser.remove(user)
     }
 
     fun performSearch(keyword: String) {
@@ -58,7 +102,7 @@ class ListUserViewModel @Inject constructor(@ApplicationContext private val cont
                 if (response.isSuccessful) {
                     val searchResults = response.body()?.data?.listUserDto?.map { userDto ->
                         userDto.friends?.let {
-                            SearchResponse(
+                            UserDto(
                                 id = userDto.id,
                                 name = userDto.name,
                                 phoneNumber = userDto.phoneNumber,
@@ -70,7 +114,7 @@ class ListUserViewModel @Inject constructor(@ApplicationContext private val cont
                             )
                         }
                     }
-                    _searchResult.postValue(searchResults as List<SearchResponse>?)
+                    _searchResult.postValue(searchResults as List<UserDto>?)
                 }
                 Log.d("Search", response.body()?.data.toString())
             }

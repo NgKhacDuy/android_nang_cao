@@ -10,7 +10,7 @@ object Store {
     var storeInstance: Store<AppState>? = null
     fun getStore(): Store<AppState>? {
         if (storeInstance == null) {
-            storeInstance = createThreadSafeStore(
+            storeInstance = createStore(
                 ReducerSingleton.reducer,
                 AppState(roomDto = roomDto(), userDto = UserDto())
             )
