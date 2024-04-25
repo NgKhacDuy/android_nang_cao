@@ -6,3 +6,6 @@ import com.example.android_advance.model.response.roomDto
 class AddRoomDto(val payload: roomDto)
 class RemoveRoomDto
 class AddUser(val payload: UserDto)
+
+class AddUserToListGroup(val payload: ArrayList<UserDto>)
+class RemoveUserOutOfGroupAction(val payload: UserDto)

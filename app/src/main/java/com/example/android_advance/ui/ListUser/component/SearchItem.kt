@@ -36,7 +36,7 @@ import com.example.android_advance.ui.ListUser.ListUserViewModel
 
 @Composable
 fun SearchItem(
-    user: SearchResponse,
+    user: UserDto,
     viewModel: ListUserViewModel
 ) {
     val isAdded = remember { mutableStateOf(false) }
@@ -63,9 +63,9 @@ fun SearchItem(
             ) {
                 Text(text = user.name!!)
                 Column {
-                    if (isAdded.value){
+                    if (isAdded.value) {
                         IconButton(onClick = {
-                            viewModel.removeFriendId(user.id ?: "")
+                            viewModel.removeFriendId(user)
                             isAdded.value = false
                         }) {
                             Icon(
@@ -75,7 +75,7 @@ fun SearchItem(
                         }
                     } else {
                         IconButton(onClick = {
-                            viewModel.addFriendId(user.id ?: "")
+                            viewModel.addFriendId(user)
                             isAdded.value = true
                         }) {
                             Icon(

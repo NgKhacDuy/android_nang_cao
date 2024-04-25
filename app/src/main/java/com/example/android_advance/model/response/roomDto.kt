@@ -2,7 +2,7 @@ package com.example.android_advance.model.response
 
 import com.google.gson.annotations.SerializedName
 
-class roomDto(
+data class roomDto(
     @SerializedName("id") var id: String? = null,
     @SerializedName("name") var name: String? = null,
     @SerializedName("listUsers") var listId: ArrayList<String> = arrayListOf(),

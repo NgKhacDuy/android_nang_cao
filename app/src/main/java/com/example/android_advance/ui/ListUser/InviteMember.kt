@@ -1,6 +1,9 @@
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.FloatingActionButton
@@ -10,6 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.GroupAdd
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TextFieldDefaults
@@ -21,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -42,6 +48,7 @@ fun InviteMember(navController: NavController) {
     val SearchState = viewModel.searchResults.observeAsState()
     val debounceJob = remember { mutableStateOf<Job?>(null) }
     var searchValue by remember { mutableStateOf("") }
+    val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
 //    val users = listOf("John Doe", "Jane Smith", "Michael Johnson")
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -95,30 +102,53 @@ fun InviteMember(navController: NavController) {
                 unfocusedBorderColor = Color.Gray
             )
         )
+        Row() {
+            Spacer(Modifier.weight(1f))
+            Box(
+                modifier = Modifier
+//                .width((screenWidth * 0.2f).dp)
+                    .padding(8.dp)
+                    .clip(
+                        RoundedCornerShape(corner = CornerSize(16.dp))
+                    )
+                    .background(Color(0xFF62bd5f))
+                    .padding(2.dp)
 
-        val scrollState = rememberScrollState()
-        Column(modifier = Modifier.verticalScroll(scrollState)) {
-            val searchResults = SearchState.value
-            if (searchResults != null) {
-                for (user in searchResults) {
-                    SearchItem(user = user, viewModel = viewModel)
+            ) {
+                IconButton(
+                    onClick = { viewModel.addUserToGroup() },
+
+                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Add all user to group",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            Icons.Default.GroupAdd,
+                            contentDescription = null,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+
                 }
             }
         }
-        Spacer(modifier = Modifier.weight(1f))
 
-        FloatingActionButton(
-            onClick = { /* Handle add user action */ },
-            backgroundColor = Color(0xFF1FA2FF),
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.End)
-        ) {
-            Icon(
-                Icons.Default.Add,
-                contentDescription = "Add User",
-                tint = Color.White
-            )
+
+
+        LazyColumn() {
+            SearchState.value.let {
+                items(it?.size ?: 0) { index ->
+                    val user = it?.get(index)
+                    if (user != null) {
+                        SearchItem(user = user, viewModel = viewModel)
+                    }
+                }
+            }
+
         }
     }
 }
