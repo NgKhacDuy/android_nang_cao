@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChatBubble
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,12 +33,14 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.android_advance.R
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.ui.call_history.ContactViewModel
 
 @Composable
-fun CallHistoryCard(userDto: UserDto) {
+fun CallHistoryCard(userDto: UserDto, viewModel: ContactViewModel, navController: NavController) {
     var poppinsFamily = FontFamily(Font(R.font.poppins_medium))
     val screenWidth = LocalContext.current.resources.displayMetrics.widthPixels
     Card(
@@ -87,38 +92,21 @@ fun CallHistoryCard(userDto: UserDto) {
                         fontSize = 20.sp,
                         fontFamily = poppinsFamily
                     )
-//                    Row {
-//                        Image(
-//                            painter = painterResource(id = type),
-//                            contentDescription = null,
-//                            modifier = Modifier.size(
-//                                25.dp
-//                            )
-//                        )
-//                        Text(text = time, fontFamily = poppinsFamily, color = Color.Gray)
-//                    }
                 }
             }
             Box {
                 Row()
                 {
-                    Image(painter = painterResource(id = R.drawable.phone),
+                    Icon(
+                        imageVector = Icons.Default.ChatBubble,
                         contentDescription = null,
                         modifier = Modifier
                             .height(IntrinsicSize.Max)
                             .size(25.dp)
                             .clickable {
-                                println("Button Clicked!")
+                                viewModel.navigateToRoom(userDto.id!!, navController)
                             })
-                    Spacer(modifier = Modifier.width(20.dp))
-                    Image(painter = painterResource(id = R.drawable.video_call),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .height(IntrinsicSize.Max)
-                            .size(27.dp)
-                            .clickable {
-                                println("Button Clicked!")
-                            })
+
                 }
             }
         }

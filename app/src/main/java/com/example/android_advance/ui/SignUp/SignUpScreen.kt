@@ -1,6 +1,7 @@
 package com.example.android_advance.ui.SignUp
 
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,8 +22,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -49,6 +53,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.dsc.form_builder.TextFieldState
+import com.example.android_advance.model.request.userRequest
+import com.example.android_advance.navigation.Route
+import com.example.android_advance.redux.AddUserRegister
 import com.example.android_advance.ui.SignUp.components.GradientButtonNoRipple
 import com.example.android_advance.ui.components.AlertDialogComponent
 import com.example.android_advance.ui.components.CenteredProgressIndicator
@@ -74,7 +81,33 @@ fun SignUpScreen(navController: NavController) {
 
     fun validation() {
         if (formState.validate()) {
-            viewModel.signUp(nameState.value, sdtState.value, passwordState.value, navController)
+            val userRequest = userRequest(
+                phoneNumber = sdtState.value,
+                name = nameState.value,
+                password = passwordState.value
+            )
+            viewModel.store!!.dispatch(
+                AddUserRegister(
+                    userRequest
+                )
+            )
+            viewModel.checkPhoneNumberExistence2(sdtState.value) {
+                if (it != "") {
+                    viewModel.isShowDialog.value = true
+                } else {
+                    viewModel.generateOtp(sdtState.value) { otpgenCode ->
+                        // Perform actions with the userId value
+                        if (otpgenCode.isNotEmpty()) {
+                            var sendOtp = ""
+                            sendOtp = otpgenCode
+                            navController.navigate(Route.OtpRegisterScreen.withArgs(sendOtp))
+                        } else {
+                            Log.d("test", "error.")
+                        }
+                    }
+                }
+            }
+//            viewModel.signUp(nameState.value, sdtState.value, passwordState.value, navController)
         }
     }
     Box(
@@ -276,14 +309,27 @@ fun SignUpScreen(navController: NavController) {
         CenteredProgressIndicator()
     }
     if (viewModel.isShowDialog.value) {
-        AlertDialogComponent(
-            onDismissRequest = viewModel.infoDialog.value.onDismissRequest,
-            onConfirmation = viewModel.infoDialog.value.onConfirmation,
-            dialogTitle = viewModel.infoDialog.value.dialogTitle,
-            dialogText = viewModel.infoDialog.value.dialogText,
-            positiveText = viewModel.infoDialog.value.positiveText,
-            negativeText = viewModel.infoDialog.value.negativeText
-        )
+        ResetPasswordDialog1()
     }
 
+}
+
+@Composable
+fun ResetPasswordDialog1() {
+    val showDialog = remember { mutableStateOf(true) }
+
+    if (showDialog.value) {
+        AlertDialog(
+            onDismissRequest = { showDialog.value = false },
+            title = { Text(text = "Signup Account") },
+            text = { Text(text = "Account already exits") },
+            confirmButton = {
+                Button(onClick = {
+                    showDialog.value = false
+                }) {
+                    Text(text = "Okay")
+                }
+            }
+        )
+    }
 }

@@ -13,6 +13,7 @@ import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.data_class.InfoDialog
 import com.example.android_advance.model.request.SignupRequest
+import com.example.android_advance.redux.Store
 import com.example.android_advance.ui.components.IconType
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -29,6 +30,7 @@ class SignUpViewModel @Inject constructor(@ApplicationContext private val contex
     val isLoading = mutableStateOf(false)
     val infoDialog = mutableStateOf(InfoDialog(fun() {}, fun() {}, "", "", "", ""))
     val isShowDialog = mutableStateOf(false)
+    val store = Store.getStore()
     val formState = FormState(
         fields = listOf(
             TextFieldState(
@@ -72,7 +74,12 @@ class SignUpViewModel @Inject constructor(@ApplicationContext private val contex
         }
     }
 
-    fun signUp(name: String, phoneNumber: String, password: String, navController: NavController) {
+    fun signUp(
+        name: String,
+        phoneNumber: String,
+        password: String,
+        callback: (Boolean) -> Unit
+    ) {
         isLoading.value = true
         val apiClient: APIClient = APIClient(context)
         val userRequest = SignupRequest(name, password, phoneNumber)
@@ -84,25 +91,10 @@ class SignUpViewModel @Inject constructor(@ApplicationContext private val contex
                 response: Response<ApiResponse.BaseApiResponse<Unit>>
             ) {
                 if (response.isSuccessful) {
-                    isLoading.value = false
-                    infoDialog.value = InfoDialog(
-                        fun() {
-                            isShowDialog.value = false
-                            navigateToLogin(navController = navController)
-                        },
-                        fun() {
-                            isShowDialog.value = false
-                            navigateToLogin(navController = navController)
-                        },
-                        "Đăng ký thành công",
-                        "Bạn đã đăng ký tài khoản thành công",
-                        "OK",
-                        "Hủy",
-                        IconType.SUCCESS
-                    )
-                    isShowDialog.value = true
+                    callback(true)
 
                 } else {
+                    callback(false)
                     val errorBody = response.errorBody()?.string()
                     val errorJsonObject = Gson().fromJson(errorBody, JsonObject::class.java)
                     val message = errorJsonObject.get("message").asString
@@ -136,5 +128,71 @@ class SignUpViewModel @Inject constructor(@ApplicationContext private val contex
 
         })
     }
+
+    fun generateOtp(
+        phoneNumber: String,
+        callback: (String) -> Unit
+    ) {
+        val apiClient: APIClient = APIClient(context)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
+        val call = apiService?.generateOtpForResetPassword(phoneNumber)
+
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<String>> {
+            override fun onResponse(
+                call: Call<ApiResponse.BaseApiResponse<String>>,
+                response: Response<ApiResponse.BaseApiResponse<String>>
+            ) {
+                if (response.isSuccessful) {
+                    val otpgenCode = response.body()?.data.toString()
+                    callback(otpgenCode)
+                } else {
+                    Log.d("test", "am not feeling so good")
+                    callback("")
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ApiResponse.BaseApiResponse<String>>,
+                t: Throwable
+            ) {
+                Log.e("tesst", t.message.toString())
+                callback("")
+            }
+        })
+    }
+
+    fun checkPhoneNumberExistence2(
+        phoneNumber: String,
+        callback: (String) -> Unit
+    ) {
+        val apiClient: APIClient = APIClient(context)
+        val apiService = apiClient.client()?.create(ApiInterface::class.java)
+        val call = apiService?.isPhoneNumberExist(phoneNumber)
+
+        call?.enqueue(object : Callback<ApiResponse.BaseApiResponse<String>> {
+            override fun onResponse(
+                call: Call<ApiResponse.BaseApiResponse<String>>,
+                response: Response<ApiResponse.BaseApiResponse<String>>
+            ) {
+                if (response.isSuccessful) {
+                    val userId = response.body()?.data.toString()
+                    Log.d("test", userId)
+                    callback(userId)
+                } else {
+                    Log.d("test", "am not feeling so good")
+                    callback("")
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ApiResponse.BaseApiResponse<String>>,
+                t: Throwable
+            ) {
+                Log.e("tesst", t.message.toString())
+                callback("")
+            }
+        })
+    }
+
 }
 

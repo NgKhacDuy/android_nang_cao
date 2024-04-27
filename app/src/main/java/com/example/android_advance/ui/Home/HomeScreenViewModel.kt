@@ -75,19 +75,24 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
             socketManager.connect()
             socketManager.on("rooms") { args ->
                 args.let { d ->
-                    if (d.isNotEmpty()) {
+                    if (d.isNotEmpty() && d[0] != "rooms") {
                         val data = d[0]
                         if (data.toString().isNotEmpty()) {
                             val listType = object : TypeToken<List<roomDto>>() {}.type
-                            val temp: List<roomDto> = gson.fromJson(data.toString(), listType)
+                            val temp: List<roomDto> =
+                                gson.fromJson(data.toString(), listType)
                             _onNewRoom.postValue(temp)
+
                         }
+                    } else {
+                        _onNewRoom.postValue(emptyList())
                     }
                 }
             }
         } catch (e: Exception) {
             Log.e("EXCEPTION", e.message.toString())
         }
+
     }
 
     fun getUserInfo() {

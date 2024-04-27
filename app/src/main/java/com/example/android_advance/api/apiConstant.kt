@@ -19,8 +19,9 @@ class apiConstant {
         const val userImg = "user/image"
         const val userContact = "user/friend"
         const val isPhoneNumberExist = "user/isPhoneNumberExist"
-        const val resetPassword="user/resetPassword"
-        const val generateOtp="user/generateotp"
+        const val resetPassword = "user/resetPassword"
+        const val generateOtp = "user/generateotp"
+        const val room = "user/room"
     }
 
 }

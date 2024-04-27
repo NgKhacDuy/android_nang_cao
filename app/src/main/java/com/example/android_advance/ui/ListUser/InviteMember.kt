@@ -92,7 +92,7 @@ fun InviteMember(navController: NavController) {
                 }
             },
             label = { androidx.compose.material3.Text("Search") },
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
