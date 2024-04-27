@@ -150,7 +150,7 @@ fun CallHistoryScreenPP(navController: NavController) {
                         listContact.value?.let {
                             items(it.size ?: 0) { index ->
                                 val user = it.get(index)
-                                CallHistoryFavCard(user)
+                                CallHistoryFavCard(user, viewModel, navController)
                             }
                         }
 
@@ -201,7 +201,7 @@ fun CallHistoryScreenPP(navController: NavController) {
                         listContact.value.let {
                             items(it?.size ?: 0) { index ->
                                 val user = it?.get(index)
-                                CallHistoryCard(user!!)
+                                CallHistoryCard(user!!, viewModel, navController)
                                 Divider(
                                     color = Color.LightGray, thickness = 0.7.dp, modifier = Modifier
                                         .width((screenWidth / 4).dp)

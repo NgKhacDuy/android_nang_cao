@@ -37,6 +37,7 @@ sealed class Route(val route: String) {
     object ListUserInGroup : Route(Constant.listUserInGroup)
     object InviteMemberScreen : Route(Constant.InviteMember)
     object ContactScreen : Route(Constant.contactScreen)
+    object OtpRegisterScreen : Route(Constant.otpRegister)
 
 
     object listUserGroupScreen : Route(Constant.listUserInGroup)

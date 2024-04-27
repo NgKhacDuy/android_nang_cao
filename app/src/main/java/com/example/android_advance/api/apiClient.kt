@@ -18,6 +18,7 @@ class APIClient @Inject constructor(private val context: Context) {
         val client: OkHttpClient =
             OkHttpClient.Builder().connectTimeout(100, TimeUnit.SECONDS)
                 .readTimeout(100, TimeUnit.SECONDS)
+                .addInterceptor(interceptor)
                 .addInterceptor(appInterceptor(context)).build()
         retrofit = Retrofit.Builder()
             .baseUrl(apiConstant.baseApi)

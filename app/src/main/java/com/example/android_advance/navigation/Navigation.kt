@@ -41,6 +41,7 @@ import com.example.android_advance.ui.Home.HomeScreen
 import com.example.android_advance.ui.Message.MessageScreen
 import com.example.android_advance.ui.Screen.SettingScreen
 import com.example.android_advance.ui.SignUp.SignUpScreen
+import com.example.android_advance.ui.SignUp.VerifyOTPScreenRegister
 import com.example.android_advance.ui.account.AccountScreen
 import com.example.android_advance.ui.account.ChangePasswordScreen
 import com.example.android_advance.ui.account.ManageAccountInfoScreen
@@ -126,41 +127,6 @@ fun Navigation(voiceToTextParser: VoiceToTextParser) {
                         }
                     }
                 }
-            }
-            navigation(startDestination = Route.RoomScreen.route, route = "home") {
-                composable(route = Route.RoomScreen.route) {
-                    bottomBarVisible.value = true
-                    HomeScreen(navController)
-                }
-                composable(route = Route.CallScreen.route) {
-                    CallHistoryScreenPP(navController)
-                }
-                composable(route = Route.SettingScreen.route) {
-                    SettingScreen(navController)
-                }
-                composable(route = Route.SearchScreen.route) {
-                    SearchScreenPP(navController = navController)
-                }
-                composable(route = Route.CreateGroupScreen.route) {
-                    CreateGroupScreen(navController = navController)
-                }
-                composable(route = Route.VideoScreen.route + "/{roomName}", arguments = listOf((
-                        navArgument("roomName") {
-                            type = NavType.StringType
-                            nullable = false
-                        }
-                        ))) {
-                    val roomName =
-                        it.arguments?.getString("roomName") ?: return@composable
-                    VideoScreen(roomName = roomName, navController)
-                }
-                composable(route = Route.AccountScreen.route) {
-                    AccountScreen(navController)
-                }
-                composable(route = Route.ManageAccountInfoScreen.route)
-                {
-                    ManageAccountInfoScreen(navController)
-                }
                 composable(route = Route.ChangePasswordScreen.route)
                 {
                     ChangePasswordScreen(navController = navController)
@@ -200,6 +166,56 @@ fun Navigation(voiceToTextParser: VoiceToTextParser) {
                     val sendOtp =
                         it.arguments?.getString("sendOtp") ?: return@composable
                     VerifyOTPScreen(navController, userId, sendOtp)
+                }
+
+                composable(
+                    route = Route.OtpRegisterScreen.route + "/{sendOtp}",
+                    arguments = listOf(
+                        navArgument("sendOtp") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                    )
+                ) {
+                    val sendOtp =
+                        it.arguments?.getString("sendOtp") ?: return@composable
+                    VerifyOTPScreenRegister(navController, sendOtp)
+                }
+            }
+            navigation(startDestination = Route.RoomScreen.route, route = "home") {
+                composable(route = Route.RoomScreen.route) {
+                    bottomBarVisible.value = true
+                    HomeScreen(navController)
+                }
+                composable(route = Route.CallScreen.route) {
+                    bottomBarVisible.value = true
+                    CallHistoryScreenPP(navController)
+                }
+                composable(route = Route.SettingScreen.route) {
+                    SettingScreen(navController)
+                }
+                composable(route = Route.SearchScreen.route) {
+                    SearchScreenPP(navController = navController)
+                }
+                composable(route = Route.CreateGroupScreen.route) {
+                    CreateGroupScreen(navController = navController)
+                }
+                composable(route = Route.VideoScreen.route + "/{roomName}", arguments = listOf((
+                        navArgument("roomName") {
+                            type = NavType.StringType
+                            nullable = false
+                        }
+                        ))) {
+                    val roomName =
+                        it.arguments?.getString("roomName") ?: return@composable
+                    VideoScreen(roomName = roomName, navController)
+                }
+                composable(route = Route.AccountScreen.route) {
+                    AccountScreen(navController)
+                }
+                composable(route = Route.ManageAccountInfoScreen.route)
+                {
+                    ManageAccountInfoScreen(navController)
                 }
                 //
                 composable(

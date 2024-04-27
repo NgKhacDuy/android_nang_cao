@@ -1,11 +1,12 @@
 package com.example.android_advance.redux
 
 import android.util.Log
+import com.example.android_advance.model.request.userRequest
 import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.model.response.roomDto
 import org.reduxkotlin.Reducer
 
-data class AppState(val roomDto: roomDto, val userDto: UserDto)
+data class AppState(val roomDto: roomDto, val userDto: UserDto, val userRegister: userRequest)
 
 object ReducerSingleton {
     val reducer: Reducer<AppState> = { state, action ->
@@ -39,6 +40,10 @@ object ReducerSingleton {
                 val updatedUserList = state.roomDto.user ?: ArrayList()
                 updatedUserList.remove(action.payload)
                 state.copy(roomDto = state.roomDto.copy(user = updatedUserList))
+            }
+
+            is AddUserRegister -> {
+                state.copy(userRegister = action.payload)
             }
 
 

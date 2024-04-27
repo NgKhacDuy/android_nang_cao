@@ -78,34 +78,27 @@ interface ApiInterface {
 
     @GET(apiConstant.userContact)
     fun getContact(@Header("Authorization") authHeader: String): Call<ApiResponse.BaseApiResponse<ContactDto>>
-    //
-//    @GET(apiConstant.isPhoneNumberExist + "/{phoneNumber}")
-//    fun isPhoneNumberExist(
-//        @Path("phoneNumber") phoneNumber: String,
-//    ): Call<ApiResponse.BaseApiResponse<String>>
-//    @GET(apiConstant.generateOtp + "/{phoneNumber}")
-//    fun generateOtpForResetPassword(
-//        @Path("phoneNumber") phoneNumber: String,
-//    ): Call<ApiResponse.BaseApiResponse<String>>
-//    //
-//    @PATCH(apiConstant.resetPassword + "/{id}")
-//    fun resetPassword(
-//        @Path("id") id: String,
-//        @Body passwordRequest: PasswordRequest
-//    ): Call<ApiResponse.BaseApiResponse<Unit>>
-//    //
+
     @GET(apiConstant.isPhoneNumberExist + "/{phoneNumber}")
     fun isPhoneNumberExist(
         @Path("phoneNumber") phoneNumber: String,
     ): Call<ApiResponse.BaseApiResponse<String>>
+
     @GET(apiConstant.generateOtp + "/{phoneNumber}")
     fun generateOtpForResetPassword(
         @Path("phoneNumber") phoneNumber: String,
     ): Call<ApiResponse.BaseApiResponse<String>>
+
     //
     @PATCH(apiConstant.resetPassword + "/{id}")
     fun resetPassword(
         @Path("id") id: String,
         @Body passwordRequest: PasswordRequest
     ): Call<ApiResponse.BaseApiResponse<Unit>>
+
+    @GET(apiConstant.room + "/{idUser}")
+    fun getRoom(
+        @Path("idUser") idUser: String,
+        @Header("Authorization") authHeader: String,
+    ): Call<ApiResponse.BaseApiResponse<roomDto>>
 }

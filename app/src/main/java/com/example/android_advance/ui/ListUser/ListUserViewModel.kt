@@ -101,20 +101,28 @@ class ListUserViewModel @Inject constructor(@ApplicationContext private val cont
             ) {
                 if (response.isSuccessful) {
                     val searchResults = response.body()?.data?.listUserDto?.map { userDto ->
-                        userDto.friends?.let {
-                            UserDto(
-                                id = userDto.id,
-                                name = userDto.name,
-                                phoneNumber = userDto.phoneNumber,
-                                createAt = userDto.createAt,
-                                updateAt = userDto.updateAt,
-                                deletedAt = userDto.deletedAt,
-                                friends = it,
-                                avatar = userDto.avatar
-                            )
+                        if (roomDto?.listId?.contains(userDto.id) == false) {
+                            userDto.friends?.let {
+                                UserDto(
+                                    id = userDto.id,
+                                    name = userDto.name,
+                                    phoneNumber = userDto.phoneNumber,
+                                    createAt = userDto.createAt,
+                                    updateAt = userDto.updateAt,
+                                    deletedAt = userDto.deletedAt,
+                                    friends = it,
+                                    avatar = userDto.avatar
+                                )
+                            }
+                        } else {
+                            null
                         }
                     }
-                    _searchResult.postValue(searchResults as List<UserDto>?)
+                    if (searchResults.isNullOrEmpty()) {
+                        _searchResult.postValue(emptyList())
+                    } else {
+                        _searchResult.postValue(searchResults as List<UserDto>?)
+                    }
                 }
                 Log.d("Search", response.body()?.data.toString())
             }
