@@ -27,7 +27,8 @@ import retrofit2.Response
 import kotlin.collections.ArrayList
 
 @HiltViewModel
-class GroupScreenModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
+class GroupScreenModel @Inject constructor(@ApplicationContext private val context: Context) :
+    ViewModel() {
     private val appSharedPreference = AppSharedPreference(context)
     private val addedFriendIds = mutableListOf<String>()
     var gson: Gson = GsonBuilder()
@@ -93,7 +94,10 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse.BaseApiResponse<List<FriendResponse>>>, t: Throwable) {
+            override fun onFailure(
+                call: Call<ApiResponse.BaseApiResponse<List<FriendResponse>>>,
+                t: Throwable
+            ) {
                 Log.e("FRIEND INFO ERROR", t.message.toString())
             }
         })
@@ -132,8 +136,8 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
             }
 
             if (createGroupSuccess) {
-                val listUser = ArrayList(addedFriendIds)
-                listUser.add(userId)
+                val listUser = mutableListOf(currentUserId)
+                listUser.addAll(addedFriendIds.filter { it != currentUserId })
                 val roomRequest = RoomRequest(listUser, groupName)
                 Log.d("SocketCallback", "Creating room with group name: $groupName")
                 Log.d("SocketCallback", "List of user IDs in the room: $listUser")
