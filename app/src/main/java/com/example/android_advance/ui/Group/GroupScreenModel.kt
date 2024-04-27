@@ -3,10 +3,7 @@ package com.example.android_advance.ui.Group
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,8 +24,6 @@ import javax.inject.Inject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class GroupScreenModel @Inject constructor(@ApplicationContext private val context: Context) : ViewModel() {
@@ -125,19 +120,19 @@ class GroupScreenModel @Inject constructor(@ApplicationContext private val conte
         currentUserId?.let { userId ->
             var createGroupSuccess = true
             if (addedFriendIds.size < 3) {
-                Log.e("RoomCreation", "Vui lòng phải có ít nhất 3 thành viên trong nhóm.")
                 showToast("Vui lòng phải có ít nhất 3 thành viên trong nhóm")
                 createGroupSuccess = false
             }
             if (groupName.isEmpty()) {
-                Log.e("RoomCreation", "Vui lòng nhập tên nhóm.")
                 showToast("Vui lòng nhập tên nhóm")
                 createGroupSuccess = false
             }
 
             if (createGroupSuccess) {
-                val listUser = ArrayList(addedFriendIds)
-                listUser.add(userId)
+//                val listUser = ArrayList(addedFriendIds)
+//                listUser.add(userId)
+                val listUser = mutableListOf(currentUserId)
+                listUser.addAll(addedFriendIds.filter { it != currentUserId })
                 val roomRequest = RoomRequest(listUser, groupName)
                 Log.d("SocketCallback", "Creating room with group name: $groupName")
                 Log.d("SocketCallback", "List of user IDs in the room: $listUser")
