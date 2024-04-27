@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.rounded.Refresh
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -48,6 +49,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -263,34 +265,67 @@ fun HomeScreen(navController: NavController) {
                     .background(Color.White, shape = RoundedCornerShape(30.dp))
             ) {
                 LazyColumn {
-                    roomState.value?.let { it ->
-                        items(it.size) {
-                            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-                            val currentDate = sdf.format(Date())
-                            val avatar =
-                                if (roomState.value!![it].partner!!.avatar.isNullOrBlank()) "image" else roomState.value!![it].partner!!.avatar!!
-                            User(
-                                avatar,
-                                if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
-                                roomState.value?.get(it)?.lastMessage?.content
-                                    ?: "Cuộc hội thoại đã được tạo",
-                                convertDateTime.timeAgo(
-                                    roomState.value!![it].lastMessage?.createAt ?: currentDate
-                                ),
-                                R.drawable.user,
-                                roomState.value!![it].id!!
-                            )
-                                .let { it2 ->
-                                    UserRow(
-                                        it2, navController, it2.idRoom,
-                                        roomState.value!![it].partner?.name ?: it2.name!!,
-                                        roomState.value!![it].isGroup!!,
-                                        viewModel,
-                                        roomState.value!![it]
-                                    )
+                    if (!roomState.value.isNullOrEmpty()) {
+                        roomState.value?.let { it ->
+                            items(it.size) {
+                                val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                                val currentDate = sdf.format(Date())
+                                val avatar =
+                                    if (roomState.value!![it].partner!!.avatar.isNullOrBlank()) "image" else roomState.value!![it].partner!!.avatar!!
+                                User(
+                                    avatar,
+                                    if (roomState.value!![it].isGroup == true) roomState.value!![it].name else roomState.value!![it].partner?.name,
+                                    roomState.value?.get(it)?.lastMessage?.content
+                                        ?: "Cuộc hội thoại đã được tạo",
+                                    convertDateTime.timeAgo(
+                                        roomState.value!![it].lastMessage?.createAt ?: currentDate
+                                    ),
+                                    R.drawable.user,
+                                    roomState.value!![it].id!!
+                                )
+                                    .let { it2 ->
+                                        UserRow(
+                                            it2, navController, it2.idRoom,
+                                            roomState.value!![it].partner?.name ?: it2.name!!,
+                                            roomState.value!![it].isGroup!!,
+                                            viewModel,
+                                            roomState.value!![it]
+                                        )
 
-                                }
+                                    }
+                            }
                         }
+                    } else {
+                        item {
+                            Column(
+                                modifier = Modifier.fillParentMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Text(
+                                    text = "Bạn hiện tại không có cuộc trò chuyện nào cả\nHãy kết bạn và bắt đầu nhắn tin ngay nào",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = "Có gì đó sai sai ?\nHãy ấn nút bên dưới để reload lại nào",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.padding(16.dp),
+                                    textAlign = TextAlign.Center,
+                                )
+                                IconButton(onClick = { viewModel.getRoomForUser() }) {
+                                    Icon(
+                                        Icons.Rounded.Refresh,
+                                        contentDescription = "Refresh",
+                                        tint = Color.Black
+                                    )
+                                }
+                            }
+                        }
+
                     }
                 }
             }

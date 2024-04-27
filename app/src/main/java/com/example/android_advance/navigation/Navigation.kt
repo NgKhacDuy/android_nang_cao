@@ -246,6 +246,7 @@ fun Navigation(voiceToTextParser: VoiceToTextParser) {
                         },
                     )
                 ) {
+                    bottomBarVisible.value = false
                     MenuOption(
                         navController = navController,
                         (it.arguments?.getString("isGroup") ?: "false").toBoolean(),
@@ -254,10 +255,12 @@ fun Navigation(voiceToTextParser: VoiceToTextParser) {
                 }
 
                 composable(Route.ListUserInGroup.route) {
+                    bottomBarVisible.value = false
                     ListUserGroup(navController = navController)
                 }
 
                 composable(Route.InviteMemberScreen.route) {
+                    bottomBarVisible.value = false
                     InviteMember(navController = navController)
                 }
 
@@ -276,6 +279,7 @@ fun Navigation(voiceToTextParser: VoiceToTextParser) {
 
                     )
                 ) {
+                    bottomBarVisible.value = false
                     OptionsMenu(
                         navController = navController,
                         (it.arguments?.getString("idRoom") ?: "no id room"),

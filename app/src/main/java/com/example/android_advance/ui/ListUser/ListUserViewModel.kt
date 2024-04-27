@@ -2,6 +2,7 @@ package com.example.android_advance.ui.ListUser
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -61,6 +62,12 @@ class ListUserViewModel @Inject constructor(@ApplicationContext private val cont
                 )
                 socketManager.emit("add_user_to_group", gson.toJson(addUserToGroupRequest))
                 store!!.dispatch(AddUserToListGroup(ArrayList(addedListUser)))
+                _searchResult.postValue(emptyList())
+                Toast.makeText(
+                    context,
+                    "Đã thêm ${addedFriendIds.size} thành viên vào nhóm",
+                    Toast.LENGTH_LONG
+                ).show()
             }
         } catch (e: Exception) {
             Log.e("AddUserToGroup", e.message.toString())
@@ -75,6 +82,7 @@ class ListUserViewModel @Inject constructor(@ApplicationContext private val cont
             )
             socketManager.emit("remove_user", gson.toJson(removeUserOutOfGroupRequest))
             store!!.dispatch(RemoveUserOutOfGroupAction(user))
+            Toast.makeText(context, "Đã xóa ${user.name} khỏi nhóm", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             Log.e("RemoveUserOutOfGroup", e.message.toString())
         }
