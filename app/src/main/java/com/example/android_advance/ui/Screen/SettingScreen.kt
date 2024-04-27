@@ -163,7 +163,7 @@ fun SettingScreen(navController: NavController) {
                             homeScreenViewModel.disconnectSocket()
                                 .also {
                                     navController.navigate(route = "auth") {
-                                        popUpTo("home") {
+                                        popUpTo(navController.graph.startDestinationId) {
                                             inclusive = true
                                         }
                                     }
