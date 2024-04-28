@@ -53,6 +53,7 @@ class MessageViewModel @Inject constructor(
             socketManager.on("message") { args ->
                 if (args.isNotEmpty()) {
                     val data = args[0]
+
                     if (data != null && data.toString().isNotEmpty()) {
                         val listType = object : TypeToken<List<messageDto>>() {}.type
                         val messages: List<messageDto> = gson.fromJson(data.toString(), listType)

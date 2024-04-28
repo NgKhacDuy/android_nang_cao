@@ -1,4 +1,6 @@
+
 import android.util.Log
+import android.util.Size
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +18,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.AlertDialog
@@ -42,6 +46,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -50,12 +55,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.airbnb.lottie.model.content.CircleShape
 import com.example.android_advance.R
 import com.example.android_advance.components.ViewImg.ExpandedImage
 import com.example.android_advance.model.response.messageDto
@@ -78,6 +83,15 @@ fun OptionsMenu(navController: NavController, idRoom: String, partnerName: Strin
     val viewModel = hiltViewModel<MessageViewModel>()
     viewModel.savedStateHandle.set("roomId", idRoom)
     val messageState = viewModel.onNewMessage.observeAsState()
+
+    val store = Store.getStore()
+    val roomDto = store?.state?.roomDto
+    val partnerAvatar = roomDto?.partner?.avatar
+    val partnerName = roomDto?.partner?.name
+
+    // for handing click the partner image
+    var isImageDialogShown by remember { mutableStateOf(false) }
+
 
     messageState.value?.let { messages ->
 
@@ -121,17 +135,62 @@ fun OptionsMenu(navController: NavController, idRoom: String, partnerName: Strin
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
+                    ,
 //                    .verticalScroll(rememberScrollState()),
 //                verticalArrangement = Arrangement.Top,
-//                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                partnerAvatar?.let {url ->
+                    if (url.isEmpty() or partnerName.isNullOrEmpty()){
+                        Image(
+                            painter = painterResource(id = R.drawable.user),
+                            contentDescription = "Placeholder Avatar",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                        )
+                        Text("room not have name yet")
+
+                    }
+                    else {
+                        AsyncImage(model = url,
+                            contentDescription = "partner avatar",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .clip(CircleShape)
+                                .clickable {
+                                    isImageDialogShown = true
+                                }
+                                ,
+                            alignment = Alignment.Center
+                        )
+                        partnerName?.let { Text(text = it) }
+
+                    }
+//                AsyncImage(model = url,
+//                    contentDescription = "partner avatar",
+//                    modifier = Modifier
+//                        .size(100.dp)
+//                        .clip(CircleShape)
+//                        .clickable {
+//                            isImageDialogShown = true
+//                        }
+//                        ,
+//                    alignment = Alignment.Center
+//                )
+//                    if (!partnerName.isNullOrEmpty()){
+//                        Text(text = roomDto.partner!!.name!!)
+//
+//                    }
+//                    else {
+//                        Text("room chua cos ten")
+//
+//                    }
+
+            };
                 content.let {
 
-                    SettingItem(
-                        icon = Icons.Default.Person,
-                        title = "Partner name: $partnerName${if (returnKeyword.isNotEmpty()) " ($returnKeyword)" else ""}",
-                        onClick = {}
-                    )
+
                     if (!viewModel.roomDto?.isGroup!!) {
                         SettingItem(
                             icon = Icons.Default.PersonAdd,
@@ -181,6 +240,14 @@ fun OptionsMenu(navController: NavController, idRoom: String, partnerName: Strin
 //                    DisplayImages()
                     messageState.value?.let { messages ->
                         DisplayImages(messages)
+                    }
+
+                    if (isImageDialogShown) {
+                        partnerAvatar?.let {
+                            ExpandedImage(it) {
+                                isImageDialogShown = false
+                            }
+                        }
                     }
 
 
@@ -312,7 +379,6 @@ fun DisplayImages(messages: List<messageDto>) {
                             contentDescription = null,
                             modifier = Modifier
                                 .size(100.dp)
-                                .border(2.dp, Color.Gray)
                                 .weight(1f)
                                 .clickable {
                                     isSelected.value = true
