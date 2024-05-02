@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.android_advance.components.ViewImg.ExpandedImage
 import com.example.android_advance.model.response.messageDto
+import com.example.android_advance.utils.common.ConvertDateTime
 import com.google.accompanist.flowlayout.FlowMainAxisAlignment
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.flowlayout.SizeMode
@@ -47,7 +48,7 @@ fun ListImage(message: messageDto, isSender: Boolean) {
                 .padding(16.dp)
         ) {
             Column(horizontalAlignment = if (isSender) Alignment.End else Alignment.Start) {
-                Text(message.user?.name.toString(), color = Color.Gray.copy(alpha = 0.9f))
+                Text(message.user?.name.toString(), color = Color.Magenta.copy(alpha = 0.9f))
                 Spacer(modifier = Modifier.height(4.dp))
                 val itemSize: Dp =
                     if (message.image.size > 2)
@@ -63,11 +64,20 @@ fun ListImage(message: messageDto, isSender: Boolean) {
                         AsyncImage(
                             model = i.url,
                             contentDescription = null,
-                            modifier = Modifier.size(itemSize).clickable {
-                                isSelected.value = true
-                                indexSelected.value = message.image.indexOf(i)
-                            })
+                            modifier = Modifier
+                                .size(itemSize)
+                                .clickable {
+                                    isSelected.value = true
+                                    indexSelected.value = message.image.indexOf(i)
+                                })
                     }
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                message.createAt?.let {
+                    androidx.compose.material3.Text(
+                        text = ConvertDateTime().timeAgo(it),
+                        color = Color.Gray.copy(alpha = 0.9f)
+                    )
                 }
             }
         }
