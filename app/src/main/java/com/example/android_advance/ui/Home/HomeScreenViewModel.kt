@@ -12,6 +12,7 @@ import com.example.android_advance.api.ApiInterface
 import com.example.android_advance.api.ApiResponse
 import com.example.android_advance.database.DatabaseHelper
 import com.example.android_advance.model.response.UserDto
+import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.redux.AddRoomDto
 import com.example.android_advance.redux.AddUser
@@ -52,6 +53,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         .create()
 
     var store = Store.getStore()
+    val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     fun swipe() = viewModelScope.launch {
         isRefreshing.value = true
@@ -68,6 +70,13 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
         getRoomForUser()
     }
 
+    suspend fun decodeJson(data: Any): List<roomDto> {
+        return coroutineScope.async(Dispatchers.Default) {
+            val listType = object : TypeToken<List<roomDto>>() {}.type
+            gson.fromJson<List<roomDto>>(data.toString(), listType)
+        }.await()
+    }
+
 
     fun getRoomForUser() {
         try {
@@ -78,10 +87,9 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
                     if (d.isNotEmpty() && d[0] != "rooms") {
                         val data = d[0]
                         if (data.toString().isNotEmpty()) {
-                            val listType = object : TypeToken<List<roomDto>>() {}.type
-                            val temp: List<roomDto> =
-                                gson.fromJson(data.toString(), listType)
-                            _onNewRoom.postValue(temp)
+                            coroutineScope.launch {
+                                _onNewRoom.postValue(decodeJson(data))
+                            }
 
                         }
                     } else {

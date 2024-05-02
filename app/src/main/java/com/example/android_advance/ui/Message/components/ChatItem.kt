@@ -44,7 +44,8 @@ fun ChatItem(message: messageDto, isSender: Boolean) {
                             bottomStart = if (isSender) 48f else 0f,
                             bottomEnd = if (isSender) 0f else 48f
                         )
-                    ).width(LocalConfiguration.current.screenWidthDp.dp / 2)
+                    )
+                    .width(LocalConfiguration.current.screenWidthDp.dp / 2)
                     .background(Color(0xFFD0BCFF))
                     .padding(16.dp)
                     .clickable {
@@ -52,8 +53,14 @@ fun ChatItem(message: messageDto, isSender: Boolean) {
                             val uri = Uri.parse(message.content)
                             val intent = Intent(Intent.ACTION_VIEW, uri)
                             val options = Bundle().apply {
-                                putInt("android.intent.extra.FLAG_ACTIVITY_NEW_TASK", Intent.FLAG_ACTIVITY_NEW_TASK)
-                                putInt("android.intent.extra.FLAG_ACTIVITY_CLEAR_TOP", Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                putInt(
+                                    "android.intent.extra.FLAG_ACTIVITY_NEW_TASK",
+                                    Intent.FLAG_ACTIVITY_NEW_TASK
+                                )
+                                putInt(
+                                    "android.intent.extra.FLAG_ACTIVITY_CLEAR_TOP",
+                                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                )
                             }
                             startActivity(context, intent, options)
                         }
@@ -65,10 +72,17 @@ fun ChatItem(message: messageDto, isSender: Boolean) {
                 ) {
                     androidx.compose.material.Text(
                         message.user?.name.toString(),
-                        color = Color.Gray.copy(alpha = 0.9f)
+                        color = Color.Magenta.copy(alpha = .9f)
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     message.content?.let { Text(text = it) }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    message.createAt?.let {
+                        Text(
+                            text = ConvertDateTime().timeAgo(it),
+                            color = Color.Gray.copy(alpha = 0.9f)
+                        )
+                    }
                 }
             }
         }
