@@ -70,6 +70,7 @@ class MessageViewModel @Inject constructor(
                 Log.e("message", "message")
                 if (args.isNotEmpty()) {
                     val data = args[0]
+
                     if (data != null && data.toString().isNotEmpty()) {
                         coroutineScope.launch {
                             _onNewMessage.postValue(decodeJson(data))

@@ -52,7 +52,6 @@ fun MessageScreen(
                             },
                             modifier = Modifier,
                             onClickBack = {
-                                viewModel.store!!.dispatch(RemoveRoomDto())
                                 viewModel.socketManager.disconnect()
                                 navController.popBackStack()
                             },

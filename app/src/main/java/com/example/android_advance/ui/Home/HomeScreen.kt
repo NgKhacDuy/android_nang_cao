@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,6 +62,7 @@ import coil.compose.AsyncImage
 import com.example.android_advance.R
 import com.example.android_advance.model.response.roomDto
 import com.example.android_advance.navigation.Route
+import com.example.android_advance.redux.Store
 import com.example.android_advance.ui.BottomNavigation.ChildRoute
 import com.example.android_advance.utils.common.ConvertDateTime
 import java.text.SimpleDateFormat
@@ -145,18 +147,30 @@ fun HomeScreen(navController: NavController) {
                             .background(Color.White) // Set the background color
                             .padding(8.dp)
                     ) {
-                        when (userState.value?.avatar.isNullOrEmpty()) {
+                        when (userState.value?.avatar.isNullOrEmpty() || userState.value?.avatar!!.endsWith(".jpg")){
                             true -> {
-                                Image(
-                                    painter = painterResource(R.drawable.user),
-                                    contentDescription = null,
-                                    modifier = Modifier.fillMaxSize(), // Make the image fill the Box
+//                                Log.e("home avatar self is jpg", "${userState.value?.avatar}")
+//                                Image(
+//                                    painter = painterResource(R.drawable.user),
+//                                    contentDescription = null,
+//                                    modifier = Modifier.fillMaxSize(), // Make the image fill the Box
+//                                    contentScale = ContentScale.Crop
+//                                )
+                                val selfAvatar = Store.getStore()?.state?.userDto?.avatar
+                                AsyncImage(
+                                    model = selfAvatar,
+                                    contentDescription = "avatar",
+                                    modifier = Modifier
+
+                                        .size(35.dp)
+                                        .clip(CircleShape),
                                     contentScale = ContentScale.Crop
                                 )
                             }
 
                             false -> {
                                 val user = viewModel.getUserFromSqlite()
+
                                 AsyncImage(
                                     model = user.avatar,
                                     contentDescription = "avatar",
@@ -348,6 +362,8 @@ fun UserRow(
     viewModel: HomeScreenViewModel,
     roomDto: roomDto
 ) {
+    Log.e("avatar", user.avatar)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -376,23 +392,45 @@ fun UserRow(
                 .padding(vertical = 16.dp)
                 .padding(start = 40.dp)
         ) {
-            if (user.avatar == "image")
-                Image(
+            if (user.avatar == "image" || user.avatar.endsWith(".jpg")){
+                val testAvatar = user.avatar.toString()
+                Log.e("test avatar", testAvatar)
+                if (testAvatar.endsWith(".jpg")){
+                    AsyncImage(
+                        model = testAvatar,
+                        contentDescription = "User Avatar",
+                        modifier = Modifier
+                            .size(35.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                else {
+                    Image(
                     painter = painterResource(R.drawable.user_solid),
                     contentDescription = null,
                     modifier = Modifier
-
                         .size(35.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
-                )
-            else {
-                AsyncImage(
-                    model = user.avatar, contentDescription = "avatar", modifier = Modifier
+                 )
+                }
+            }
 
-                        .size(35.dp)
-                        .clip(CircleShape), contentScale = ContentScale.Crop
-                )
+
+            else {
+                if(user.avatar.isNotEmpty() && !user.avatar.endsWith(".jpg")){
+
+                    Image(
+                        painter = painterResource(R.drawable.user_solid),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(35.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             Column(
                 modifier = Modifier.padding(start = 12.dp)
