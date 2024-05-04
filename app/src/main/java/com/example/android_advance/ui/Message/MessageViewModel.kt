@@ -17,6 +17,10 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,6 +28,7 @@ class MessageViewModel @Inject constructor(
     @ApplicationContext val context: Context, val savedStateHandle: SavedStateHandle
 ) :
     ViewModel() {
+    private var hasCalledGetRoomForUser = false
     val store = Store.getStore()
     val roomDto = store?.state?.roomDto
     val roomId = roomDto?.id!!
@@ -35,9 +40,13 @@ class MessageViewModel @Inject constructor(
         .create()
     var db: DatabaseHelper
     val socketManager = SocketManager.getInstance(context)
+    val coroutineScope = CoroutineScope(Dispatchers.Main)
 
     init {
-        getRoomForUser(roomId)
+        if (!hasCalledGetRoomForUser) {
+            getRoomForUser(roomId)
+            hasCalledGetRoomForUser = true
+        }
         db = DatabaseHelper(context)
     }
 
@@ -46,18 +55,26 @@ class MessageViewModel @Inject constructor(
     var selectedImageBase64 =
         mutableStateOf<List<String>>(emptyList())
 
+    suspend fun decodeJson(data: Any): List<messageDto> {
+        return coroutineScope.async(Dispatchers.Default) {
+            val listType = object : TypeToken<List<messageDto>>() {}.type
+            gson.fromJson<List<messageDto>>(data.toString(), listType)
+        }.await()
+    }
+
     fun getRoomForUser(roomId: String) {
         try {
             socketManager.connect()
             socketManager.emit("join_room", roomId)
             socketManager.on("message") { args ->
+                Log.e("message", "message")
                 if (args.isNotEmpty()) {
                     val data = args[0]
 
                     if (data != null && data.toString().isNotEmpty()) {
-                        val listType = object : TypeToken<List<messageDto>>() {}.type
-                        val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
-                        _onNewMessage.postValue(messages)
+                        coroutineScope.launch {
+                            _onNewMessage.postValue(decodeJson(data))
+                        }
                     }
                 }
             }
@@ -86,9 +103,9 @@ class MessageViewModel @Inject constructor(
                 if (d.isNotEmpty()) {
                     val data = d[0]
                     if (data.toString().isNotEmpty()) {
-                        val listType = object : TypeToken<List<messageDto>>() {}.type
-                        val messages: List<messageDto> = gson.fromJson(data.toString(), listType)
-                        _onNewMessage.postValue(messages)
+                        coroutineScope.launch {
+                            _onNewMessage.postValue(decodeJson(data))
+                        }
                     }
                 } else {
                     _onNewMessage.postValue(emptyList())
