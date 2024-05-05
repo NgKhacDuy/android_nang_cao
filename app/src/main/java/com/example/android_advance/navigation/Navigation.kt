@@ -32,7 +32,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.android_advance.model.response.UserDto
 import com.example.android_advance.shared_preference.AppSharedPreference
 import com.example.android_advance.ui.BottomNavigation.listOfNavItems
 import com.example.android_advance.ui.Group.CreateGroupScreen
@@ -284,6 +283,33 @@ fun Navigation(voiceToTextParser: VoiceToTextParser) {
                         navController = navController,
                         (it.arguments?.getString("idRoom") ?: "no id room"),
                         it.arguments?.getString("partnerName") ?: "no partner name"
+                    )
+                }
+                // this is the main option menu with nickname
+                composable(
+                    route = Route.OptionsMenuChat.route + "/{idRoom}/{partnerName}/{nickname}",
+                    arguments = listOf(
+                        navArgument("idRoom") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("partnerName") {
+                            type = NavType.StringType
+                            nullable = false
+                        },
+                        navArgument("nickname") {
+                            type = NavType.StringType
+                            nullable = true
+                        }
+
+                    )
+                ) {
+                    bottomBarVisible.value = false
+                    OptionsMenu(
+                        navController = navController,
+                        (it.arguments?.getString("idRoom") ?: "no id room"),
+                        it.arguments?.getString("partnerName") ?: "no partner name",
+                        it.arguments?.getString("nickname") ?: "no nickname"
                     )
                 }
 

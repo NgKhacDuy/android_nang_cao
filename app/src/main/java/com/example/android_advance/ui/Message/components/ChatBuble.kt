@@ -82,6 +82,9 @@ fun ChatScreen(
 
         val keyWordsReturn =
             navController.currentBackStackEntry?.savedStateHandle?.get<String>("key_words_return")
+        val nickNameReturn =
+            navController.currentBackStackEntry?.savedStateHandle?.get<String>("nickname_return")
+
 
         Row(
             modifier = Modifier
@@ -124,7 +127,7 @@ fun ChatScreen(
                     modifier = Modifier.offset(x = 25.dp)
                 ) {
                     Text(
-                        text = partnerName,
+                        text = partnerName +  if (!nickNameReturn.isNullOrBlank()) " ($nickNameReturn)" else "",
                         color = Color.Black,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
@@ -148,8 +151,13 @@ fun ChatScreen(
                     )
                 }
                 IconButton(onClick = {
-//                    navController.navigate(Route.MenuOption.withArgs(isGroup.toString(), avatar))
-                    navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName))
+
+                    if (nickNameReturn.isNullOrBlank()) {
+                        navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName))
+                    } else {
+                        navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName, nickNameReturn))
+                    }
+//                    navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName))
                     // TODO() add navigate to menu item
                 }) {
                     Icon(
