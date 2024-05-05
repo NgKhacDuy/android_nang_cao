@@ -1,4 +1,3 @@
-
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,8 +22,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -52,6 +53,7 @@ import com.example.android_advance.components.ViewImg.ExpandedImage
 import com.example.android_advance.model.response.messageDto
 import com.example.android_advance.navigation.Route
 import com.example.android_advance.redux.Store
+import com.example.android_advance.ui.ListUser.ListUserViewModel
 import com.example.android_advance.ui.Message.MessageViewModel
 import com.example.android_advance.ui.Message.components.ChatItem
 import com.example.android_advance.ui.Screen.SettingItem
@@ -60,12 +62,18 @@ import com.example.android_advance.ui.Screen.SettingItem
 //@Preview
 @Composable
 //fun OptionsMenu() {
-fun OptionsMenu(navController: NavController, idRoom: String, partnerName: String, partnerNickname: String? = null) {
+fun OptionsMenu(
+    navController: NavController,
+    idRoom: String,
+    partnerName: String,
+    partnerNickname: String? = null
+) {
     var searchDialogShown by remember { mutableStateOf(false) }
     var returnKeyword by remember { mutableStateOf("") }
     var request_key by remember { mutableStateOf("") }
 
     val viewModel = hiltViewModel<MessageViewModel>()
+    val viewModelListUser = hiltViewModel<ListUserViewModel>()
     viewModel.savedStateHandle.set("roomId", idRoom)
     val messageState = viewModel.onNewMessage.observeAsState()
 
@@ -93,7 +101,7 @@ fun OptionsMenu(navController: NavController, idRoom: String, partnerName: Strin
 
 
     }
-    if (!partnerNickname.isNullOrBlank()){
+    if (!partnerNickname.isNullOrBlank()) {
         Log.e("partnerNickname", partnerNickname)
     }
 
@@ -124,14 +132,13 @@ fun OptionsMenu(navController: NavController, idRoom: String, partnerName: Strin
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
-                    ,
+                    .padding(16.dp),
 //                    .verticalScroll(rememberScrollState()),
 //                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                partnerAvatar?.let {url ->
-                    if (url.isEmpty() or partnerName.isNullOrEmpty()){
+                partnerAvatar?.let { url ->
+                    if (url.isEmpty() or partnerName.isNullOrEmpty()) {
                         Image(
                             painter = painterResource(id = R.drawable.user),
                             contentDescription = "Placeholder Avatar",
@@ -141,33 +148,33 @@ fun OptionsMenu(navController: NavController, idRoom: String, partnerName: Strin
                         )
                         Text("room not have name yet")
 
-                    }
-                    else {
-                        AsyncImage(model = url,
+                    } else {
+                        AsyncImage(
+                            model = url,
                             contentDescription = "partner avatar",
                             modifier = Modifier
                                 .size(100.dp)
                                 .clip(CircleShape)
                                 .clickable {
                                     isImageDialogShown = true
-                                }
-                                ,
+                                },
                             alignment = Alignment.Center
                         )
-                        partnerName?.let {Text(text = it + if (tempNickname.isNotEmpty()) " ($tempNickname)" else if (!partnerNickname.isNullOrEmpty()) " ($partnerNickname)" else "")
+                        partnerName?.let {
+                            Text(text = it + if (tempNickname.isNotEmpty()) " ($tempNickname)" else if (!partnerNickname.isNullOrEmpty()) " ($partnerNickname)" else "")
                         }
 
                     }
 //
 
-            };
+                };
                 content.let {
 
 
                     if (!viewModel.roomDto?.isGroup!!) {
                         SettingItem(
                             icon = Icons.Default.PersonAdd,
-                            title = "NickName:  ${if (tempNickname.isNotEmpty()) " ($tempNickname)" else if (!partnerNickname.isNullOrEmpty()) " ($partnerNickname)" else ""}"  ,
+                            title = "NickName:  ${if (tempNickname.isNotEmpty()) " ($tempNickname)" else if (!partnerNickname.isNullOrEmpty()) " ($partnerNickname)" else ""}",
                             onClick = {
                                 searchDialogShown = true
                                 request_key = "nickname"
@@ -204,6 +211,17 @@ fun OptionsMenu(navController: NavController, idRoom: String, partnerName: Strin
                     }
                     messageState.value?.let { messages ->
                         DisplayImages(messages)
+                    }
+
+                    if (viewModel.roomDto.isGroup!!) {
+                        SettingItem(
+                            icon = Icons.AutoMirrored.Filled.Logout,
+                            title = "Leave Group",
+                            onClick = {
+                                viewModelListUser.removeUser(store?.state?.userDto!!)
+                                navController.popBackStack("home", inclusive = true)
+                            }
+                        )
                     }
 
                     if (isImageDialogShown) {

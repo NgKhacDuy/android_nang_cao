@@ -127,7 +127,7 @@ fun ChatScreen(
                     modifier = Modifier.offset(x = 25.dp)
                 ) {
                     Text(
-                        text = partnerName +  if (!nickNameReturn.isNullOrBlank()) " ($nickNameReturn)" else "",
+                        text = partnerName + if (!nickNameReturn.isNullOrBlank()) " ($nickNameReturn)" else "",
                         color = Color.Black,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
@@ -155,7 +155,13 @@ fun ChatScreen(
                     if (nickNameReturn.isNullOrBlank()) {
                         navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName))
                     } else {
-                        navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName, nickNameReturn))
+                        navController.navigate(
+                            Route.OptionsMenuChat.withArgs(
+                                idRoom,
+                                partnerName,
+                                nickNameReturn
+                            )
+                        )
                     }
 //                    navController.navigate(Route.OptionsMenuChat.withArgs(idRoom, partnerName))
                     // TODO() add navigate to menu item
@@ -169,7 +175,7 @@ fun ChatScreen(
             }
         }
         Column {
-            if (!model.isNullOrEmpty()) {
+            if (model.isNotEmpty()) {
                 LazyColumn(
                     state = listState,
                     modifier = Modifier

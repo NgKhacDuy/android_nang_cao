@@ -99,32 +99,38 @@ class SettingScreenViewModel @Inject constructor(@ApplicationContext private val
         db.deleteUser()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    fun signOut(): Boolean {
-        var isSignOutSuccess = true
-        GlobalScope.launch(Dispatchers.IO) {
-            launch {
-                isSignOutSuccess = signOutAsync()
-            }
-        }
-        return isSignOutSuccess
-    }
-
-    suspend fun signOutAsync(): Boolean {
-        var isSignOutSuccess = false
+    fun signOut(
+        callback: (Boolean) -> Unit
+    ) {
         val apiClient: APIClient = APIClient(context)
+        Log.e("token", appSharedPreference.accessToken)
         val apiService = apiClient.client()?.create(ApiInterface::class.java)
         try {
-            val response =
-                apiService?.signOut("Bearer ${appSharedPreference.accessToken}")?.execute()
-            if (response?.isSuccessful == true) {
-                isSignOutSuccess = true
-            } else {
-                Log.e("SIGN OUT", "error")
-            }
+
+            apiService?.signOut("Bearer ${appSharedPreference.accessToken}")
+                ?.enqueue(object : Callback<ApiResponse.BaseApiResponse<Unit>> {
+                    override fun onResponse(
+                        call: Call<ApiResponse.BaseApiResponse<Unit>>,
+                        response: Response<ApiResponse.BaseApiResponse<Unit>>
+                    ) {
+                        if (response.isSuccessful) {
+                            callback(true)
+                        } else {
+                            callback(false)
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<ApiResponse.BaseApiResponse<Unit>>,
+                        t: Throwable
+                    ) {
+                        Log.e("SIGN OUT ERROR", t.message.toString())
+                        callback(false)
+                    }
+                })
+
         } catch (e: Exception) {
             Log.e("SIGN OUT ERROR", e.message.toString())
         }
-        return isSignOutSuccess
     }
 }
