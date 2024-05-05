@@ -85,6 +85,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
             socketManager.on("rooms") { args ->
                 args.let { d ->
                     if (d.isNotEmpty() && d[0] != "rooms") {
+                        Log.e("room", "room")
                         val data = d[0]
                         if (data.toString().isNotEmpty()) {
                             coroutineScope.launch {
@@ -93,6 +94,7 @@ class HomeScreenViewModel @Inject constructor(@ApplicationContext private val co
 
                         }
                     } else {
+                        Log.e("empty room", "room")
                         _onNewRoom.postValue(emptyList())
                     }
                 }

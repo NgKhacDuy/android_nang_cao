@@ -42,7 +42,30 @@ fun MessageScreen(
 
         ) {
             when (messageState.value == null) {
-                true -> {}
+                true -> {
+                    messageState.value?.let { it ->
+                        ChatScreen(
+                            model = it,
+                            onSendChatClickListener = { content, type, image ->
+                                viewModel.sendMessage(content, type, image)
+                            },
+                            modifier = Modifier,
+                            onClickBack = {
+                                viewModel.socketManager.disconnect()
+                                navController.popBackStack()
+                            },
+                            viewModel.db,
+                            viewModel.partnerName!!,
+                            navController,
+                            viewModel.roomId,
+                            viewModel.isGroup!!,
+                            viewModel.roomDto?.partner?.avatar ?: "",
+                            viewModel.context,
+                            voiceToTextParser
+                        )
+                    }
+                }
+
                 false -> {
                     messageState.value?.let { it ->
                         ChatScreen(
@@ -67,8 +90,6 @@ fun MessageScreen(
                     }
                 }
 
-                null -> {
-                }
             }
         }
     }

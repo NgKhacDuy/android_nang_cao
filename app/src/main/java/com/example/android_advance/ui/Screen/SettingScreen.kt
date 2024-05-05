@@ -156,19 +156,21 @@ fun SettingScreen(navController: NavController) {
             onClick = {
                 coroutineScope.launch {
                     launch {
-                        val isSignOut = settingViewModel.signOut()
-                        if (isSignOut) {
-                            settingViewModel.deleteToken()
-                            settingViewModel.deleteSqlite()
-                            homeScreenViewModel.disconnectSocket()
-                                .also {
-                                    navController.navigate(route = "auth") {
-                                        popUpTo(navController.graph.startDestinationId) {
-                                            inclusive = true
+                        settingViewModel.signOut { callback ->
+                            if (callback) {
+                                settingViewModel.deleteToken()
+                                settingViewModel.deleteSqlite()
+                                homeScreenViewModel.disconnectSocket()
+                                    .also {
+                                        navController.navigate(route = "auth") {
+                                            popUpTo("home") {
+                                                inclusive = true
+                                            }
                                         }
                                     }
-                                }
+                            }
                         }
+
                     }
                 }
 
@@ -195,7 +197,11 @@ fun SettingScreen(navController: NavController) {
 }
 
 @Composable
-fun SettingItem(icon: ImageVector, title: String, onClick: () -> Unit) {
+fun SettingItem(
+    icon: ImageVector,
+    title: String,
+    onClick: () -> Unit,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
