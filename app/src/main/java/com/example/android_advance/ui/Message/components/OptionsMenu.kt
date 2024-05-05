@@ -146,8 +146,6 @@ fun OptionsMenu(
                                 .size(100.dp)
                                 .clip(CircleShape)
                         )
-                        Text("room not have name yet")
-
                     } else {
                         AsyncImage(
                             model = url,
